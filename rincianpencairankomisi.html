@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root{
+      --brand:#00a0c6;
+      --text:#0b1220;
+      --muted:#64748b;
+      --border:rgba(15, 23, 42, .10);
+      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+      --radius: 18px;
+
+      --paid:#0b8043;
+      --unpaid:#b00020;
+
+      --soft:#f7fafc;
+
+      --bg1:#0b2a57;
+      --bg2:#0b3b8a;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 520px at 30% 25%, rgba(42,167,255,.45), transparent 55%),
+        radial-gradient(700px 520px at 70% 75%, rgba(0,160,198,.35), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
+
+    /* header konsisten */
+    .top{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.25);
+      backdrop-filter: blur(14px);
+    }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .leftTop{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .logoApp{ height: 34px; width:auto; display:block; }
+    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; color:#fff; }
+    .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
+
+    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .statusPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.75);
+      font-weight: 900; font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
+    .statusText .email{ color: #fff; font-weight: 900; }
+
+    .btnSmall{
+      height:44px; padding: 0 14px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      font-weight: 900; font-size: 14px;
+      color:#fff;
+      display:inline-flex; align-items:center; gap:10px;
+      backdrop-filter: blur(10px);
+    }
+    .btnSmall:hover{ background: rgba(255,255,255,.18); }
+
+    .card{
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-top: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    .hello{
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 900; min-height: 18px; }
+    .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; }
+
+    .totalsRow{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 10px;
+      align-items:stretch;
+      margin-top: 12px;
+    }
+    @media (max-width: 980px){ .totalsRow{ grid-template-columns: repeat(2, minmax(220px, 1fr)); } }
+    @media (max-width: 520px){ .totalsRow{ grid-template-columns: 1fr; } }
+
+    .totalCard{
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      padding: 14px;
+      background:#fff;
+    }
+    .totalTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
+    .totalLabel{ font-size:12px; color: var(--muted); font-weight: 900; }
+    .pill{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background:#f8fafc;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .totalVal{ font-size: 22px; font-weight: 900; letter-spacing:.1px; }
+
+    .totalCard.all{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.05); }
+    .totalCard.all .totalVal{ color: var(--brand); }
+    .totalCard.unpaid{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.04); }
+    .totalCard.unpaid .totalVal{ color: var(--unpaid); }
+    .totalCard.paid{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.04); }
+    .totalCard.paid .totalVal{ color: var(--paid); }
+
+    .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .seg button{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 14px;
+      font-family: inherit;
+      user-select:none;
+    }
+    .seg button.active-all{
+      border-color: rgba(0,160,198,.55);
+      background: rgba(0,160,198,.12);
+      color: var(--brand);
+    }
+    .seg button.active-paid{
+      border-color: rgba(11,128,67,.55);
+      background: rgba(11,128,67,.12);
+      color: var(--paid);
+    }
+    .seg button.active-unpaid{
+      border-color: rgba(176,0,32,.55);
+      background: rgba(176,0,32,.12);
+      color: var(--unpaid);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, minmax(200px, 1fr)); } }
+    @media (max-width: 520px){ .grid{ grid-template-columns: 1fr; } }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    input{
+      width:100%;
+      height:48px;
+      padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      font-size: 15px;
+      outline:none;
+      background:#fff;
+      font-family: inherit;
+      font-weight: 800;
+    }
+
+    .checkList{
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      padding: 10px;
+      max-height: 170px;
+      overflow:auto;
+      background:#fff;
+    }
+    .checkItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding: 8px 8px;
+      border-radius: 12px;
+      cursor:pointer;
+    }
+    .checkItem:hover{ background: rgba(0,160,198,.06); }
+    .checkItem input{
+      width: 18px; height: 18px;
+      margin-top: 2px;
+      accent-color: var(--brand);
+      flex: 0 0 auto;
+    }
+    .checkItem span{
+      font-size: 14px;
+      line-height: 1.25;
+      white-space: normal;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid;
+      white-space:nowrap;
+    }
+    .badge.paid{ color: var(--paid); border-color: rgba(11,128,67,.35); background: rgba(11,128,67,.10); }
+    .badge.unpaid{ color: var(--unpaid); border-color: rgba(176,0,32,.35); background: rgba(176,0,32,.09); }
+
+    .tableWrap{
+      overflow:auto;
+      max-height: 60vh;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      background:#fff;
+    }
+    table{ width:100%; border-collapse: collapse; }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(15,23,42,.10);
+      text-align:left;
+      white-space: nowrap;
+      font-size: 14px;
+      background:#fff;
+    }
+    th{
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #fff;
+      font-size: 12px;
+      letter-spacing: .22px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 900;
+      cursor: pointer;
+      user-select:none;
+      box-shadow: 0 1px 0 rgba(15,23,42,.10);
+    }
+    th.sortActive{
+      color: var(--brand);
+      background: rgba(0,160,198,.12);
+      box-shadow: inset 0 -2px 0 rgba(0,160,198,.55);
+    }
+    .sortArrow{ width: 10px; height: 10px; opacity:.8; display:inline-block; vertical-align: middle; margin-left: 6px; }
+    td.komisiCell{ background: rgba(0,160,198,.07); font-weight: 900; }
+
+    .rincianHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .rincianRight{ display:flex; align-items:center; gap:10px; justify-content:flex-end; }
+
+    .btnIconText{
+      height:44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight: 900;
+      font-size: 14px;
+    }
+    .btnIconText:hover{ background: var(--soft); }
+
+    .btnIcon{
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .btnIcon:hover{ background: var(--soft); }
+
+    .copyright{
+      text-align:center;
+      margin:16px 0;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(255,255,255,.75);
+      letter-spacing:.2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="topRow">
+        <div class="leftTop">
+          <img class="logoApp" src="<?= logoUrl ?>" alt="Jendela360" />
+          <div>
+            <div class="title">Rincian Pencairan Komisi</div>
+            <div class="subtitle">Cek rincian komisi berdasarkan invoice yang telah terbit</div>
+          </div>
+        </div>
+
+        <div class="topActions">
+          <div class="statusPill">
+            <span class="dot"></span>
+            <span class="statusText">
+              <span class="label">Sedang Masuk</span>
+              <span class="email" id="loginEmailPill">-</span>
+            </span>
+          </div>
+
+          <button class="btnSmall" onclick="goHome()" title="Beranda" aria-label="Beranda">
+            Beranda
+          </button>
+
+          <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="gateCard">
+      <div style="font-weight:900;font-size:16px;">Akses Ditolak</div>
+      <div class="soft">Kamu perlu masuk dulu dari Beranda.</div>
+      <div id="gateMsg" class="msg"></div>
+      <div style="margin-top:12px;">
+        <button class="btnSmall" style="background:#fff;color:#0b1220;border-color:rgba(15,23,42,.12)" onclick="goHome()">Kembali Ke Beranda</button>
+      </div>
+    </div>
+
+    <div class="card" id="mainCard" style="display:none;">
+      <div class="hello">Halo, <span id="namaMitra">-</span></div>
+
+      <div class="totalsRow">
+        <div class="totalCard all">
+          <div class="totalTop"><div class="totalLabel">Total Komisi</div><div class="pill" id="spkAll">0 SPK</div></div>
+          <div class="totalVal" id="totalAll">Rp 0</div>
+        </div>
+        <div class="totalCard paid">
+          <div class="totalTop"><div class="totalLabel">Sudah Cair</div><div class="pill" id="spkPaid">0 SPK</div></div>
+          <div class="totalVal" id="totalPaid">Rp 0</div>
+        </div>
+        <div class="totalCard unpaid">
+          <div class="totalTop"><div class="totalLabel">Belum Cair</div><div class="pill" id="spkUnpaid">0 SPK</div></div>
+          <div class="totalVal" id="totalUnpaid">Rp 0</div>
+        </div>
+      </div>
+
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <div class="card" id="filterCard" style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div style="font-weight:900; font-size:16px;">Filter</div>
+        <div class="seg">
+          <button id="btnAll" class="active-all" onclick="setQuickStatus('ALL')">Semua</button>
+          <button id="btnPaid" onclick="setQuickStatus('PAID')">Sudah Cair</button>
+          <button id="btnUnpaid" onclick="setQuickStatus('UNPAID')">Belum Cair</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div><label>Cetak Invoice (Awal)</label><input type="date" id="tglCetakFrom" /></div>
+        <div><label>Cetak Invoice (Akhir)</label><input type="date" id="tglCetakTo" /></div>
+        <div><label>Periode Pencairan</label><div id="periodeBox" class="checkList"></div></div>
+        <div><label>Pekerjaan</label><div id="pekerjaanBox" class="checkList"></div></div>
+
+        <div><label>Penjadwalan Pertama (Awal)</label><input type="date" id="tglKerjaFrom" /></div>
+        <div><label>Penjadwalan Pertama (Akhir)</label><input type="date" id="tglKerjaTo" /></div>
+        <div><label>Waktu Pencairan (Awal)</label><input type="date" id="waktuCairFrom" /></div>
+        <div><label>Waktu Pencairan (Akhir)</label><input type="date" id="waktuCairTo" /></div>
+
+        <div><label>Cari Kode Unit</label><input id="qUnit" placeholder="contoh: NWCC003" /></div>
+        <div><label>Cari No. SPK</label><input id="qSpk" placeholder="contoh: A26JAN2731" /></div>
+
+        <div style="display:flex; align-items:end;">
+          <button class="btnIconText" onclick="clearFilters()" title="Hapus Filter" aria-label="Hapus Filter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 21h18" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 20 16 11" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 5l5 5" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M11 8l5 5" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Hapus Filter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="tableCard" style="display:none;">
+      <div class="rincianHeader">
+        <div>
+          <div style="font-weight:900; font-size:16px;">Rincian</div>
+          <div class="soft" style="margin-top:6px;">Cek rincian komisi berdasarkan invoice yang telah terbit</div>
+        </div>
+        <div class="rincianRight">
+          <div id="countInfo" class="soft" style="margin:0;color:var(--muted);">-</div>
+          <button id="btnExportPdf" class="btnIcon" onclick="exportPdf()" disabled title="Export PDF" aria-label="Export PDF">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3v10" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 11l4 4 4-4" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 21h14" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="tableWrap" style="margin-top:10px;">
+        <table>
+          <thead>
+            <tr>
+              <th data-key="tglCetak" onclick="sortBy('tglCetak')">Cetak Invoice <span id="s_tglCetak" class="sortArrow"></span></th>
+              <th data-key="periode" onclick="sortBy('periode')">Periode Pencairan <span id="s_periode" class="sortArrow"></span></th>
+              <th data-key="tglKerja" onclick="sortBy('tglKerja')">Penjadwalan Pertama <span id="s_tglKerja" class="sortArrow"></span></th>
+              <th data-key="spk" onclick="sortBy('spk')">No. SPK <span id="s_spk" class="sortArrow"></span></th>
+              <th data-key="koordinator" onclick="sortBy('koordinator')">Koordinator <span id="s_koordinator" class="sortArrow"></span></th>
+              <th data-key="posisi" onclick="sortBy('posisi')">Posisi <span id="s_posisi" class="sortArrow"></span></th>
+              <th data-key="pekerjaan" onclick="sortBy('pekerjaan')">Pekerjaan <span id="s_pekerjaan" class="sortArrow"></span></th>
+              <th data-key="unit" onclick="sortBy('unit')">Kode Unit <span id="s_unit" class="sortArrow"></span></th>
+              <th data-key="apartemen" onclick="sortBy('apartemen')">Nama Apartemen <span id="s_apartemen" class="sortArrow"></span></th>
+              <th data-key="biaya" onclick="sortBy('biaya')">Biaya Jasa <span id="s_biaya" class="sortArrow"></span></th>
+              <th data-key="persenPelaksana" onclick="sortBy('persenPelaksana')">% Komisi <span id="s_persenPelaksana" class="sortArrow"></span></th>
+              <th data-key="komisiPelaksana" onclick="sortBy('komisiPelaksana')">Komisi <span id="s_komisiPelaksana" class="sortArrow"></span></th>
+              <th data-key="statusPencairan" onclick="sortBy('statusPencairan')">Status <span id="s_statusPencairan" class="sortArrow"></span></th>
+              <th data-key="waktuPencairan" onclick="sortBy('waktuPencairan')">Waktu Cair <span id="s_waktuPencairan" class="sortArrow"></span></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="14">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+  </div>
+
+  <script>
+    const APP_URL = "<?= appUrl ?>";
+    const LOGO_URL = "<?= logoUrl ?>";
+    const PREFILL_EMAIL = "<?= prefillEmail ?>";
+
+    let EMAIL = "";
+    let ALL_ROWS = [];
+    let FILTERED_ROWS = [];
+    let QUICK_STATUS = "ALL";
+    let isLoadedOnce = false;
+
+    let SORT_KEY = "tglCetak";
+    let SORT_DIR = "desc";
+
+    const SORT_IDS = ["tglCetak","periode","tglKerja","spk","koordinator","posisi","pekerjaan","unit","apartemen","biaya","persenPelaksana","komisiPelaksana","statusPencairan","waktuPencairan"];
+
+    function goHome(){ window.top.location.href = APP_URL; }
+    function logout(){
+      // logout bersih (remember token dari beranda)
+      try{
+        sessionStorage.removeItem("mitraEmail");
+        localStorage.removeItem("rememberToken");
+      }catch(e){}
+      window.top.location.href = APP_URL;
+    }
+
+    function getEmail(){
+      const fromTpl = (PREFILL_EMAIL || "").trim().toLowerCase();
+      const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
+      return fromTpl || fromSession;
+    }
+
+    function safeParseJson(maybeJson) {
+      if (typeof maybeJson === "object" && maybeJson !== null) return maybeJson;
+      if (typeof maybeJson !== "string") return null;
+      try { return JSON.parse(maybeJson); } catch(e){ return null; }
+    }
+    function escapeHtml(str){
+      return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(n || 0); }
+    function formatDateLong(d){
+      if (!d) return "";
+      const dt = new Date(d);
+      if (isNaN(dt)) return "";
+      return dt.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+    }
+    function formatDateOnly(d){ return formatDateLong(d); }
+
+    function setMessage(text){ document.getElementById('msg').innerText = text || ""; }
+
+    function normStatus(s){ return String(s || "").toLowerCase().trim(); }
+    function isPaid(statusText){
+      const s = normStatus(statusText);
+      if (!s) return false;
+      if (s.includes("belum")) return false;
+      if (s.includes("sudah") && s.includes("cair")) return true;
+      if (s.includes("cair")) return true;
+      if (s.includes("paid")) return true;
+      return false;
+    }
+    function renderStatusBadge(statusText){
+      const paid = isPaid(statusText);
+      const label = (statusText && String(statusText).trim()) ? String(statusText).trim() : "Belum Cair";
+      return `<span class="badge ${paid ? 'paid' : 'unpaid'}">${escapeHtml(label)}</span>`;
+    }
+
+    function normalizePercent(val){
+      const s = String(val || "").trim();
+      if (!s) return "";
+      if (s.includes("%")) return s;
+      const n = Number(String(s).replace(",", "."));
+      if (isNaN(n)) return s;
+      // 0.6 => 60%, 60 => 60%
+      const pct = (n <= 1) ? (n * 100) : n;
+      const round = (Math.round(pct * 100) / 100);
+      return `${round}%`;
+    }
+
+    function renderCheckboxList(containerId, items, groupName){
+      const box = document.getElementById(containerId);
+      box.innerHTML = "";
+      (items || []).forEach((it, idx) => {
+        const id = `${groupName}_${idx}`;
+        const row = document.createElement("label");
+        row.className = "checkItem";
+        row.setAttribute("for", id);
+        row.innerHTML = `<input id="${id}" type="checkbox" value="${escapeHtml(it)}" /><span>${escapeHtml(it)}</span>`;
+        row.addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+        box.appendChild(row);
+      });
+    }
+    function getCheckedValues(containerId){
+      const box = document.getElementById(containerId);
+      const inputs = box.querySelectorAll("input[type='checkbox']");
+      return Array.from(inputs).filter(i => i.checked).map(i => i.value);
+    }
+    function clearChecked(containerId){
+      const box = document.getElementById(containerId);
+      const inputs = box.querySelectorAll("input[type='checkbox']");
+      inputs.forEach(i => i.checked = false);
+    }
+
+    function uniqueSpkCount(rows){
+      const set = new Set();
+      (rows || []).forEach(r => {
+        const v = String(r.spk || "").trim();
+        if (v) set.add(v);
+      });
+      return set.size;
+    }
+    function calcTotals(rows){
+      const out = { all:0, paid:0, unpaid:0, spkAll:0, spkPaid:0, spkUnpaid:0 };
+      const paidRows = [];
+      const unpaidRows = [];
+      (rows || []).forEach(r => {
+        const k = Number(r.komisiPelaksana) || 0;
+        out.all += k;
+        if (isPaid(r.statusPencairan)) { out.paid += k; paidRows.push(r); }
+        else { out.unpaid += k; unpaidRows.push(r); }
+      });
+      out.spkAll = uniqueSpkCount(rows);
+      out.spkPaid = uniqueSpkCount(paidRows);
+      out.spkUnpaid = uniqueSpkCount(unpaidRows);
+      return out;
+    }
+    function renderTotals(rows){
+      const t = calcTotals(rows);
+      document.getElementById('totalAll').innerText = "Rp " + formatNumber(t.all);
+      document.getElementById('totalPaid').innerText = "Rp " + formatNumber(t.paid);
+      document.getElementById('totalUnpaid').innerText = "Rp " + formatNumber(t.unpaid);
+      document.getElementById('spkAll').innerText = `${t.spkAll} SPK`;
+      document.getElementById('spkPaid').innerText = `${t.spkPaid} SPK`;
+      document.getElementById('spkUnpaid').innerText = `${t.spkUnpaid} SPK`;
+    }
+
+    function renderTable(rows){
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = "";
+
+      const exportBtn = document.getElementById("btnExportPdf");
+      exportBtn.disabled = !rows || rows.length === 0;
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14">Tidak ada data sesuai filter.</td></tr>`;
+        document.getElementById('countInfo').innerText = "0 Baris";
+        return;
+      }
+
+      for (const r of rows) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateLong(r.tglCetak)}</td>
+          <td>${escapeHtml(r.periode || "")}</td>
+          <td>${formatDateLong(r.tglKerja)}</td>
+          <td>${escapeHtml(r.spk || "")}</td>
+          <td>${escapeHtml(r.koordinator || "")}</td>
+          <td>${escapeHtml(r.posisi || "")}</td>
+          <td>${escapeHtml(r.pekerjaan || "")}</td>
+          <td>${escapeHtml(r.unit || "")}</td>
+          <td>${escapeHtml(r.apartemen || "")}</td>
+          <td>Rp ${formatNumber(r.biaya)}</td>
+          <td>${escapeHtml(normalizePercent(r.persenPelaksana || ""))}</td>
+          <td class="komisiCell">Rp ${formatNumber(r.komisiPelaksana)}</td>
+          <td>${renderStatusBadge(r.statusPencairan)}</td>
+          <td>${formatDateOnly(r.waktuPencairan)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('countInfo').innerText = `${rows.length} Baris`;
+    }
+
+    function setQuickStatus(mode){
+      QUICK_STATUS = mode;
+      const bAll = document.getElementById('btnAll');
+      const bPaid = document.getElementById('btnPaid');
+      const bUnpaid = document.getElementById('btnUnpaid');
+
+      bAll.className = "";
+      bPaid.className = "";
+      bUnpaid.className = "";
+
+      if (mode === "ALL") bAll.classList.add("active-all");
+      if (mode === "PAID") bPaid.classList.add("active-paid");
+      if (mode === "UNPAID") bUnpaid.classList.add("active-unpaid");
+
+      if (isLoadedOnce) applyFilters();
+    }
+
+    function clearSortIndicators(){
+      SORT_IDS.forEach(k => {
+        const el = document.getElementById("s_" + k);
+        if (el) el.innerHTML = "";
+      });
+      document.querySelectorAll("th").forEach(th => th.classList.remove("sortActive"));
+    }
+    function arrowSvg(dir){
+      const up = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 12.5 10 7.5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      const down = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 7.5 10 12.5l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      return dir === "asc" ? up : down;
+    }
+    function getSortValue(row, key){
+      if (key === "biaya" || key === "komisiPelaksana") return Number(row[key]) || 0;
+      if (key === "tglCetak" || key === "tglKerja" || key === "waktuPencairan") {
+        const d = new Date(row[key]);
+        return isNaN(d) ? 0 : d.getTime();
+      }
+      return String(row[key] || "").toLowerCase().trim();
+    }
+    function applySorting(){
+      const dirMul = (SORT_DIR === "asc") ? 1 : -1;
+      FILTERED_ROWS.sort((a,b) => {
+        const va = getSortValue(a, SORT_KEY);
+        const vb = getSortValue(b, SORT_KEY);
+        if (typeof va === "number" && typeof vb === "number") return (va - vb) * dirMul;
+        if (va < vb) return -1 * dirMul;
+        if (va > vb) return  1 * dirMul;
+        return 0;
+      });
+
+      clearSortIndicators();
+      const th = document.querySelector(`th[data-key="${SORT_KEY}"]`);
+      if (th) th.classList.add("sortActive");
+      const el = document.getElementById("s_" + SORT_KEY);
+      if (el) el.innerHTML = arrowSvg(SORT_DIR);
+    }
+    function sortBy(key){
+      if (!key) return;
+      if (SORT_KEY === key) SORT_DIR = (SORT_DIR === "asc") ? "desc" : "asc";
+      else { SORT_KEY = key; SORT_DIR = "asc"; }
+      applySorting();
+      renderTable(FILTERED_ROWS);
+    }
+
+    function applyFilters(){
+      if (!ALL_ROWS || ALL_ROWS.length === 0) {
+        renderTotals([]);
+        renderTable([]);
+        return;
+      }
+
+      const tglCetakFrom = document.getElementById('tglCetakFrom').value;
+      const tglCetakTo   = document.getElementById('tglCetakTo').value;
+      const tglKerjaFrom = document.getElementById('tglKerjaFrom').value;
+      const tglKerjaTo   = document.getElementById('tglKerjaTo').value;
+      const waktuCairFrom = document.getElementById('waktuCairFrom').value;
+      const waktuCairTo   = document.getElementById('waktuCairTo').value;
+
+      const periodePicked = getCheckedValues("periodeBox");
+      const pekerjaanPicked = getCheckedValues("pekerjaanBox");
+
+      const qUnit = (document.getElementById("qUnit").value || "").trim().toLowerCase();
+      const qSpk = (document.getElementById("qSpk").value || "").trim().toLowerCase();
+
+      const fromCetak = tglCetakFrom ? new Date(tglCetakFrom + "T00:00:00") : null;
+      const toCetak   = tglCetakTo   ? new Date(tglCetakTo + "T23:59:59") : null;
+      const fromKerja = tglKerjaFrom ? new Date(tglKerjaFrom + "T00:00:00") : null;
+      const toKerja   = tglKerjaTo   ? new Date(tglKerjaTo + "T23:59:59") : null;
+      const fromCair  = waktuCairFrom ? new Date(waktuCairFrom + "T00:00:00") : null;
+      const toCair    = waktuCairTo   ? new Date(waktuCairTo + "T23:59:59") : null;
+
+      FILTERED_ROWS = ALL_ROWS.filter(r => {
+        if (QUICK_STATUS === "PAID" && !isPaid(r.statusPencairan)) return false;
+        if (QUICK_STATUS === "UNPAID" && isPaid(r.statusPencairan)) return false;
+
+        if (fromCetak || toCetak) {
+          const d = new Date(r.tglCetak);
+          if (isNaN(d)) return false;
+          if (fromCetak && d < fromCetak) return false;
+          if (toCetak && d > toCetak) return false;
+        }
+        if (fromKerja || toKerja) {
+          const d = new Date(r.tglKerja);
+          if (isNaN(d)) return false;
+          if (fromKerja && d < fromKerja) return false;
+          if (toKerja && d > toKerja) return false;
+        }
+        if (fromCair || toCair) {
+          const d = new Date(r.waktuPencairan);
+          if (isNaN(d)) return false;
+          if (fromCair && d < fromCair) return false;
+          if (toCair && d > toCair) return false;
+        }
+
+        if (periodePicked.length > 0 && !periodePicked.includes(r.periode || "")) return false;
+        if (pekerjaanPicked.length > 0 && !pekerjaanPicked.includes(r.pekerjaan || "")) return false;
+
+        if (qUnit) { if (!String(r.unit || "").toLowerCase().includes(qUnit)) return false; }
+        if (qSpk) { if (!String(r.spk || "").toLowerCase().includes(qSpk)) return false; }
+
+        return true;
+      });
+
+      applySorting();
+      renderTotals(FILTERED_ROWS);
+      renderTable(FILTERED_ROWS);
+      setMessage("");
+    }
+
+    function clearFilters(){
+      document.getElementById('tglCetakFrom').value = "";
+      document.getElementById('tglCetakTo').value = "";
+      document.getElementById('tglKerjaFrom').value = "";
+      document.getElementById('tglKerjaTo').value = "";
+      document.getElementById('waktuCairFrom').value = "";
+      document.getElementById('waktuCairTo').value = "";
+      clearChecked("periodeBox");
+      clearChecked("pekerjaanBox");
+      document.getElementById('qUnit').value = "";
+      document.getElementById('qSpk').value = "";
+      setQuickStatus("ALL");
+      // langsung apply
+      applyFilters();
+    }
+
+    function bindAutoApply(){
+      ["tglCetakFrom","tglCetakTo","tglKerjaFrom","tglKerjaTo","waktuCairFrom","waktuCairTo"].forEach(id => {
+        document.getElementById(id).addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+      });
+      ["qUnit","qSpk"].forEach(id => {
+        document.getElementById(id).addEventListener("input", () => { if (isLoadedOnce) applyFilters(); });
+      });
+    }
+
+    function startLoad(email){
+      document.getElementById("gateCard").style.display = "none";
+      document.getElementById("mainCard").style.display = "";
+      document.getElementById("filterCard").style.display = "";
+      document.getElementById("tableCard").style.display = "";
+
+      document.getElementById("loginEmailPill").innerText = email || "-";
+      document.getElementById('tbody').innerHTML = `<tr><td colspan="14">Loading...</td></tr>`;
+
+      google.script.run
+        .withSuccessHandler((jsonString) => {
+          const res = safeParseJson(jsonString);
+          if (!res || !res.ok){
+            setMessage((res && res.message) ? res.message : "Gagal mengambil data.");
+            document.getElementById('tbody').innerHTML = `<tr><td colspan="14">${escapeHtml((res && res.message) ? res.message : "Gagal")}</td></tr>`;
+            return;
+          }
+
+          ALL_ROWS = res.rows || [];
+          FILTERED_ROWS = [...ALL_ROWS];
+
+          document.getElementById('namaMitra').innerText = res.namaMitra || "-";
+          sessionStorage.setItem("mitraEmail", res.email); // ✅ jaga-jaga
+
+          const fo = res.filterOptions || {};
+          renderCheckboxList("periodeBox", fo.periode || [], "periode");
+          renderCheckboxList("pekerjaanBox", fo.pekerjaan || [], "pekerjaan");
+
+          SORT_KEY = "tglCetak";
+          SORT_DIR = "desc";
+
+          // IMPORTANT: masuk halaman ini harus tampil semua data dulu (tidak ikut filter beranda)
+          isLoadedOnce = true;
+          setQuickStatus("ALL");
+          applyFilters();
+        })
+        .withFailureHandler((err) => {
+          const msg = "Error: " + (err && err.message ? err.message : err);
+          setMessage(msg);
+          document.getElementById('tbody').innerHTML = `<tr><td colspan="14">${escapeHtml(msg)}</td></tr>`;
+        })
+        .getKomisiDatasetByEmail(email);
+    }
+
+    function showGate(msg){
+      document.getElementById("gateCard").style.display = "";
+      document.getElementById("mainCard").style.display = "none";
+      document.getElementById("filterCard").style.display = "none";
+      document.getElementById("tableCard").style.display = "none";
+      document.getElementById("gateMsg").innerText = msg || "Silakan masuk lewat Beranda dulu.";
+    }
+
+    function loadImageToDataUrl(url){
+      return new Promise((resolve) => {
+        try{
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            try{
+              const canvas = document.createElement("canvas");
+              canvas.width = img.naturalWidth;
+              canvas.height = img.naturalHeight;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0);
+              resolve(canvas.toDataURL("image/png"));
+            } catch(e){ resolve(null); }
+          };
+          img.onerror = () => resolve(null);
+          img.src = url;
+        } catch(e){ resolve(null); }
+      });
+    }
+
+    function formatDownloadedAt(dt){
+      const d = dt.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+      const t = dt.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+      return `${d} pukul ${t}`;
+    }
+
+    function currentFilterSummary(){
+      const parts = [];
+
+      parts.push(`Status: ${QUICK_STATUS}`);
+
+      const tcf = document.getElementById('tglCetakFrom').value;
+      const tct = document.getElementById('tglCetakTo').value;
+      if (tcf || tct) parts.push(`Cetak Invoice: ${tcf || "-"} s/d ${tct || "-"}`);
+
+      const tkf = document.getElementById('tglKerjaFrom').value;
+      const tkt = document.getElementById('tglKerjaTo').value;
+      if (tkf || tkt) parts.push(`Penjadwalan: ${tkf || "-"} s/d ${tkt || "-"}`);
+
+      const wcf = document.getElementById('waktuCairFrom').value;
+      const wct = document.getElementById('waktuCairTo').value;
+      if (wcf || wct) parts.push(`Waktu Cair: ${wcf || "-"} s/d ${wct || "-"}`);
+
+      const per = getCheckedValues("periodeBox");
+      if (per.length) parts.push(`Periode: ${per.join(", ")}`);
+
+      const pek = getCheckedValues("pekerjaanBox");
+      if (pek.length) parts.push(`Pekerjaan: ${pek.join(", ")}`);
+
+      const qUnit = (document.getElementById("qUnit").value || "").trim();
+      if (qUnit) parts.push(`Unit: ${qUnit}`);
+
+      const qSpk = (document.getElementById("qSpk").value || "").trim();
+      if (qSpk) parts.push(`SPK: ${qSpk}`);
+
+      return parts.join(" • ");
+    }
+
+    async function exportPdf(){
+      if (!FILTERED_ROWS || FILTERED_ROWS.length === 0) return;
+
+      const exportBtn = document.getElementById("btnExportPdf");
+      exportBtn.disabled = true;
+
+      try{
+        const { jsPDF } = window.jspdf;
+        // landscape A4
+        const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+        const nama = document.getElementById("namaMitra").innerText || "-";
+        const email = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase() || "-";
+        const totals = calcTotals(FILTERED_ROWS);
+
+        const now = new Date();
+        const downloadedAt = formatDownloadedAt(now);
+
+        const logoData = await loadImageToDataUrl(LOGO_URL);
+
+        // Header mirip referensi: logo kiri, judul, subtitle, downloadedAt
+        let y = 44;
+        if (logoData){
+          doc.addImage(logoData, "PNG", 40, 26, 90, 26);
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(20);
+        doc.text("Laporan Komisi Divisi Maintenance", 140, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(80);
+        doc.text("Laporan komisi yang sudah cair atau belum cair berdasarkan invoice yang telah dicetak", 140, y + 18);
+        doc.text(`Diunduh pada: ${downloadedAt}`, 140, y + 38);
+
+        y = y + 72;
+
+        // Info block
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10.5);
+        doc.setTextColor(50);
+
+        const info =
+          "Total Komisi mencakup komisi yang sudah cair dan belum cair ke mitra. Jika sudah cair, artinya komisi sudah ditransfer ke mitra. " +
+          "Sedangkan jika belum cair artinya admin sudah membuat invoice namun komisi menunggu waktu pencairan mingguan. " +
+          "Komisi yang tercantum pada halaman ini adalah komisi kotor dan artinya komisi belum dikurangi pajak penghasilan bukan pegawai atau potongan lainnya.";
+        const infoLines = doc.splitTextToSize(info, 760);
+        doc.text(infoLines, 40, y);
+
+        y = y + (infoLines.length * 14) + 18;
+
+        // Summary rows: Nama, Email, Filter, Sort
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(20);
+
+        doc.text("Nama Mitra:", 40, y);
+        doc.setFont("helvetica","normal");
+        doc.text(String(nama), 140, y);
+
+        doc.setFont("helvetica","bold");
+        doc.text("Email:", 420, y);
+        doc.setFont("helvetica","normal");
+        doc.text(String(email), 480, y);
+
+        y += 18;
+
+        doc.setFont("helvetica","bold");
+        doc.text("Filter:", 40, y);
+        doc.setFont("helvetica","normal");
+        doc.text(currentFilterSummary(), 140, y);
+
+        doc.setFont("helvetica","bold");
+        doc.text("Sort:", 420, y);
+        doc.setFont("helvetica","normal");
+        doc.text(`${SORT_KEY} (${SORT_DIR})`, 480, y);
+
+        y += 20;
+
+        doc.setFont("helvetica","bold");
+        doc.text("Total:", 40, y);
+        doc.setFont("helvetica","normal");
+        doc.text(`Rp ${formatNumber(totals.all)} (${totals.spkAll} SPK)`, 140, y);
+
+        doc.setFont("helvetica","bold");
+        doc.text("Sudah Cair:", 420, y);
+        doc.setFont("helvetica","normal");
+        doc.text(`Rp ${formatNumber(totals.paid)} (${totals.spkPaid} SPK)`, 520, y);
+
+        y += 18;
+
+        doc.setFont("helvetica","bold");
+        doc.text("Belum Cair:", 40, y);
+        doc.setFont("helvetica","normal");
+        doc.text(`Rp ${formatNumber(totals.unpaid)} (${totals.spkUnpaid} SPK)`, 140, y);
+
+        y += 18;
+
+        const head = [[
+          "Cetak Invoice","Periode","Penjadwalan","No. SPK","Koordinator","Posisi","Pekerjaan",
+          "Kode Unit","Apartemen","Biaya Jasa","% Komisi","Komisi","Status","Waktu Cair"
+        ]];
+
+        const body = FILTERED_ROWS.map(r => ([
+          formatDateOnly(r.tglCetak),
+          r.periode || "",
+          formatDateOnly(r.tglKerja),
+          r.spk || "",
+          r.koordinator || "",
+          r.posisi || "",
+          r.pekerjaan || "",
+          r.unit || "",
+          r.apartemen || "",
+          `Rp ${formatNumber(r.biaya)}`,
+          normalizePercent(r.persenPelaksana || ""),
+          `Rp ${formatNumber(r.komisiPelaksana)}`,
+          (r.statusPencairan || "").trim() || "Belum Cair",
+          formatDateOnly(r.waktuPencairan)
+        ]));
+
+        doc.autoTable({
+          startY: y + 8,
+          head,
+          body,
+          styles: { fontSize: 9, cellPadding: 5 },
+          headStyles: { fillColor: [0, 160, 198], textColor: 255, fontStyle: "bold" },
+          alternateRowStyles: { fillColor: [245, 247, 250] },
+          margin: { left: 40, right: 40 }
+        });
+
+        const safeNama = String(nama || "mitra").replace(/[^\w\-]+/g, "_").slice(0,40);
+        doc.save(`Komisi_${safeNama}.pdf`);
+
+      } finally {
+        exportBtn.disabled = !(FILTERED_ROWS && FILTERED_ROWS.length > 0);
+      }
+    }
+
+    bindAutoApply();
+
+    // init
+    (function init(){
+      EMAIL = getEmail();
+      if (!EMAIL){
+        showGate("Kamu belum masuk di Beranda. Balik ke Beranda dulu ya.");
+        return;
+      }
+      startLoad(EMAIL);
+    })();
+  </script>
+</body>
+</html>
