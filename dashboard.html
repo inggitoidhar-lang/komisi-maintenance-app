@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --brand:#00a0c6;
+      --text:#0b1220;
+      --muted:#64748b;
+      --border:rgba(15, 23, 42, .10);
+      --radius: 18px;
+
+      --good:#0b8043;
+      --bad:#b00020;
+      --soft:#f7fafc;
+
+      --bg1:#0b2a57;
+      --bg2:#0b3b8a;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:#ffffff;
+      min-height: 100vh;
+    }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
+
+    .card{
+      background: #fff;
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px rgba(2, 6, 23, .08);
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .btn{
+      height:44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 14px;
+      font-family: inherit;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+      transition: transform .05s ease, box-shadow .15s ease, background .15s ease;
+      user-select:none;
+      gap:10px;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn.primary{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(11, 43, 87, .18);
+    }
+
+    .btn.ghost{
+      background:#fff;
+      border-color: rgba(15,23,42,.14);
+      color: var(--text);
+    }
+    .btn.ghost:hover{ background: var(--soft); }
+    .btn.block{ width:100%; }
+
+    .copyright{
+      text-align:center;
+      margin:16px 0;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(15,23,42,.55);
+      letter-spacing:.2px;
+    }
+
+    /* ===== Header ===== */
+    .top{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: 0 18px 50px rgba(2,6,23,.22);
+      width: 100%;
+    }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+
+    /* tambah spasi logo <-> teks */
+    .leftTop{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+
+    .logoApp{ height: 30px; width:auto; display:block; }
+    .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
+    .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; }
+
+    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .statusPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.75);
+      font-weight: 900; font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
+    .statusText .email{ color: #fff; font-weight: 900; }
+
+    .btnSmall{
+      height:44px; padding: 0 14px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      font-weight: 900; font-size: 14px;
+      color:#fff;
+      display:inline-flex; align-items:center; gap:10px;
+      backdrop-filter: blur(10px);
+    }
+    .btnSmall:hover{ background: rgba(255,255,255,.18); }
+
+    .btnIcon{
+      width: 42px;
+      padding: 0;
+      justify-content:center;
+    }
+    .icon{
+      width:18px;
+      height:18px;
+      display:inline-block;
+    }
+    .icon svg{ width:100%; height:100%; display:block; }
+
+    .sectionTitle{ font-weight: 900; font-size: 16px; margin-bottom: 6px; }
+    .sectionNote{ color: var(--muted); font-size: 12px; line-height:1.35; }
+
+    /* ===== Row atas: samakan tinggi kiri/kanan ===== */
+    .profileRow{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+      margin-top: 10px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){ .profileRow{ grid-template-columns: 1fr; } }
+
+    .hello{ font-size: 14px; font-weight: 900; color:#0b1220; }
+    .helloName{
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 3px;
+      color: rgba(0,160,198,1); /* biru muda */
+    }
+
+    /* ===== Target: dibuat ikut tinggi kiri agar sejajar dengan filter ===== */
+    .leftCol{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+
+    .progressWrap{
+      margin-top: 12px;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      padding: 12px;
+      background: #fff;
+
+      /* kunci agar tinggi sejajar dengan filter */
+      flex: 1;
+      display:flex;
+      flex-direction:column;
+      justify-content:center; /* biar konten di tengah */
+      min-height: 184px;
+    }
+
+    .progressTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .progressTitle{ font-weight: 900; }
+    .progressSub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top:4px; line-height:1.25; }
+
+    /* teks meta dipindah ke atas bar */
+    .barTextTop{
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(15,23,42,.60);
+      margin: 6px 0 10px 0;
+      letter-spacing: .2px;
+    }
+
+    .barOuter{
+      width:100%;
+      height: 18px; /* lebih tebel */
+      border-radius: 999px;
+      background: rgba(15,23,42,.08);
+      overflow:hidden;
+      border: 1px solid rgba(15,23,42,.08);
+    }
+    .barInner{
+      height:100%;
+      width:0%;
+      background: linear-gradient(135deg, rgba(0,160,198,1), rgba(0,160,198,.88));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    /* ===== Filter ===== */
+    .filterBox{
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      padding: 12px;
+      background: #fff;
+      min-height: 184px;
+      display:flex;
+      flex-direction:column;
+    }
+    .labelSmall{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .dateInput{
+      width:100%;
+      height:48px;
+      padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      font-size: 14px;
+      outline:none;
+      background:#fff;
+      font-family: inherit;
+      font-weight: 800;
+    }
+
+    .filterGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items:end;
+      margin-top:10px;
+    }
+    .filterActions{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+    .filterActions .btn{ flex:1; }
+
+    .rankTopRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .rankTitleInline{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .rankGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      align-items:start;
+    }
+    @media (max-width: 900px){ .rankGrid{ grid-template-columns: 1fr; } }
+
+    .rankCard{
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .rankCardHeader{
+      padding: 12px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .rankCardTitle{ font-weight: 900; font-size: 13px; }
+
+    .rankTableWrap{
+      max-height: 152px; /* 3 row visible */
+      overflow:auto;
+    }
+    .rankTableWrap::-webkit-scrollbar{ width:10px; height:10px; }
+    .rankTableWrap::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
+    .rankTableWrap::-webkit-scrollbar-thumb{
+      background: rgba(0,160,198,.60);
+      border-radius: 999px;
+      border: 2px solid rgba(0,160,198,.10);
+    }
+    .rankTableWrap::-webkit-scrollbar-thumb:hover{ background: rgba(0,160,198,.75); }
+
+    table{ width:100%; border-collapse: collapse; font-size: 12px; }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      text-align:left;
+      white-space:nowrap;
+    }
+    th{
+      position: sticky;
+      top: 0;
+      background:#fff;
+      z-index: 2;
+      font-weight: 900;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+    }
+    tr.meRow td{
+      background: rgba(0,160,198,.10);
+      font-weight: 900;
+    }
+
+    .metricGrid{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 1100px){ .metricGrid{ grid-template-columns: repeat(3, minmax(170px, 1fr)); } }
+    @media (max-width: 700px){ .metricGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); } }
+    @media (max-width: 420px){ .metricGrid{ grid-template-columns: 1fr; } }
+
+    .metric{
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      padding: 14px;
+      background:#fff;
+    }
+    .metricTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
+    .metricLabel{ font-size:12px; color: var(--muted); font-weight: 900; }
+    .pill{
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background:#f8fafc;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .metricVal{ font-size: 22px; font-weight: 900; letter-spacing: .2px; }
+    .metric.brand{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.06); }
+    .metric.brand .metricVal{ color: var(--brand); }
+    .metric.good{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.05); }
+    .metric.good .metricVal{ color: #0b8043; }
+    .metric.bad{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.05); }
+    .metric.bad .metricVal{ color: #b00020; }
+
+    .msg{
+      margin-top:10px;
+      color:#b00020;
+      font-size: 13px;
+      font-weight: 900;
+      min-height: 18px;
+    }
+
+    .hideNote{ display:none !important; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="topRow">
+        <div class="leftTop">
+          <img class="logoApp" src="<?= logoWhiteUrl ?>" alt="Jendela360" />
+          <div>
+            <div class="title">Beranda</div>
+            <div class="subtitle">Halaman ringkasan dan akses fitur</div>
+          </div>
+        </div>
+
+        <div class="topActions">
+          <div class="statusPill">
+            <span class="dot"></span>
+            <span class="statusText">
+              <span class="label">Sedang Masuk</span>
+              <span class="email" id="loginEmailPill">-</span>
+            </span>
+          </div>
+
+          <button class="btnSmall" onclick="logout()" title="Keluar">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M14 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="profileRow">
+        <div class="leftCol">
+          <div class="hello">Halo,</div>
+          <div class="helloName" id="namaMitra">-</div>
+
+          <div class="progressWrap">
+            <div class="progressTop">
+              <div>
+                <div class="progressTitle">Pencapaian Target</div>
+                <div class="progressSub">Berdasarkan jumlah SPK yang sudah jadi invoice pada periode filter</div>
+              </div>
+            </div>
+
+            <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
+
+            <div class="barOuter">
+              <div class="barInner" id="barInner"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filterBox">
+          <div class="sectionTitle" style="margin:0;">Filter</div>
+
+          <div class="filterGrid">
+            <div>
+              <div class="labelSmall">Tanggal Awal</div>
+              <input class="dateInput" type="date" id="dateFrom" />
+            </div>
+            <div>
+              <div class="labelSmall">Tanggal Akhir</div>
+              <input class="dateInput" type="date" id="dateTo" />
+            </div>
+          </div>
+
+          <div class="filterActions">
+            <button class="btn ghost" onclick="resetHomeFilter()">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M20 4v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              Reset
+            </button>
+            <button class="btn primary" onclick="applyHomeFilter()">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              Terapkan
+            </button>
+          </div>
+
+          <div class="sectionNote" style="margin-top:8px;">
+            Filter memengaruhi seluruh data di beranda ini (target, peringkat, dan semua ringkasan).
+          </div>
+
+          <div id="msg" class="msg"></div>
+        </div>
+      </div>
+
+      <div class="rankTopRow">
+        <div>
+          <div class="rankTitleInline">
+            <div class="sectionTitle" style="margin:0;">Peringkat</div>
+
+            <button class="btn ghost btnIcon" onclick="goPage('ranking')" title="Buka Ranking (Fullscreen)" aria-label="Buka Ranking (Fullscreen)">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M9 3H5a2 2 0 0 0-2 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M15 3h4a2 2 0 0 1 2 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M9 21H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M15 21h4a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+          <div class="sectionNote">
+            Peringkat berdasarkan pengerjaan yang sudah menjadi invoice pada periode filter.
+          </div>
+        </div>
+      </div>
+
+      <div class="rankGrid">
+        <div class="rankCard">
+          <div class="rankCardHeader">
+            <div class="rankCardTitle">Peringkat Antar Divisi (Top 10)</div>
+          </div>
+          <div class="rankTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th><th>Nama</th><th>Posisi</th><th>Total Komisi</th><th>Jumlah SPK</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyAcross">
+                <tr><td colspan="5">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="rankCard">
+          <div class="rankCardHeader">
+            <div class="rankCardTitle">Peringkat Dalam Divisi (Top 3)</div>
+          </div>
+          <div class="rankTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th><th>Nama</th><th>Posisi</th><th>Total Komisi</th><th>Jumlah SPK</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyWithin">
+                <tr><td colspan="5">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Ringkasan Pengerjaan</div>
+      <div class="sectionNote hideNote">Aktif otomatis kalau kolom “Status Pengerjaan” & “Status Invoice” tersedia.</div>
+
+      <div class="metricGrid">
+        <div class="metric brand">
+          <div class="metricTop"><div class="metricLabel">Total Pengerjaan</div></div>
+          <div class="metricVal" id="workAll">0</div>
+        </div>
+        <div class="metric good">
+          <div class="metricTop"><div class="metricLabel">Pengerjaan Sudah Selesai</div></div>
+          <div class="metricVal" id="workDone">0</div>
+        </div>
+        <div class="metric bad">
+          <div class="metricTop"><div class="metricLabel">Pengerjaan Belum Selesai</div></div>
+          <div class="metricVal" id="workNotDone">0</div>
+        </div>
+        <div class="metric good">
+          <div class="metricTop"><div class="metricLabel">Selesai → Sudah Jadi Invoice</div></div>
+          <div class="metricVal" id="workDoneInvoiced">0</div>
+        </div>
+        <div class="metric bad">
+          <div class="metricTop"><div class="metricLabel">Selesai → Belum Jadi Invoice</div></div>
+          <div class="metricVal" id="workDoneNotInvoiced">0</div>
+        </div>
+      </div>
+
+      <div class="sectionNote hideNote" id="workMeta" style="margin-top:10px;"></div>
+
+      <div style="margin-top:14px;">
+        <button class="btn primary block" onclick="goPage('histori')">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 12h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 6h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 12h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Cek Histori Pengerjaan
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Ringkasan Pencairan Komisi</div>
+      <div class="sectionNote hideNote">Total komisi, sudah cair, dan belum cair.</div>
+
+      <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
+        <div class="metric brand">
+          <div class="metricTop"><div class="metricLabel">Total Komisi</div><div class="pill" id="spkAll">0 SPK</div></div>
+          <div class="metricVal" id="totalAll">Rp 0</div>
+        </div>
+        <div class="metric good">
+          <div class="metricTop"><div class="metricLabel">Sudah Cair</div><div class="pill" id="spkPaid">0 SPK</div></div>
+          <div class="metricVal" id="totalPaid">Rp 0</div>
+        </div>
+        <div class="metric bad">
+          <div class="metricTop"><div class="metricLabel">Belum Cair</div><div class="pill" id="spkUnpaid">0 SPK</div></div>
+          <div class="metricVal" id="totalUnpaid">Rp 0</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btn primary block" onclick="goPage('komisi')">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 12h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 6h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 12h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Cek Rincian Pencairan Komisi
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle">Ringkasan Pendapatan Bersih</div>
+      <div class="sectionNote hideNote">Aktif otomatis kalau kolom pemasukan/potongan tersedia.</div>
+
+      <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
+        <div class="metric brand">
+          <div class="metricTop"><div class="metricLabel">Total Pendapatan Bersih</div></div>
+          <div class="metricVal" id="netTotal">Rp 0</div>
+        </div>
+        <div class="metric good">
+          <div class="metricTop"><div class="metricLabel">Total Pemasukan Bersih</div></div>
+          <div class="metricVal" id="netIncome">Rp 0</div>
+        </div>
+        <div class="metric bad">
+          <div class="metricTop"><div class="metricLabel">Total Potongan</div></div>
+          <div class="metricVal" id="netDeduction">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="sectionNote hideNote" id="netMeta" style="margin-top:10px;"></div>
+
+      <div style="margin-top:14px;">
+        <button class="btn primary block" onclick="goPage('bersih')">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 12h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 6h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 12h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Cek Ringkasan Pendapatan Bersih
+        </button>
+      </div>
+    </div>
+
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+  </div>
+
+  <script>
+    const APP_URL = "<?= appUrl ?>";
+    const PREFILL_EMAIL = "<?= prefillEmail ?>";
+
+    const KEY_EMAIL = "mitraEmail";
+    const KEY_REMEMBER_TOKEN = "rememberToken";
+
+    function safeParse(m){
+      if (typeof m === "object" && m) return m;
+      try { return JSON.parse(m); } catch(e){ return null; }
+    }
+    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(n || 0); }
+    function formatMoney(n){ return "Rp " + formatNumber(n || 0); }
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+
+    function setMessage(t){ document.getElementById("msg").innerText = t || ""; }
+
+    function goLogin(){
+      window.top.location.href = APP_URL + "?page=login";
+    }
+
+    function requireLoginOrRedirect(){
+      const url = new URL(window.location.href);
+      const qEmail = (url.searchParams.get("email") || "").trim().toLowerCase();
+      if (qEmail){
+        sessionStorage.setItem(KEY_EMAIL, qEmail);
+        return Promise.resolve(qEmail);
+      }
+
+      const sEmail = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
+      if (sEmail) return Promise.resolve(sEmail);
+
+      const token = (localStorage.getItem(KEY_REMEMBER_TOKEN) || "").trim();
+      if (!token) return Promise.reject("no_token");
+
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler((json) => {
+            const res = safeParse(json);
+            if (!res || !res.ok || !res.email){
+              localStorage.removeItem(KEY_REMEMBER_TOKEN);
+              reject("invalid_token");
+              return;
+            }
+            sessionStorage.setItem(KEY_EMAIL, res.email);
+            resolve(res.email);
+          })
+          .withFailureHandler(() => reject("fail"))
+          .validateRememberToken(token);
+      });
+    }
+
+    function logout(){
+      sessionStorage.removeItem(KEY_EMAIL);
+      localStorage.removeItem(KEY_REMEMBER_TOKEN);
+      goLogin();
+    }
+
+    function goPage(page){
+      const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
+      if (!email){ setMessage("Kamu belum login."); goLogin(); return; }
+      window.top.location.href = APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
+    }
+
+    function setProfile(nama){
+      document.getElementById("namaMitra").innerText = nama || "-";
+    }
+    function setWork(res){
+      document.getElementById("workAll").innerText = formatNumber(res.workAll || 0);
+      document.getElementById("workDone").innerText = formatNumber(res.workDone || 0);
+      document.getElementById("workNotDone").innerText = formatNumber(res.workNotDone || 0);
+      document.getElementById("workDoneInvoiced").innerText = formatNumber(res.workDoneInvoiced || 0);
+      document.getElementById("workDoneNotInvoiced").innerText = formatNumber(res.workDoneNotInvoiced || 0);
+      const wm = document.getElementById("workMeta");
+      if (wm) wm.innerText = "";
+    }
+
+    function setKomisi(res){
+      document.getElementById("totalAll").innerText = formatMoney(res.totalAll || 0);
+      document.getElementById("totalPaid").innerText = formatMoney(res.totalPaid || 0);
+      document.getElementById("totalUnpaid").innerText = formatMoney(res.totalUnpaid || 0);
+      document.getElementById("spkAll").innerText = `${res.spkAll || 0} SPK`;
+      document.getElementById("spkPaid").innerText = `${res.spkPaid || 0} SPK`;
+      document.getElementById("spkUnpaid").innerText = `${res.spkUnpaid || 0} SPK`;
+    }
+
+    function setNet(res){
+      document.getElementById("netTotal").innerText = formatMoney(res.netTotal || 0);
+      document.getElementById("netIncome").innerText = formatMoney(res.netIncome || 0);
+      document.getElementById("netDeduction").innerText = formatMoney(res.netDeduction || 0);
+      const nm = document.getElementById("netMeta");
+      if (nm) nm.innerText = "";
+    }
+
+    function parseIsoDate(iso){
+      if (!iso) return null;
+      const d = new Date(iso + "T00:00:00");
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function monthsInclusive(fromIso, toIso){
+      const fromD = parseIsoDate(fromIso);
+      const toD = parseIsoDate(toIso);
+
+      if (!fromD && !toD) return null;
+      if (fromD && !toD) return 1;
+      if (!fromD && toD) return 1;
+
+      let a = fromD, b = toD;
+      if (a > b){ const tmp = a; a = b; b = tmp; }
+
+      const months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth()) + 1;
+      return Math.max(1, months);
+    }
+
+    function setTarget(res, fromIso, toIso){
+      const t = (res && res.target) ? res.target : { achieved:0, target:0, percent:0 };
+
+      const m = monthsInclusive(fromIso, toIso);
+      const computedTarget = (m === null) ? Number(t.target || 0) : (Number(m) * 100);
+
+      const backendAch = Number(t.achieved || 0);
+      const fallbackAch = Number(res.workAll || 0);
+      const achieved = backendAch > 0 ? backendAch : fallbackAch;
+
+      const target = Number(computedTarget || 0);
+      const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
+
+      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} • ${formatNumber(percent)}%`;
+
+      const bar = document.getElementById("barInner");
+      const barTextTop = document.getElementById("barTextTop");
+
+      const w = Math.max(0, Math.min(100, Number(percent||0)));
+      bar.style.width = `${w}%`;
+
+      barTextTop.innerText = metaText;
+    }
+
+    function renderRankingTable(tbodyId, items){
+      const tb = document.getElementById(tbodyId);
+      tb.innerHTML = "";
+
+      if (!items || !items.length){
+        tb.innerHTML = `<tr><td colspan="5">Belum ada data</td></tr>`;
+        return;
+      }
+
+      items.forEach((it, idx) => {
+        const tr = document.createElement("tr");
+        if (it.isMe) tr.classList.add("meRow");
+        tr.innerHTML = `
+          <td>${idx+1}</td>
+          <td>${escapeHtml(it.name)}</td>
+          <td>${escapeHtml(it.posisi || "-")}</td>
+          <td>${formatMoney(it.total || 0)}</td>
+          <td>${formatNumber(it.spkCount || 0)}</td>
+        `;
+        tb.appendChild(tr);
+      });
+    }
+
+    function getDummyAcrossTop10(){
+      return [
+        { name:"Aldo Pratama", posisi:"Maintenance", total: 9816250, spkCount: 84 },
+        { name:"Rizky Mahendra", posisi:"Maintenance", total: 9055000, spkCount: 79 },
+        { name:"Nanda Putri", posisi:"Sales Ops", total: 8860000, spkCount: 74 },
+        { name:"Fajar Nugroho", posisi:"Project", total: 8525000, spkCount: 70 },
+        { name:"Dewi Lestari", posisi:"Maintenance", total: 8210000, spkCount: 68 },
+        { name:"Hendra Saputra", posisi:"Technician", total: 7980000, spkCount: 65 },
+        { name:"Sinta Maharani", posisi:"Technician", total: 7725000, spkCount: 62 },
+        { name:"Bayu Ramadhan", posisi:"Project", total: 7540000, spkCount: 60 },
+        { name:"Kevin Wijaya", posisi:"Maintenance", total: 7350000, spkCount: 58 },
+        { name:"Tari Ananda", posisi:"Technician", total: 7025000, spkCount: 55 },
+      ];
+    }
+    function getDummyWithinTop3(){
+      return [
+        { name:"Safi’i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
+        { name:"Bima Prakoso", posisi:"Maintenance", total: 6946250, spkCount: 49 },
+        { name:"Raka Firmansyah", posisi:"Maintenance", total: 5170000, spkCount: 37 },
+      ];
+    }
+
+    function loadSummary(fromIso, toIso){
+      setMessage("");
+      const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
+      if (!email){ goLogin(); return; }
+
+      google.script.run
+        .withSuccessHandler((json) => {
+          const res = safeParse(json);
+          if (!res){ setMessage("Response tidak valid."); return; }
+          if (!res.ok){ setMessage(res.message || "Gagal ambil ringkasan."); return; }
+
+          setProfile(res.namaMitra);
+          setWork(res);
+          setKomisi(res);
+          setNet(res);
+          setTarget(res, fromIso || "", toIso || "");
+
+          const r = res.rankings || {};
+          const across = (r.acrossDivisions || []);
+          const within = (r.withinDivision || []);
+
+          renderRankingTable("tbodyAcross", (across && across.length) ? across : getDummyAcrossTop10());
+          renderRankingTable("tbodyWithin", (within && within.length) ? within : getDummyWithinTop3());
+        })
+        .withFailureHandler((err) => {
+          setMessage("Error: " + (err && err.message ? err.message : err));
+        })
+        .getHomepageSummaryByEmailWithFilter(email, fromIso || "", toIso || "");
+    }
+
+    function applyHomeFilter(){
+      const from = document.getElementById("dateFrom").value || "";
+      const to = document.getElementById("dateTo").value || "";
+      loadSummary(from, to);
+    }
+
+    function resetHomeFilter(){
+      document.getElementById("dateFrom").value = "";
+      document.getElementById("dateTo").value = "";
+      loadSummary("", "");
+    }
+
+    (function init(){
+      requireLoginOrRedirect()
+        .then((email) => {
+          document.getElementById("loginEmailPill").innerText = email || "-";
+          document.getElementById("dateFrom").value = "";
+          document.getElementById("dateTo").value = "";
+          loadSummary("", "");
+        })
+        .catch(() => goLogin());
+    })();
+  </script>
+</body>
+</html>
