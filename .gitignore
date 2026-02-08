@@ -1,0 +1,4 @@
+.clasp.json
+.clasp.*
+node_modules/
+.DS_Store
