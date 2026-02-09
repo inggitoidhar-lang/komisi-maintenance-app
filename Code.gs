@@ -224,13 +224,55 @@ function requestOtp(emailInput){
   cache.put(cooldownKey, String(OTP_COOLDOWN_SEC), OTP_COOLDOWN_SEC);
 
   try{
-    const subject = "Kode OTP Pemeriksa Komisi";
+    // SUBJECT sesuai instruksi kamu
+    const subject = 'Kode OTP Masuk Laman "Cek Komisi Divisi Maintenance Jendela360"';
+
+    // Plain text fallback
     const body =
-      "Halo,\n\n" +
-      "Kode OTP kamu: " + otp + "\n\n" +
-      "Berlaku selama 5 menit. Jangan bagikan kode ini ke siapa pun.\n\n" +
-      "? Internal Tools by HCGA Jendela360 (IIA)";
-    MailApp.sendEmail(email, subject, body);
+      'Halo,\n\n' +
+      'Kamu mengakses laman masuk "Cek Komisi Divisi Maintenance Jendela360".\n\n' +
+      'Silahkan masuk menggunakan Kode OTP kamu: ' + otp + '\n\n' +
+      'Berlaku selama 5 menit.\n\n' +
+      'Jangan bagikan kode ini ke siapa pun.\n\n' +
+      'Terima Kasih - Admin Cek Komisi Divisi Maintenance Jendela360\n\n' +
+      '? Internal Tools by HCGA Jendela360 (IIA)';
+
+    // HTML body: OTP bold & besar + logo persis di bawah copyright
+    const logoBottom = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658191/5_totgo8.png";
+
+    const htmlBody = `
+      <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#0b1220; line-height:1.6;">
+        <div>Halo,</div>
+        <br/>
+        <div>Kamu mengakses laman masuk <b>"Cek Komisi Divisi Maintenance Jendela360"</b>.</div>
+        <br/>
+        <div>Silahkan masuk menggunakan Kode OTP kamu:</div>
+        <div style="margin:10px 0 14px 0;">
+          <span style="display:inline-block; font-weight:900; font-size:22px; letter-spacing:2px;">
+            ${otp}
+          </span>
+        </div>
+        <div>Berlaku selama 5 menit.</div>
+        <br/>
+        <div><b>Jangan bagikan kode ini ke siapa pun.</b></div>
+        <br/>
+        <div>Terima Kasih - Admin Cek Komisi Divisi Maintenance Jendela360</div>
+        <div style="margin-top:10px; font-size:12px; color:#64748b;">
+          ? Internal Tools by HCGA Jendela360 (IIA)
+        </div>
+        <div style="margin-top:10px; text-align:center;">
+          <img src="${logoBottom}" alt="Jendela360" style="height:64px; width:auto; display:inline-block;" />
+        </div>
+      </div>
+    `;
+
+    MailApp.sendEmail({
+      to: email,
+      subject: subject,
+      body: body,
+      htmlBody: htmlBody
+    });
+
   }catch(e){
     out.message = "Gagal mengirim OTP. Pastikan email bisa menerima pesan.";
     return JSON.stringify(out);
@@ -721,10 +763,4 @@ function getRankingPageDataByEmailWithFilter(emailInput, dateFromIso, dateToIso)
 function TEST_openSheet(){
   const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
   SpreadsheetApp.openById(id).getSheets()[0].getName();
-}
-
-function TEST_sendEmail(){
-  // ganti ke email kamu biar pasti masuk
-  const to = "inggitoidhar@gmail.com";
-  MailApp.sendEmail(to, "TEST OTP - App Cek Komisi", "Kalau email ini masuk, berarti izin kirim email sudah OK.");
 }
