@@ -135,7 +135,7 @@
       <div class="note" style="margin-top:12px;" id="metaNote"></div>
     </div>
 
-    <div class="note" style="text-align:center; margin:16px 0;">© Internal Tools by HCGA Jendela360 (IIA)</div>
+    <div class="note" style="text-align:center; margin:16px 0;">? Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
@@ -200,7 +200,7 @@
           if (!res.ok){ setMsg(res.message || "Gagal ambil ranking."); return; }
 
           document.getElementById("namaMitra").innerText = res.namaMitra || "-";
-          document.getElementById("divisiText").innerText = res.userDivision ? ("• Divisi: " + res.userDivision) : "";
+          document.getElementById("divisiText").innerText = res.userDivision ? ("? Divisi: " + res.userDivision) : "";
 
           renderTable("tbAcross", res.across || []);
           renderTable("tbWithin", res.within || []);
