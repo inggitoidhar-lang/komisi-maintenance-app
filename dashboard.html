@@ -100,7 +100,9 @@
     /* ✅ jarak logo <-> teks dibesarin */
     .leftTop{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
 
-    .logoApp{ height: 30px; width:auto; display:block; }
+    /* ✅ LOGO DIBESARIN */
+    .logoApp{ height: 44px; width:auto; display:block; } /* sebelumnya 30px */
+
     .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
     .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; }
 
@@ -171,25 +173,29 @@
       flex-wrap:wrap;
     }
 
-    /* ✅ pill posisi + masa kerja */
-    .pillMini{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      height: 30px;
-      padding: 0 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(15,23,42,.12);
-      background:#fff;
-      box-shadow: 0 8px 16px rgba(2, 6, 23, .06);
-      font-weight: 900;
-      font-size: 12px;
-      white-space:nowrap;
-      color: rgba(11,18,32,.78);
-    }
-    .pillMini .mutedLabel{ color: rgba(11,18,32,.55); font-weight: 900; }
-    .pillMini .valBrand{ color: rgba(0,160,198,1); font-weight: 900; }
+    /* ✅ pill posisi + masa kerja (STYLE: kayak pill di header/rincian) */
+    .miniPillHeaderStyle{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
 
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(15,23,42,.06);
+  color: rgba(11,18,32,.78);
+
+  font-weight: 900;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+}
+
+.miniPillHeaderStyle .mutedLabel{ display:none; } /* biar kalau kepake gak muncul */
+.miniPillHeaderStyle .valWhite{ color: rgba(11,18,32,.78); font-weight: 900; }
+
+    }
     .pillHide{ display:none !important; }
 
     /* ===== Target align ===== */
@@ -224,13 +230,30 @@
     .progressTitle{ font-weight: 900; }
     .progressSub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top:4px; line-height:1.25; }
 
-    .barTextTop{
-      font-size: 12px;
-      font-weight: 900;
-      color: rgba(15,23,42,.60);
-      margin: 6px 0 10px 0;
-      letter-spacing: .2px;
-    }
+.barRowTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin: 6px 0 10px 0;
+}
+
+.barHint{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(15,23,42,.45);
+  letter-spacing: .2px;
+}
+
+.barTextTop{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(0,160,198,1); /* biru muda */
+  letter-spacing: .2px;
+  text-align:right;
+  margin: 0; /* supaya gak ngedorong layout */
+}
+
 
     .barOuter{
       width:100%;
@@ -323,28 +346,44 @@
       background:#fff;
       overflow:hidden;
     }
+
+    /* ✅ header ranking card jadi gradient + text putih */
     .rankCardHeader{
       padding: 12px;
-      border-bottom: 1px solid rgba(15,23,42,.08);
+      border-bottom: 1px solid rgba(255,255,255,.18);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
     }
-    .rankCardTitle{ font-weight: 900; font-size: 13px; }
+    .rankCardTitle{ font-weight: 900; font-size: 13px; color:#fff; }
 
     .rankTableWrap{
       max-height: 152px;
       overflow:auto;
     }
-    .rankTableWrap::-webkit-scrollbar{ width:10px; height:10px; }
-    .rankTableWrap::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
-    .rankTableWrap::-webkit-scrollbar-thumb{
-      background: rgba(0,160,198,.60);
-      border-radius: 999px;
-      border: 2px solid rgba(0,160,198,.10);
-    }
-    .rankTableWrap::-webkit-scrollbar-thumb:hover{ background: rgba(0,160,198,.75); }
+.rankTableWrap::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+.rankTableWrap::-webkit-scrollbar-track{
+  background: rgba(11,42,87,.18); /* biru tua soft */
+  border-radius: 999px;
+}
+
+.rankTableWrap::-webkit-scrollbar-thumb{
+  background: linear-gradient(135deg, var(--bg1), var(--bg2)); /* sama kayak header */
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.15);
+}
+
+.rankTableWrap::-webkit-scrollbar-thumb:hover{
+  background: linear-gradient(135deg, #0b3b8a, #0b2a57);
+}
 
     table{ width:100%; border-collapse: collapse; font-size: 12px; }
     th, td{
@@ -409,7 +448,7 @@
       border-bottom-left-radius: 18px;
       border-bottom-right-radius: 18px;
       background: rgba(15,23,42,.35);
-      opacity: .0; /* default hidden; variants will set */
+      opacity: .0;
     }
     .metric.brand::after{ background: rgba(0,160,198,.85); opacity:1; }
     .metric.good::after{ background: rgba(11,128,67,.85); opacity:1; }
@@ -529,18 +568,18 @@
         <div class="leftCol">
           <div class="hello">Halo,</div>
 
-          <!-- ✅ Nama + pill posisi + pill masa kerja -->
+          <!-- ✅ Nama + pill posisi + pill masa kerja (style header) -->
           <div class="helloName">
             <span id="namaMitra">-</span>
 
-            <!-- posisi -->
-            <span id="posisiPill" class="pillMini pillHide">Posisi</span>
+            <!-- posisi (dummy dulu) -->
+            <span id="posisiPill" class="miniPillHeaderStyle">Maintenance</span>
 
-            <!-- masa kerja -->
-            <span id="masaKerjaPill" class="pillMini pillHide">
-              <span class="mutedLabel">Masa Kerja</span>
-              <span class="valBrand" id="masaKerjaVal">-</span>
-            </span>
+            <!-- masa kerja (dummy dulu) -->
+            <span id="masaKerjaPill" class="miniPillHeaderStyle">
+  <span class="valWhite" id="masaKerjaVal">1 Tahun 3 Bulan 25 Hari</span>
+</span>
+
           </div>
 
           <div class="progressWrap">
@@ -551,11 +590,14 @@
               </div>
             </div>
 
-            <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
+           <div class="barRowTop">
+  <div class="barHint">Progress</div>
+  <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
+</div>
 
-            <div class="barOuter">
-              <div class="barInner" id="barInner"></div>
-            </div>
+<div class="barOuter">
+  <div class="barInner" id="barInner"></div>
+</div>
           </div>
         </div>
 
@@ -673,7 +715,6 @@
           <div class="metricTop">
             <div class="metricLabel">Total Pengerjaan</div>
             <div class="metricIcon" aria-hidden="true">
-              <!-- grid icon -->
               <svg viewBox="0 0 24 24" fill="none">
                 <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
               </svg>
@@ -686,7 +727,6 @@
           <div class="metricTop">
             <div class="metricLabel">Pengerjaan Sudah Selesai</div>
             <div class="metricIcon" aria-hidden="true">
-              <!-- check circle -->
               <svg viewBox="0 0 24 24" fill="none">
                 <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -699,7 +739,6 @@
           <div class="metricTop">
             <div class="metricLabel">Pengerjaan Belum Selesai</div>
             <div class="metricIcon" aria-hidden="true">
-              <!-- warning -->
               <svg viewBox="0 0 24 24" fill="none">
                 <path d="M12 9v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                 <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
@@ -962,7 +1001,7 @@
     }
 
     /* ✅ Nama + optional Posisi + optional Masa Kerja
-       - Tidak mengubah fungsi backend; cuma render jika field tersedia
+       - sekarang default dummy tampil, tapi kalau backend ngirim data nanti otomatis override
     */
     function setProfile(res){
       const nama = (res && res.namaMitra) ? res.namaMitra : "-";
@@ -972,24 +1011,17 @@
       const masaPill = document.getElementById("masaKerjaPill");
       const masaVal = document.getElementById("masaKerjaVal");
 
-      // support beberapa kemungkinan field (kalau nanti backend nambah)
       const posisi = (res && (res.posisi || res.role || res.jabatan)) ? String(res.posisi || res.role || res.jabatan).trim() : "";
       const masaKerja = (res && (res.masaKerjaText || res.tenureText || res.masaKerja)) ? String(res.masaKerjaText || res.tenureText || res.masaKerja).trim() : "";
 
+      // posisi: kalau ada data, override; kalau nggak ada, biarin dummy "Maintenance"
       if (posisi){
-        posisiPill.classList.remove("pillHide");
         posisiPill.textContent = posisi;
-      } else {
-        posisiPill.classList.add("pillHide");
-        posisiPill.textContent = "Posisi";
       }
 
+      // masa kerja: kalau ada data, override; kalau nggak ada, biarin dummy
       if (masaKerja){
-        masaPill.classList.remove("pillHide");
         masaVal.textContent = masaKerja;
-      } else {
-        masaPill.classList.add("pillHide");
-        masaVal.textContent = "-";
       }
     }
 
