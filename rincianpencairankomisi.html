@@ -475,7 +475,7 @@
       </div>
     </div>
 
-    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+    <div class="copyright">? Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
@@ -825,7 +825,7 @@
           FILTERED_ROWS = [...ALL_ROWS];
 
           document.getElementById('namaMitra').innerText = res.namaMitra || "-";
-          sessionStorage.setItem("mitraEmail", res.email); // ✅ jaga-jaga
+          sessionStorage.setItem("mitraEmail", res.email); // ? jaga-jaga
 
           const fo = res.filterOptions || {};
           renderCheckboxList("periodeBox", fo.periode || [], "periode");
@@ -911,7 +911,7 @@
       const qSpk = (document.getElementById("qSpk").value || "").trim();
       if (qSpk) parts.push(`SPK: ${qSpk}`);
 
-      return parts.join(" • ");
+      return parts.join(" ? ");
     }
 
     async function exportPdf(){
