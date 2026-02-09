@@ -1,11 +1,20 @@
 /***** CONFIG *****/
-const SPREADSHEET_ID = "15nnJsRpeiTTyMgFmfxgeZfSTVxn6q99L1QwouNVJZ7s";
+// Spreadsheet ID sekarang ambil dari Script Properties: SPREADSHEET_ID
 const SHEET_NAME = "DB_Slip_Komisi_Cair";
 
 // Logo publik (wajib URL publik)
 const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770355270/Logo_Jendela_Warna_asbatd.png";
 // Logo putih untuk header beranda
 const LOGO_WHITE_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png";
+
+/***** SPREADSHEET HELPER (WAJIB) *****/
+function getSpreadsheet_() {
+  const id = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
+  if (!id) {
+    throw new Error('SPREADSHEET_ID belum diset di Script Properties. Isi dengan ID Google Sheet database.');
+  }
+  return SpreadsheetApp.openById(id);
+}
 
 /***** OTP CONFIG *****/
 const OTP_TTL_SEC = 5 * 60;             // 5 menit
@@ -23,7 +32,7 @@ function doGet(e) {
   const appUrl = ScriptApp.getService().getUrl();
   const email = (e && e.parameter && e.parameter.email) ? String(e.parameter.email).trim().toLowerCase() : "";
 
-  // page → file mapping
+  // page ? file mapping
   // default: login
   let file = "login";
 
@@ -59,7 +68,7 @@ function doGet(e) {
     };
 
     return t.evaluate()
-      .setTitle("Pemeriksa Komisi — Maintenance")
+      .setTitle("Pemeriksa Komisi ? Maintenance")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 
   } catch (err) {
@@ -76,7 +85,7 @@ function doGet(e) {
         <ol>
           <li>Pastikan URL /exec yang dibuka berasal dari deployment project ini.</li>
           <li>Pastikan file HTML ada: login.html, dashboard.html, rincianpencairankomisi.html, placeholder.html, ranking.html</li>
-          <li>Setelah ganti file/kode: Deploy → Manage deployments → Edit → New version → Deploy</li>
+          <li>Setelah ganti file/kode: Deploy ? Manage deployments ? Edit ? New version ? Deploy</li>
           <li>Buka lagi /exec di tab baru atau hard refresh</li>
         </ol>
       </div>`
@@ -160,7 +169,7 @@ function isEmailAllowed_(email){
   const e = String(email||"").trim().toLowerCase();
   if (!e) return false;
 
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   const sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) return false;
   const values = sh.getDataRange().getValues();
@@ -220,7 +229,7 @@ function requestOtp(emailInput){
       "Halo,\n\n" +
       "Kode OTP kamu: " + otp + "\n\n" +
       "Berlaku selama 5 menit. Jangan bagikan kode ini ke siapa pun.\n\n" +
-      "© Internal Tools by HCGA Jendela360 (IIA)";
+      "? Internal Tools by HCGA Jendela360 (IIA)";
     MailApp.sendEmail(email, subject, body);
   }catch(e){
     out.message = "Gagal mengirim OTP. Pastikan email bisa menerima pesan.";
@@ -337,7 +346,7 @@ function getKomisiDatasetByEmail(emailInput) {
   }
 
   try {
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const ss = getSpreadsheet_();
     const sh = ss.getSheetByName(SHEET_NAME);
     if (!sh) { result.message = `Sheet "${SHEET_NAME}" tidak ditemukan.`; return JSON.stringify(result); }
 
@@ -438,7 +447,7 @@ function getHomepageSummaryByEmail(emailInput){
 /***** HOMEPAGE SUMMARY + FILTER + RANKING + TARGET *****/
 function getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso){
   // (ini sama persis kayak yang kamu punya; aku keep)
-  // ——— paste persis dari versi kamu biar nggak rusak ———
+  // ??? paste persis dari versi kamu biar nggak rusak ???
 
   const out = {
     ok:false, message:"",
@@ -466,7 +475,7 @@ function getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso)
   if (!dateToIso) to = null;
 
   try{
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const ss = getSpreadsheet_();
     const sh = ss.getSheetByName(SHEET_NAME);
     if (!sh) { out.message = `Sheet "${SHEET_NAME}" tidak ditemukan.`; return JSON.stringify(out); }
 
@@ -702,7 +711,7 @@ function getRankingPageDataByEmailWithFilter(emailInput, dateFromIso, dateToIso)
   // Kalau ranking kamu sudah jalan sebelumnya, biarkan seperti yang kamu punya.
   // Kalau kamu mau, aku bisa paste full ranking function juga tapi bakal panjang banget.
   // Untuk amannya: pake function ranking yang kamu sudah punya sebelumnya.
-  // ———
+  // ???
   // SEMENTARA: kalau kamu butuh, bilang "paste ranking juga", aku kasih full.
   const out = { ok:false, message:"Ranking function belum dipaste di versi ini.", email:"" };
   out.email = String(emailInput||"").trim().toLowerCase();
