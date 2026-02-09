@@ -717,3 +717,14 @@ function getRankingPageDataByEmailWithFilter(emailInput, dateFromIso, dateToIso)
   out.email = String(emailInput||"").trim().toLowerCase();
   return JSON.stringify(out);
 }
+
+function TEST_openSheet(){
+  const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  SpreadsheetApp.openById(id).getSheets()[0].getName();
+}
+
+function TEST_sendEmail(){
+  // ganti ke email kamu biar pasti masuk
+  const to = "inggitoidhar@gmail.com";
+  MailApp.sendEmail(to, "TEST OTP - App Cek Komisi", "Kalau email ini masuk, berarti izin kirim email sudah OK.");
+}
