@@ -97,8 +97,8 @@
     }
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 
-    /* tambah spasi logo <-> teks */
-    .leftTop{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+    /* ✅ jarak logo <-> teks dibesarin */
+    .leftTop{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
 
     .logoApp{ height: 30px; width:auto; display:block; }
     .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
@@ -147,7 +147,7 @@
     .sectionTitle{ font-weight: 900; font-size: 16px; margin-bottom: 6px; }
     .sectionNote{ color: var(--muted); font-size: 12px; line-height:1.35; }
 
-    /* ===== Row atas: samakan tinggi kiri/kanan ===== */
+    /* ===== Row atas ===== */
     .profileRow{
       display:grid;
       grid-template-columns: 1.1fr .9fr;
@@ -158,14 +158,41 @@
     @media (max-width: 900px){ .profileRow{ grid-template-columns: 1fr; } }
 
     .hello{ font-size: 14px; font-weight: 900; color:#0b1220; }
+
+    /* ✅ Nama tetap biru */
     .helloName{
       font-size: 18px;
       font-weight: 900;
       margin-top: 3px;
-      color: rgba(0,160,198,1); /* biru muda */
+      color: rgba(0,160,198,1);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
-    /* ===== Target: dibuat ikut tinggi kiri agar sejajar dengan filter ===== */
+    /* ✅ pill posisi + masa kerja */
+    .pillMini{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      box-shadow: 0 8px 16px rgba(2, 6, 23, .06);
+      font-weight: 900;
+      font-size: 12px;
+      white-space:nowrap;
+      color: rgba(11,18,32,.78);
+    }
+    .pillMini .mutedLabel{ color: rgba(11,18,32,.55); font-weight: 900; }
+    .pillMini .valBrand{ color: rgba(0,160,198,1); font-weight: 900; }
+
+    .pillHide{ display:none !important; }
+
+    /* ===== Target align ===== */
     .leftCol{
       display:flex;
       flex-direction:column;
@@ -179,11 +206,10 @@
       padding: 12px;
       background: #fff;
 
-      /* kunci agar tinggi sejajar dengan filter */
       flex: 1;
       display:flex;
       flex-direction:column;
-      justify-content:center; /* biar konten di tengah */
+      justify-content:center;
       min-height: 184px;
     }
 
@@ -198,7 +224,6 @@
     .progressTitle{ font-weight: 900; }
     .progressSub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top:4px; line-height:1.25; }
 
-    /* teks meta dipindah ke atas bar */
     .barTextTop{
       font-size: 12px;
       font-weight: 900;
@@ -209,7 +234,7 @@
 
     .barOuter{
       width:100%;
-      height: 18px; /* lebih tebel */
+      height: 18px;
       border-radius: 999px;
       background: rgba(15,23,42,.08);
       overflow:hidden;
@@ -309,7 +334,7 @@
     .rankCardTitle{ font-weight: 900; font-size: 13px; }
 
     .rankTableWrap{
-      max-height: 152px; /* 3 row visible */
+      max-height: 152px;
       overflow:auto;
     }
     .rankTableWrap::-webkit-scrollbar{ width:10px; height:10px; }
@@ -354,31 +379,102 @@
     @media (max-width: 700px){ .metricGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); } }
     @media (max-width: 420px){ .metricGrid{ grid-template-columns: 1fr; } }
 
+    /* ===============================
+       ✅ METRIC CARD (new style)
+       - background soft
+       - bottom line attached
+       - icon right
+       =============================== */
     .metric{
+      position: relative;
       border:1px solid rgba(15,23,42,.10);
       border-radius: 18px;
       padding: 14px;
       background:#fff;
+      overflow:hidden;
+      box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
     }
-    .metricTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
-    .metricLabel{ font-size:12px; color: var(--muted); font-weight: 900; }
+
+    /* inner bg tint */
+    .metric.brand{ background: rgba(0,160,198,.08); border-color: rgba(0,160,198,.16); }
+    .metric.good{ background: rgba(11,128,67,.06); border-color: rgba(11,128,67,.16); }
+    .metric.bad{ background: rgba(176,0,32,.06); border-color: rgba(176,0,32,.16); }
+
+    /* bottom line attached */
+    .metric::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: 7px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      background: rgba(15,23,42,.35);
+      opacity: .0; /* default hidden; variants will set */
+    }
+    .metric.brand::after{ background: rgba(0,160,198,.85); opacity:1; }
+    .metric.good::after{ background: rgba(11,128,67,.85); opacity:1; }
+    .metric.bad::after{ background: rgba(176,0,32,.85); opacity:1; }
+
+    .metricTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .metricLabel{
+      font-size:12px;
+      color: rgba(11,18,32,.62);
+      font-weight: 900;
+    }
+
+    /* pill existing */
     .pill{
       font-size: 11px;
       font-weight: 900;
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.10);
-      background:#f8fafc;
-      color: var(--muted);
+      background:#ffffff;
+      color: rgba(11,18,32,.60);
       white-space:nowrap;
     }
-    .metricVal{ font-size: 22px; font-weight: 900; letter-spacing: .2px; }
-    .metric.brand{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.06); }
-    .metric.brand .metricVal{ color: var(--brand); }
-    .metric.good{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.05); }
-    .metric.good .metricVal{ color: #0b8043; }
-    .metric.bad{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.05); }
-    .metric.bad .metricVal{ color: #b00020; }
+
+    /* value color follow line */
+    .metricVal{ font-size: 22px; font-weight: 900; letter-spacing: .2px; color: rgba(11,18,32,.90); }
+    .metric.brand .metricVal{ color: rgba(0,160,198,1); }
+    .metric.good .metricVal{ color: rgba(11,128,67,1); }
+    .metric.bad .metricVal{ color: rgba(176,0,32,1); }
+
+    /* icon right */
+    .metricIcon{
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.55);
+    }
+    .metricIcon svg{ width: 16px; height: 16px; display:block; }
+
+    .metric.brand .metricIcon{
+      border-color: rgba(0,160,198,.28);
+      background: rgba(255,255,255,.65);
+      color: rgba(0,160,198,1);
+    }
+    .metric.good .metricIcon{
+      border-color: rgba(11,128,67,.28);
+      background: rgba(255,255,255,.65);
+      color: rgba(11,128,67,1);
+    }
+    .metric.bad .metricIcon{
+      border-color: rgba(176,0,32,.28);
+      background: rgba(255,255,255,.65);
+      color: rgba(176,0,32,1);
+    }
 
     .msg{
       margin-top:10px;
@@ -397,7 +493,8 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="<?= logoWhiteUrl ?>" alt="Jendela360" />
+          <!-- ✅ ganti logo header -->
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Jendela360" />
           <div>
             <div class="title">Beranda</div>
             <div class="subtitle">Halaman ringkasan dan akses fitur</div>
@@ -431,7 +528,20 @@
       <div class="profileRow">
         <div class="leftCol">
           <div class="hello">Halo,</div>
-          <div class="helloName" id="namaMitra">-</div>
+
+          <!-- ✅ Nama + pill posisi + pill masa kerja -->
+          <div class="helloName">
+            <span id="namaMitra">-</span>
+
+            <!-- posisi -->
+            <span id="posisiPill" class="pillMini pillHide">Posisi</span>
+
+            <!-- masa kerja -->
+            <span id="masaKerjaPill" class="pillMini pillHide">
+              <span class="mutedLabel">Masa Kerja</span>
+              <span class="valBrand" id="masaKerjaVal">-</span>
+            </span>
+          </div>
 
           <div class="progressWrap">
             <div class="progressTop">
@@ -441,7 +551,7 @@
               </div>
             </div>
 
-            <div class="barTextTop" id="barTextTop">0/0 ? 0%</div>
+            <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
 
             <div class="barOuter">
               <div class="barInner" id="barInner"></div>
@@ -556,27 +666,73 @@
 
     <div class="card">
       <div class="sectionTitle">Ringkasan Pengerjaan</div>
-      <div class="sectionNote hideNote">Aktif otomatis kalau kolom ?Status Pengerjaan? & ?Status Invoice? tersedia.</div>
+      <div class="sectionNote hideNote">Aktif otomatis kalau kolom “Status Pengerjaan” & “Status Invoice” tersedia.</div>
 
       <div class="metricGrid">
         <div class="metric brand">
-          <div class="metricTop"><div class="metricLabel">Total Pengerjaan</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Total Pengerjaan</div>
+            <div class="metricIcon" aria-hidden="true">
+              <!-- grid icon -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="workAll">0</div>
         </div>
+
         <div class="metric good">
-          <div class="metricTop"><div class="metricLabel">Pengerjaan Sudah Selesai</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Pengerjaan Sudah Selesai</div>
+            <div class="metricIcon" aria-hidden="true">
+              <!-- check circle -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="workDone">0</div>
         </div>
+
         <div class="metric bad">
-          <div class="metricTop"><div class="metricLabel">Pengerjaan Belum Selesai</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Pengerjaan Belum Selesai</div>
+            <div class="metricIcon" aria-hidden="true">
+              <!-- warning -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M10.3 4.2h3.4L22 20H2L10.3 4.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="workNotDone">0</div>
         </div>
+
         <div class="metric good">
-          <div class="metricTop"><div class="metricLabel">Selesai ? Sudah Jadi Invoice</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Selesai • Sudah Jadi Invoice</div>
+            <div class="metricIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="workDoneInvoiced">0</div>
         </div>
+
         <div class="metric bad">
-          <div class="metricTop"><div class="metricLabel">Selesai ? Belum Jadi Invoice</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Selesai • Belum Jadi Invoice</div>
+            <div class="metricIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M10.3 4.2h3.4L22 20H2L10.3 4.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="workDoneNotInvoiced">0</div>
         </div>
       </div>
@@ -606,15 +762,49 @@
 
       <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
         <div class="metric brand">
-          <div class="metricTop"><div class="metricLabel">Total Komisi</div><div class="pill" id="spkAll">0 SPK</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Total Komisi</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="pill" id="spkAll">0 SPK</div>
+              <div class="metricIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
           <div class="metricVal" id="totalAll">Rp 0</div>
         </div>
+
         <div class="metric good">
-          <div class="metricTop"><div class="metricLabel">Sudah Cair</div><div class="pill" id="spkPaid">0 SPK</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Sudah Cair</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="pill" id="spkPaid">0 SPK</div>
+              <div class="metricIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
           <div class="metricVal" id="totalPaid">Rp 0</div>
         </div>
+
         <div class="metric bad">
-          <div class="metricTop"><div class="metricLabel">Belum Cair</div><div class="pill" id="spkUnpaid">0 SPK</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Belum Cair</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="pill" id="spkUnpaid">0 SPK</div>
+              <div class="metricIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M10.3 4.2h3.4L22 20H2L10.3 4.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
           <div class="metricVal" id="totalUnpaid">Rp 0</div>
         </div>
       </div>
@@ -642,15 +832,40 @@
 
       <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
         <div class="metric brand">
-          <div class="metricTop"><div class="metricLabel">Total Pendapatan Bersih</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Total Pendapatan Bersih</div>
+            <div class="metricIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="netTotal">Rp 0</div>
         </div>
+
         <div class="metric good">
-          <div class="metricTop"><div class="metricLabel">Total Pemasukan Bersih</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Total Pemasukan Bersih</div>
+            <div class="metricIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="netIncome">Rp 0</div>
         </div>
+
         <div class="metric bad">
-          <div class="metricTop"><div class="metricLabel">Total Potongan</div></div>
+          <div class="metricTop">
+            <div class="metricLabel">Total Potongan</div>
+            <div class="metricIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M10.3 4.2h3.4L22 20H2L10.3 4.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
           <div class="metricVal" id="netDeduction">Rp 0</div>
         </div>
       </div>
@@ -674,7 +889,7 @@
       </div>
     </div>
 
-    <div class="copyright">? Internal Tools by HCGA Jendela360 (IIA)</div>
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
@@ -746,9 +961,38 @@
       window.top.location.href = APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
     }
 
-    function setProfile(nama){
+    /* ✅ Nama + optional Posisi + optional Masa Kerja
+       - Tidak mengubah fungsi backend; cuma render jika field tersedia
+    */
+    function setProfile(res){
+      const nama = (res && res.namaMitra) ? res.namaMitra : "-";
       document.getElementById("namaMitra").innerText = nama || "-";
+
+      const posisiPill = document.getElementById("posisiPill");
+      const masaPill = document.getElementById("masaKerjaPill");
+      const masaVal = document.getElementById("masaKerjaVal");
+
+      // support beberapa kemungkinan field (kalau nanti backend nambah)
+      const posisi = (res && (res.posisi || res.role || res.jabatan)) ? String(res.posisi || res.role || res.jabatan).trim() : "";
+      const masaKerja = (res && (res.masaKerjaText || res.tenureText || res.masaKerja)) ? String(res.masaKerjaText || res.tenureText || res.masaKerja).trim() : "";
+
+      if (posisi){
+        posisiPill.classList.remove("pillHide");
+        posisiPill.textContent = posisi;
+      } else {
+        posisiPill.classList.add("pillHide");
+        posisiPill.textContent = "Posisi";
+      }
+
+      if (masaKerja){
+        masaPill.classList.remove("pillHide");
+        masaVal.textContent = masaKerja;
+      } else {
+        masaPill.classList.add("pillHide");
+        masaVal.textContent = "-";
+      }
     }
+
     function setWork(res){
       document.getElementById("workAll").innerText = formatNumber(res.workAll || 0);
       document.getElementById("workDone").innerText = formatNumber(res.workDone || 0);
@@ -810,7 +1054,7 @@
       const target = Number(computedTarget || 0);
       const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
 
-      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} ? ${formatNumber(percent)}%`;
+      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} • ${formatNumber(percent)}%`;
 
       const bar = document.getElementById("barInner");
       const barTextTop = document.getElementById("barTextTop");
@@ -860,7 +1104,7 @@
     }
     function getDummyWithinTop3(){
       return [
-        { name:"Safi?i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
+        { name:"Safi’i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
         { name:"Bima Prakoso", posisi:"Maintenance", total: 6946250, spkCount: 49 },
         { name:"Raka Firmansyah", posisi:"Maintenance", total: 5170000, spkCount: 37 },
       ];
@@ -877,7 +1121,7 @@
           if (!res){ setMessage("Response tidak valid."); return; }
           if (!res.ok){ setMessage(res.message || "Gagal ambil ringkasan."); return; }
 
-          setProfile(res.namaMitra);
+          setProfile(res);
           setWork(res);
           setKomisi(res);
           setNet(res);
