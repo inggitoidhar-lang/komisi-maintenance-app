@@ -17,13 +17,10 @@
       --text:#0b1220;
       --muted:#64748b;
       --border:rgba(15, 23, 42, .10);
-      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
       --radius: 18px;
 
       --paid:#0b8043;
       --unpaid:#b00020;
-
-      --soft:#f7fafc;
 
       --bg1:#0b2a57;
       --bg2:#0b3b8a;
@@ -40,7 +37,7 @@
 
     .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
 
-    /* header konsisten (mirip Beranda) */
+    /* header */
     .top{
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       border: 1px solid rgba(255,255,255,.18);
@@ -59,18 +56,19 @@
 
     .topActions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
+    /* status 1 line (sesuai request) */
     .statusPill{
       display:inline-flex; align-items:center; gap:10px;
       padding: 10px 12px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
-      color: rgba(255,255,255,.75);
+      color: rgba(255,255,255,.92);
       font-weight: 900; font-size: 13px;
       backdrop-filter: blur(10px);
+      white-space: nowrap;
     }
     .dot{ width:9px;height:9px;border-radius:999px;background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.18); }
-    .statusText .label{ display:block; font-size: 11px; opacity:.9; letter-spacing:.22px; text-transform: uppercase; }
-    .statusText .email{ display:block; color:#fff; font-size: 12px; font-weight: 900; letter-spacing:.2px; }
+    .statusEmail{ color:#fff; }
 
     .btnIcon{
       height:44px; width:44px;
@@ -115,6 +113,7 @@
     .soft{ color: var(--muted); font-weight: 700; margin-top: 6px; }
     .msg{ margin-top:10px; font-weight: 800; color: var(--unpaid); }
 
+    /* Name block format */
     .helloBlock{ margin-bottom: 10px; }
     .helloLabel{ font-weight: 900; font-size: 12px; letter-spacing:.22px; color: var(--muted); text-transform: uppercase; }
     .helloName{ font-weight: 900; font-size: 18px; color: var(--bg2); margin-top: 4px; }
@@ -223,7 +222,7 @@
       position: sticky;
       top: 0;
       z-index: 5;
-      background: #fff;
+      background: #fff; /* FIX: solid (biar ga transparan saat scroll) */
       font-size: 12px;
       letter-spacing: .22px;
       color: var(--muted);
@@ -236,7 +235,7 @@
     tr:hover td{ background: rgba(2,6,23,.02); }
     .sortActive{
       color: var(--brand);
-      background: #e7f7fb; /* solid, biar ga tembus pandang */
+      background: #e7f7fb; /* solid */
       box-shadow: inset 0 -2px 0 rgba(0,160,198,.55);
     }
     .sortArrow{ width: 10px; height: 10px; opacity:.8; display:inline-block; vertical-align: middle; margin-left: 6px; }
@@ -255,10 +254,9 @@
       padding: 4px 10px; border-radius: 999px; white-space: nowrap;
     }
 
-    footer{ margin: 16px 0 6px; text-align:center; color: rgba(255,255,255,.75); font-weight: 800; font-size: 12px; }
     .footerLight{ color: rgba(15,23,42,.45); }
 
-    /* scrollbar konsisten (mirip beranda) */
+    /* scrollbar biru */
     .checkList::-webkit-scrollbar{ width:10px; height:10px; }
     .checkList::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
     .checkList::-webkit-scrollbar-thumb{
@@ -283,12 +281,10 @@
         </div>
 
         <div class="topActions">
-          <div class="statusPill">
+          <div class="statusPill" title="Status Login">
             <span class="dot"></span>
-            <span class="statusText">
-              <span class="label">Sedang Masuk</span>
-              <span class="email" id="loginEmailPill">-</span>
-            </span>
+            <span>SEDANG MASUK</span>
+            <span class="statusEmail" id="loginEmailPill">-</span>
           </div>
 
           <button class="btnIcon" onclick="goDashboard()" title="Beranda" aria-label="Beranda">
@@ -415,9 +411,6 @@
     const APP_URL = "<?= appUrl ?>";
     const PREFILL_EMAIL = "<?= prefillEmail ?>";
 
-    const KEY_EMAIL = "mitraEmail";
-    const KEY_REMEMBER_TOKEN = "rememberToken";
-
     let ALL_ROWS = [];
     let FILTERED_ROWS = [];
 
@@ -427,13 +420,11 @@
 
     function goDashboard(){
       const email = getEmail();
-      // kalau belum ada email, lempar ke login
       if (!email){ window.top.location.href = APP_URL + "?page=login"; return; }
       window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
     }
 
     function logout(){
-      // logout bersih (remember token dari beranda)
       try{
         sessionStorage.removeItem("mitraEmail");
         localStorage.removeItem("rememberToken");
@@ -446,6 +437,14 @@
       const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
       const email = fromSession || fromTpl;
       return email;
+    }
+
+    function normalizeServerResponse(res){
+      // Code.gs return JSON string, jadi harus parse dulu
+      if (typeof res === "string"){
+        try { return JSON.parse(res); } catch(e){ return null; }
+      }
+      return res;
     }
 
     function setQuickStatus(type){
@@ -466,7 +465,6 @@
       document.getElementById('qUnit').value = "";
       document.getElementById('qSpk').value = "";
 
-      // uncheck all
       uncheckAll("periodeBox");
       uncheckAll("pekerjaanBox");
 
@@ -503,9 +501,7 @@
 
     function toISODate(s){
       if (!s) return "";
-      // sudah ISO?
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
-      // dd/mm/yyyy
       const m = String(s).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
       if (m){
         const dd = m[1].padStart(2,"0");
@@ -702,7 +698,6 @@
         </label>
       `).join("");
 
-      // attach change
       box.querySelectorAll('input[type="checkbox"]').forEach(el => {
         el.addEventListener("change", applyFilters);
       });
@@ -752,23 +747,26 @@
 
       document.getElementById("loginEmailPill").textContent = email;
 
-      // tarik data dari server
       google.script.run
-        .withSuccessHandler(res => {
+        .withSuccessHandler(raw => {
+          const res = normalizeServerResponse(raw);
+
           if (!res || !res.ok){
-            document.getElementById("gateMsg").textContent = (res && res.message) ? res.message : "Gagal memuat data.";
+            document.getElementById("gateMsg").textContent =
+              (res && res.message) ? res.message : "Gagal memuat data.";
             document.getElementById("gateCard").style.display = "";
             document.getElementById("mainCard").style.display = "none";
             return;
           }
 
-          // simpan email untuk navigasi antar page
-          try{ sessionStorage.setItem(KEY_EMAIL, email); }catch(e){}
+          // simpan email supaya page lain gampang ambil
+          try{ sessionStorage.setItem("mitraEmail", email); }catch(e){}
 
           document.getElementById("gateCard").style.display = "none";
           document.getElementById("mainCard").style.display = "";
 
-          document.getElementById("namaMitra").textContent = res.nama || "-";
+          // FIX: field dari server adalah namaMitra
+          document.getElementById("namaMitra").textContent = res.namaMitra || "-";
 
           ALL_ROWS = res.rows || [];
           FILTERED_ROWS = ALL_ROWS.slice();
@@ -776,12 +774,11 @@
           fillChecklist("periodeBox", (res.filterOptions && res.filterOptions.periode) ? res.filterOptions.periode : []);
           fillChecklist("pekerjaanBox", (res.filterOptions && res.filterOptions.pekerjaan) ? res.filterOptions.pekerjaan : []);
 
-          // input listeners
           ["tglCetakFrom","tglCetakTo","tglKerjaFrom","tglKerjaTo","waktuCairFrom","waktuCairTo","qUnit","qSpk"].forEach(id => {
             const el = document.getElementById(id);
             if (!el) return;
-            el.addEventListener("input", () => { applyFilters(); });
-            el.addEventListener("change", () => { applyFilters(); });
+            el.addEventListener("input", applyFilters);
+            el.addEventListener("change", applyFilters);
           });
 
           applyFilters();
