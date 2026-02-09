@@ -3,7 +3,7 @@ const GITHUB_OWNER = "inggitoidhar-lang";
 const GITHUB_REPO = "komisi-maintenance-app";
 const GITHUB_BRANCH = "main";
 
-// Menu biar gampang (muncul di Google Sheet kalau ini container-bound)
+// Menu biar gampang
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("Sync")
@@ -19,11 +19,10 @@ function setupGitHubToken() {
     "Paste token GitHub kamu di sini (JANGAN SHARE KE SIAPAPUN):",
     Browser.Buttons.OK_CANCEL
   );
-  if (!token || token === "cancel") {
-    throw new Error("Dibatalkan. Token belum disimpan.");
-  }
+  if (!token || token === "cancel") throw new Error("Dibatalkan. Token belum disimpan.");
+
   PropertiesService.getScriptProperties().setProperty("GITHUB_TOKEN", token.trim());
-  Browser.msgBox("? Token tersimpan. Sekarang pakai menu: Sync ? Sync to GitHub");
+  Browser.msgBox("✅ Token tersimpan.\nSekarang pakai menu: Sync → Sync to GitHub");
 }
 
 // Ambil semua file project via Apps Script API
@@ -38,8 +37,9 @@ function fetchProjectFiles_() {
   });
 
   if (res.getResponseCode() !== 200) {
-    throw new Error("Gagal ambil project content: " + res.getContentText());
+    throw new Error("Gagal ambil project content (HTTP " + res.getResponseCode() + "): " + res.getContentText());
   }
+
   return JSON.parse(res.getContentText()).files || [];
 }
 
@@ -51,13 +51,34 @@ function mapFile_(f) {
   return null;
 }
 
-// Create / Update file di GitHub
+// Helper: detect rate limit-ish message
+function isRetryableGitHub_(code, bodyText) {
+  const body = String(bodyText || "").toLowerCase();
+
+  // retry untuk server error & too many requests
+  if (code >= 500) return true;
+  if (code === 429) return true;
+
+  // GitHub rate limit/abuse/secondary limit kadang 403
+  if (code === 403) {
+    if (body.includes("rate limit")) return true;
+    if (body.includes("secondary rate")) return true;
+    if (body.includes("abuse detection")) return true;
+    if (body.includes("temporarily blocked")) return true;
+  }
+
+  return false;
+}
+
+// Create / Update file di GitHub (dengan retry)
 function upsertGitHubFile_(token, path, content, message) {
   const api = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeURI(path)}`;
+
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
+    "User-Agent": "AppsScript-GitHubSync",
   };
 
   // cek sha kalau file sudah ada
@@ -67,34 +88,55 @@ function upsertGitHubFile_(token, path, content, message) {
     headers,
     muteHttpExceptions: true,
   });
-
   if (check.getResponseCode() === 200) {
     sha = JSON.parse(check.getContentText()).sha;
   }
 
+  // base64 yang aman: bytes -> base64
+  const b64 = Utilities.base64Encode(Utilities.newBlob(content, "text/plain", path).getBytes());
+
   const body = {
     message,
-    content: Utilities.base64Encode(content),
+    content: b64,
     branch: GITHUB_BRANCH,
   };
   if (sha) body.sha = sha;
 
-  const res = UrlFetchApp.fetch(api, {
-    method: "PUT",
-    headers,
-    payload: JSON.stringify(body),
-    muteHttpExceptions: true,
-  });
+  const payload = JSON.stringify(body);
 
-  if (![200, 201].includes(res.getResponseCode())) {
-    throw new Error(`Gagal upsert ${path}: ${res.getContentText()}`);
+  // retry loop
+  const maxTry = 4;
+  for (let attempt = 1; attempt <= maxTry; attempt++) {
+    const res = UrlFetchApp.fetch(api, {
+      method: "PUT",
+      headers,
+      contentType: "application/json",
+      payload,
+      muteHttpExceptions: true,
+    });
+
+    const code = res.getResponseCode();
+    const text = res.getContentText();
+
+    if (code === 200 || code === 201) return;
+
+    if (isRetryableGitHub_(code, text) && attempt < maxTry) {
+      // backoff + sedikit random biar gak “pola”
+      const sleepMs = (attempt * attempt * 800) + Math.floor(Math.random() * 300);
+      Utilities.sleep(sleepMs);
+      continue;
+    }
+
+    throw new Error(`Gagal upsert ${path} (HTTP ${code}): ${text}`);
   }
+
+  throw new Error(`Gagal upsert ${path}: retry habis.`);
 }
 
 // Tombol utama: sync semua file
 function syncToGitHub() {
   const token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
-  if (!token) throw new Error("Token belum ada. Jalankan: Sync ? Setup GitHub Token");
+  if (!token) throw new Error("Token belum ada. Jalankan: Sync → Setup GitHub Token");
 
   const files = fetchProjectFiles_();
   let count = 0;
@@ -102,9 +144,13 @@ function syncToGitHub() {
   for (const f of files) {
     const mapped = mapFile_(f);
     if (!mapped) continue;
+
+    // jeda kecil biar aman dari secondary rate limit
+    Utilities.sleep(250);
+
     upsertGitHubFile_(token, mapped.path, mapped.content, `Sync ${mapped.path} from Apps Script`);
     count++;
   }
 
-  Browser.msgBox(`? Sync selesai. ${count} file tersinkron.`);
+  Browser.msgBox(`✅ Sync selesai. ${count} file tersinkron.`);
 }
