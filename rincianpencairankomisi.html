@@ -13,7 +13,7 @@
 
   <style>
     :root{
-      --brand:#00a0c6;          /* biru muda */
+      --brand:#00a0c6;          /* biru muda (scroll/homepage) */
       --text:#0b1220;
       --muted:#64748b;
       --border:rgba(15, 23, 42, .10);
@@ -49,16 +49,14 @@
       box-shadow: 0 24px 70px rgba(0,0,0,.18);
     }
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-
-    /* ✅ jarak logo & tulisan jangan mepet */
-    .leftTop{ display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
-
-    .logoApp{ height: 34px; width:auto; display:block; }
+    .leftTop{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; } /* jarak logo-teks lebih lega */
+    .logoApp{ height: 46px; width:auto; display:block; } /* ✅ LOGO DIBESARIN (sebelumnya 34px) */
     .title{ font-size: 18px; font-weight: 800; letter-spacing: .2px; color:#fff; }
     .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
 
     .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
+    /* status pill (samain format homepage: 1 line) */
     .statusPill{
       display:inline-flex; align-items:center; gap:10px;
       padding: 10px 12px; border-radius: 999px;
@@ -84,6 +82,7 @@
     }
     .btnSmall:hover{ background: rgba(255,255,255,.18); }
 
+    /* icon-only home */
     .btnIcon{
       width: 44px;
       height: 44px;
@@ -110,39 +109,32 @@
     .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 800; min-height: 18px; }
     .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; font-weight: 600; }
 
-    /* ✅ Nama + pill posisi (sesuai request) */
-    .nameRowNew{
+    /* Nama + Posisi (baru) */
+    .nameRow{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
-      gap: 12px;
+      gap: 16px;
       flex-wrap:wrap;
       margin: 4px 0 8px;
     }
-    .nameLeft{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
+    .metaBlock{ min-width: 220px; }
+    .metaLabel{
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .22px;
+      color: var(--muted);
+      text-transform: uppercase;
     }
-    .nameValue{
+    .metaValue{
+      margin-top: 4px;
       font-size: 18px;
       font-weight: 800;
-      color: var(--brand);
+      color: var(--brand); /* nama biru muda */
     }
-    .pillMini{
-      display:inline-flex;
-      align-items:center;
-      height: 30px;
-      padding: 0 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(15,23,42,.12);
-      background:#fff;
-      box-shadow: 0 8px 16px rgba(2, 6, 23, .06);
+    .metaValue.small{
+      font-size: 14px;
       font-weight: 800;
-      font-size: 12px;
-      color: rgba(11,18,32,.78);
-      white-space:nowrap;
     }
 
     .totalsRow{
@@ -155,92 +147,32 @@
     @media (max-width: 980px){ .totalsRow{ grid-template-columns: repeat(2, minmax(220px, 1fr)); } }
     @media (max-width: 520px){ .totalsRow{ grid-template-columns: 1fr; } }
 
-    /* ✅ Card total model baru: soft fill + bottom line nempel + icon */
     .totalCard{
-      position: relative;
       border:1px solid rgba(15,23,42,.10);
-      border-radius: 18px;
+      border-radius: 16px;
       padding: 14px;
       background:#fff;
-      overflow:hidden;
-      box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
     }
-    .totalCard::after{
-      content:"";
-      position:absolute;
-      left:0; right:0; bottom:0;
-      height: 7px;
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 18px;
-      opacity: 1;
-      background: rgba(15,23,42,.35);
-    }
-
-    .totalTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom: 10px; }
-    .totalLabel{ font-size:12px; color: rgba(11,18,32,.62); font-weight: 800; }
-
+    .totalTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
+    .totalLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
     .pill{
       font-size: 12px;
       font-weight: 800;
       padding: 5px 10px;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.10);
-      background: rgba(255,255,255,.75);
+      background:#f8fafc;
       color: var(--muted);
       white-space:nowrap;
     }
+    .totalVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
 
-    .totalVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; color: rgba(11,18,32,.90); }
-
-    .metricIcon{
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      flex: 0 0 auto;
-      border: 1px solid rgba(15,23,42,.10);
-      background: rgba(255,255,255,.55);
-      color: rgba(15,23,42,.70);
-    }
-    .metricIcon svg{ width: 16px; height: 16px; display:block; }
-
-    .totalCard.all{
-      background: rgba(0,160,198,.08);
-      border-color: rgba(0,160,198,.16);
-    }
-    .totalCard.all::after{ background: rgba(0,160,198,.85); }
+    .totalCard.all{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.05); }
     .totalCard.all .totalVal{ color: var(--brand); }
-    .totalCard.all .metricIcon{
-      border-color: rgba(0,160,198,.28);
-      background: rgba(255,255,255,.65);
-      color: rgba(0,160,198,1);
-    }
-
-    .totalCard.paid{
-      background: rgba(11,128,67,.06);
-      border-color: rgba(11,128,67,.16);
-    }
-    .totalCard.paid::after{ background: rgba(11,128,67,.85); }
-    .totalCard.paid .totalVal{ color: var(--paid); }
-    .totalCard.paid .metricIcon{
-      border-color: rgba(11,128,67,.28);
-      background: rgba(255,255,255,.65);
-      color: rgba(11,128,67,1);
-    }
-
-    .totalCard.unpaid{
-      background: rgba(176,0,32,.06);
-      border-color: rgba(176,0,32,.16);
-    }
-    .totalCard.unpaid::after{ background: rgba(176,0,32,.85); }
+    .totalCard.unpaid{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.04); }
     .totalCard.unpaid .totalVal{ color: var(--unpaid); }
-    .totalCard.unpaid .metricIcon{
-      border-color: rgba(176,0,32,.28);
-      background: rgba(255,255,255,.65);
-      color: rgba(176,0,32,1);
-    }
+    .totalCard.paid{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.04); }
+    .totalCard.paid .totalVal{ color: var(--paid); }
 
     .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .seg button{
@@ -310,11 +242,13 @@
       background:#fff;
     }
 
+    /* Filter Periode & Pekerjaan harus 1 baris tinggi aja */
     .checkList.oneRow{
       max-height: 58px;
       padding: 8px;
     }
 
+    /* scrollbar biru */
     .checkList::-webkit-scrollbar{ width:10px; height:10px; }
     .checkList::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
     .checkList::-webkit-scrollbar-thumb{
@@ -377,6 +311,7 @@
       background:#fff;
     }
 
+    /* header table solid + z-index tinggi */
     th{
       position: sticky;
       top: 0;
@@ -392,12 +327,15 @@
       user-select:none;
       box-shadow: 0 2px 0 rgba(15,23,42,.10);
     }
+
+    /* ✅ sort active: biru header (gradient), teks putih */
     th.sortActive{
-      color: var(--brand);
-      background: #e7f8fc !important;
-      box-shadow: inset 0 -2px 0 rgba(0,160,198,.55);
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important;
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,.30);
     }
-    .sortArrow{ width: 10px; height: 10px; opacity:.8; display:inline-block; vertical-align: middle; margin-left: 6px; }
+
+    .sortArrow{ width: 10px; height: 10px; opacity:.95; display:inline-block; vertical-align: middle; margin-left: 6px; color: currentColor; }
 
     td.komisiCell{ background: rgba(0,160,198,.07); font-weight: 800; }
 
@@ -455,7 +393,7 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Jendela360" />
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png" alt="Jendela360" />
           <div>
             <div class="title">Rincian Pencairan Komisi</div>
             <div class="subtitle">Cek rincian komisi berdasarkan invoice yang telah terbit</div>
@@ -501,58 +439,30 @@
     </div>
 
     <div class="card" id="mainCard" style="display:none;">
-      <div class="nameRowNew">
-        <div class="nameLeft">
-          <div class="nameValue" id="namaMitra">-</div>
-          <div class="pillMini" id="posisiMitra">Pelaksana</div>
+      <!-- Nama + Posisi -->
+      <div class="nameRow">
+        <div class="metaBlock">
+          <div class="metaLabel">Nama</div>
+          <div class="metaValue" id="namaMitra">-</div>
+        </div>
+
+        <div class="metaBlock" style="text-align:right;">
+          <div class="metaLabel">Posisi</div>
+          <div class="metaValue small" id="posisiMitra">Pelaksana</div>
         </div>
       </div>
 
       <div class="totalsRow">
         <div class="totalCard all">
-          <div class="totalTop">
-            <div class="totalLabel">Total Komisi</div>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="pill" id="spkAll">0 SPK</div>
-              <div class="metricIcon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+          <div class="totalTop"><div class="totalLabel">Total Komisi</div><div class="pill" id="spkAll">0 SPK</div></div>
           <div class="totalVal" id="totalAll">Rp 0</div>
         </div>
-
         <div class="totalCard paid">
-          <div class="totalTop">
-            <div class="totalLabel">Sudah Cair</div>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="pill" id="spkPaid">0 SPK</div>
-              <div class="metricIcon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M20 7 10.5 16.5 4 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+          <div class="totalTop"><div class="totalLabel">Sudah Cair</div><div class="pill" id="spkPaid">0 SPK</div></div>
           <div class="totalVal" id="totalPaid">Rp 0</div>
         </div>
-
         <div class="totalCard unpaid">
-          <div class="totalTop">
-            <div class="totalLabel">Belum Cair</div>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="pill" id="spkUnpaid">0 SPK</div>
-              <div class="metricIcon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M12 9v5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                  <path d="M10.3 4.2h3.4L22 20H2L10.3 4.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+          <div class="totalTop"><div class="totalLabel">Belum Cair</div><div class="pill" id="spkUnpaid">0 SPK</div></div>
           <div class="totalVal" id="totalUnpaid">Rp 0</div>
         </div>
       </div>
@@ -643,14 +553,15 @@
       </div>
     </div>
 
-    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+    <div class="copyright">? Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
     const APP_URL = "<?= appUrl ?>";
     const PREFILL_EMAIL = "<?= prefillEmail ?>";
 
-    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png";
+    // ✅ PDF logo pakai logo "sebelumnya" (yang kamu minta)
+    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png";
 
     let EMAIL = "";
     let ALL_ROWS = [];
@@ -663,17 +574,8 @@
 
     const SORT_IDS = ["tglCetak","periode","tglKerja","spk","koordinator","posisi","pekerjaan","unit","apartemen","biaya","persenPelaksana","komisiPelaksana","statusPencairan","waktuPencairan"];
 
-    function getUrlParam(name){
-      try{
-        const u = new URL(window.location.href);
-        return (u.searchParams.get(name) || "").trim();
-      }catch(e){
-        return "";
-      }
-    }
-
     function goHome(){
-      const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || getUrlParam("email") || "").trim().toLowerCase();
+      const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || "").trim().toLowerCase();
       if (email) window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
       else window.top.location.href = APP_URL;
     }
@@ -689,8 +591,7 @@
     function getEmail(){
       const fromTpl = (PREFILL_EMAIL || "").trim().toLowerCase();
       const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
-      const fromUrl = (getUrlParam("email") || "").trim().toLowerCase();
-      return fromTpl || fromSession || fromUrl;
+      return fromTpl || fromSession;
     }
 
     function safeParseJson(maybeJson) {
@@ -1241,8 +1142,6 @@
         showGate("Kamu belum masuk di Beranda. Balik ke Beranda dulu ya.");
         return;
       }
-      // ✅ biar tombol Beranda + halaman lain ikut aman
-      try{ sessionStorage.setItem("mitraEmail", EMAIL); }catch(e){}
       startLoad(EMAIL);
     })();
   </script>
