@@ -13,7 +13,7 @@
 
   <style>
     :root{
-      --brand:#00a0c6;
+      --brand:#00a0c6;          /* biru muda (scroll/homepage) */
       --text:#0b1220;
       --muted:#64748b;
       --border:rgba(15, 23, 42, .10);
@@ -34,13 +34,13 @@
       margin:0;
       font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      background:#ffffff; /* ? (1) background putih */
+      background:#ffffff;
       min-height: 100vh;
     }
 
     .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
 
-    /* ? (2) header: dibuat solid gradient (bukan transparan) biar konsisten homepage */
+    /* header */
     .top{
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       border: 1px solid rgba(255,255,255,.18);
@@ -48,44 +48,41 @@
       padding: 16px;
       box-shadow: 0 24px 70px rgba(0,0,0,.18);
     }
-
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     .leftTop{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
     .logoApp{ height: 34px; width:auto; display:block; }
-    .title{ font-size: 18px; font-weight: 900; letter-spacing: .2px; color:#fff; }
+    .title{ font-size: 18px; font-weight: 800; letter-spacing: .2px; color:#fff; }
     .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
 
     .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    /* ? status pill (samain gaya "Sedang Masuk" di homepage) */
+    /* status pill (samain format homepage: 1 line) */
     .statusPill{
       display:inline-flex; align-items:center; gap:10px;
       padding: 10px 12px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
       color: rgba(255,255,255,.75);
-      font-weight: 900; font-size: 13px;
-      backdrop-filter: blur(10px);
+      font-weight: 800; font-size: 13px;
       white-space: nowrap;
     }
     .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
     .statusText{ display:inline-flex; align-items:center; gap:8px; }
-    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
-    .statusText .email{ color: #fff; font-weight: 900; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 800; }
+    .statusText .email{ color: #fff; font-weight: 800; }
 
     .btnSmall{
       height:44px; padding: 0 14px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
       cursor:pointer;
-      font-weight: 900; font-size: 14px;
+      font-weight: 800; font-size: 14px;
       color:#fff;
       display:inline-flex; align-items:center; gap:10px;
-      backdrop-filter: blur(10px);
     }
     .btnSmall:hover{ background: rgba(255,255,255,.18); }
 
-    /* ? tombol icon home (beranda) */
+    /* icon-only home */
     .btnIcon{
       width: 44px;
       height: 44px;
@@ -96,7 +93,6 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      backdrop-filter: blur(10px);
       color:#fff;
     }
     .btnIcon:hover{ background: rgba(255,255,255,.18); }
@@ -110,24 +106,36 @@
       margin-top: 12px;
     }
 
-    /* ? (4) format nama: label + nama biru */
-    .nameBlock{ margin: 4px 0 8px; }
-    .nameLabel{
+    .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 800; min-height: 18px; }
+    .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; font-weight: 600; }
+
+    /* Nama + Posisi (baru) */
+    .nameRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 16px;
+      flex-wrap:wrap;
+      margin: 4px 0 8px;
+    }
+    .metaBlock{ min-width: 220px; }
+    .metaLabel{
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: .22px;
       color: var(--muted);
       text-transform: uppercase;
     }
-    .nameValue{
+    .metaValue{
       margin-top: 4px;
       font-size: 18px;
-      font-weight: 900;
-      color: var(--bg2);
+      font-weight: 800;
+      color: var(--brand); /* ? nama & posisi biru muda */
     }
-
-    .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 900; min-height: 18px; }
-    .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; }
+    .metaValue.small{
+      font-size: 14px;
+      font-weight: 800;
+    }
 
     .totalsRow{
       display:grid;
@@ -146,10 +154,10 @@
       background:#fff;
     }
     .totalTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
-    .totalLabel{ font-size:12px; color: var(--muted); font-weight: 900; }
+    .totalLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
     .pill{
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 800;
       padding: 5px 10px;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.10);
@@ -157,7 +165,7 @@
       color: var(--muted);
       white-space:nowrap;
     }
-    .totalVal{ font-size: 22px; font-weight: 900; letter-spacing:.1px; }
+    .totalVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
 
     .totalCard.all{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.05); }
     .totalCard.all .totalVal{ color: var(--brand); }
@@ -173,7 +181,7 @@
       height: 40px;
       padding: 0 14px;
       border-radius: 14px;
-      font-weight: 900;
+      font-weight: 800;
       cursor:pointer;
       font-size: 14px;
       font-family: inherit;
@@ -209,7 +217,7 @@
       font-size: 12px;
       color: var(--muted);
       margin-bottom: 6px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: .2px;
     }
     input{
@@ -222,7 +230,7 @@
       outline:none;
       background:#fff;
       font-family: inherit;
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .checkList{
@@ -234,7 +242,13 @@
       background:#fff;
     }
 
-    /* ? (5) scrollbar biru (periode pencairan) */
+    /* ? (Filter) Periode & Pekerjaan harus 1 baris tinggi aja */
+    .checkList.oneRow{
+      max-height: 58px; /* kira2 setinggi 1 item */
+      padding: 8px;
+    }
+
+    /* scrollbar biru */
     .checkList::-webkit-scrollbar{ width:10px; height:10px; }
     .checkList::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
     .checkList::-webkit-scrollbar-thumb{
@@ -273,7 +287,7 @@
       padding: 4px 10px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 800;
       border: 1px solid;
       white-space:nowrap;
     }
@@ -297,30 +311,30 @@
       background:#fff;
     }
 
-    /* ? (7) sticky header solid putih (anti tembus pandang) */
+    /* ? FIX tembus pandang: kunci header table solid + z-index tinggi */
     th{
       position: sticky;
       top: 0;
-      z-index: 5;
+      z-index: 50;
       background: #fff !important;
       opacity: 1 !important;
       font-size: 12px;
       letter-spacing: .22px;
       color: var(--muted);
       text-transform: uppercase;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
       user-select:none;
-      box-shadow: 0 1px 0 rgba(15,23,42,.10);
+      box-shadow: 0 2px 0 rgba(15,23,42,.10);
     }
     th.sortActive{
       color: var(--brand);
-      background: rgba(0,160,198,.12) !important;
+      background: #e7f8fc !important; /* solid, bukan transparan */
       box-shadow: inset 0 -2px 0 rgba(0,160,198,.55);
     }
-
     .sortArrow{ width: 10px; height: 10px; opacity:.8; display:inline-block; vertical-align: middle; margin-left: 6px; }
-    td.komisiCell{ background: rgba(0,160,198,.07); font-weight: 900; }
+
+    td.komisiCell{ background: rgba(0,160,198,.07); font-weight: 800; }
 
     .rincianHeader{
       display:flex;
@@ -330,22 +344,6 @@
       flex-wrap:wrap;
     }
     .rincianRight{ display:flex; align-items:center; gap:10px; justify-content:flex-end; }
-
-    .btnIconText{
-      height:44px;
-      padding: 0 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(15,23,42,.12);
-      background:#fff;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      font-weight: 900;
-      font-size: 14px;
-    }
-    .btnIconText:hover{ background: var(--soft); }
 
     .btnIconWhite{
       width: 44px;
@@ -360,12 +358,28 @@
     }
     .btnIconWhite:hover{ background: var(--soft); }
 
+    .btnIconText{
+      height:44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .btnIconText:hover{ background: var(--soft); }
+
     .copyright{
       text-align:center;
       margin:16px 0;
       font-size: 11px;
-      font-weight: 800;
-      color: rgba(15,23,42,.55); /* ? biar kebaca di bg putih */
+      font-weight: 700;
+      color: rgba(15,23,42,.55);
       letter-spacing:.2px;
     }
   </style>
@@ -376,7 +390,7 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="<?= logoUrl ?>" alt="Jendela360" />
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png" alt="Jendela360" />
           <div>
             <div class="title">Rincian Pencairan Komisi</div>
             <div class="subtitle">Cek rincian komisi berdasarkan invoice yang telah terbit</div>
@@ -392,7 +406,6 @@
             </span>
           </div>
 
-          <!-- ? (2) Beranda jadi icon home doang -->
           <button class="btnIcon" onclick="goHome()" title="Beranda" aria-label="Beranda">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M3 10.5L12 3l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -401,7 +414,6 @@
             </svg>
           </button>
 
-          <!-- ? (2) Keluar pakai icon + tulisan -->
           <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -415,7 +427,7 @@
     </div>
 
     <div class="card" id="gateCard">
-      <div style="font-weight:900;font-size:16px;">Akses Ditolak</div>
+      <div style="font-weight:800;font-size:16px;">Akses Ditolak</div>
       <div class="soft">Kamu perlu masuk dulu dari Beranda.</div>
       <div id="gateMsg" class="msg"></div>
       <div style="margin-top:12px;">
@@ -424,10 +436,17 @@
     </div>
 
     <div class="card" id="mainCard" style="display:none;">
-      <!-- ? (4) ganti "Halo, Nama" jadi format Nama -->
-      <div class="nameBlock">
-        <div class="nameLabel">Nama</div>
-        <div class="nameValue" id="namaMitra">-</div>
+      <!-- Nama + Posisi -->
+      <div class="nameRow">
+        <div class="metaBlock">
+          <div class="metaLabel">Nama</div>
+          <div class="metaValue" id="namaMitra">-</div>
+        </div>
+
+        <div class="metaBlock" style="text-align:right;">
+          <div class="metaLabel">Posisi</div>
+          <div class="metaValue small" id="posisiMitra">Pelaksana</div>
+        </div>
       </div>
 
       <div class="totalsRow">
@@ -450,7 +469,7 @@
 
     <div class="card" id="filterCard" style="display:none;">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-        <div style="font-weight:900; font-size:16px;">Filter</div>
+        <div style="font-weight:800; font-size:16px;">Filter</div>
         <div class="seg">
           <button id="btnAll" class="active-all" onclick="setQuickStatus('ALL')">Semua</button>
           <button id="btnPaid" onclick="setQuickStatus('PAID')">Sudah Cair</button>
@@ -461,8 +480,10 @@
       <div class="grid">
         <div><label>Cetak Invoice (Awal)</label><input type="date" id="tglCetakFrom" /></div>
         <div><label>Cetak Invoice (Akhir)</label><input type="date" id="tglCetakTo" /></div>
-        <div><label>Periode Pencairan</label><div id="periodeBox" class="checkList"></div></div>
-        <div><label>Pekerjaan</label><div id="pekerjaanBox" class="checkList"></div></div>
+
+        <!-- ? (1 baris tinggi + scroll) -->
+        <div><label>Periode Pencairan</label><div id="periodeBox" class="checkList oneRow"></div></div>
+        <div><label>Pekerjaan</label><div id="pekerjaanBox" class="checkList oneRow"></div></div>
 
         <div><label>Penjadwalan Pertama (Awal)</label><input type="date" id="tglKerjaFrom" /></div>
         <div><label>Penjadwalan Pertama (Akhir)</label><input type="date" id="tglKerjaTo" /></div>
@@ -489,8 +510,8 @@
     <div class="card" id="tableCard" style="display:none;">
       <div class="rincianHeader">
         <div>
-          <div style="font-weight:900; font-size:16px;">Rincian</div>
-          <!-- ? (6) hapus teks kecil di bawah rincian -->
+          <div style="font-weight:800; font-size:16px;">Rincian</div>
+          <!-- teks kecil bawah "Rincian" dihapus sesuai request -->
         </div>
         <div class="rincianRight">
           <div id="countInfo" class="soft" style="margin:0;color:var(--muted);">-</div>
@@ -536,8 +557,10 @@
 
   <script>
     const APP_URL = "<?= appUrl ?>";
-    const LOGO_URL = "<?= logoUrl ?>";
     const PREFILL_EMAIL = "<?= prefillEmail ?>";
+
+    // ? logo putih untuk PDF juga (biar konsisten)
+    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png";
 
     let EMAIL = "";
     let ALL_ROWS = [];
@@ -550,7 +573,6 @@
 
     const SORT_IDS = ["tglCetak","periode","tglKerja","spk","koordinator","posisi","pekerjaan","unit","apartemen","biaya","persenPelaksana","komisiPelaksana","statusPencairan","waktuPencairan"];
 
-    /* ? (3) FIX bug Beranda: harus balik ke dashboard, bukan root/logout */
     function goHome(){
       const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || "").trim().toLowerCase();
       if (email) window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
@@ -558,7 +580,6 @@
     }
 
     function logout(){
-      // logout bersih (remember token dari beranda)
       try{
         sessionStorage.removeItem("mitraEmail");
         localStorage.removeItem("rememberToken");
@@ -885,7 +906,12 @@
           FILTERED_ROWS = [...ALL_ROWS];
 
           document.getElementById('namaMitra').innerText = res.namaMitra || "-";
-          sessionStorage.setItem("mitraEmail", res.email); // ? jaga-jaga
+
+          // ? posisi dummy dulu (kalau nanti datanya ada tinggal pakai res.posisiMitra / res.posisi)
+          const posisi = res.posisiMitra || res.posisi || "Pelaksana";
+          document.getElementById('posisiMitra').innerText = posisi;
+
+          sessionStorage.setItem("mitraEmail", res.email);
 
           const fo = res.filterOptions || {};
           renderCheckboxList("periodeBox", fo.periode || [], "periode");
