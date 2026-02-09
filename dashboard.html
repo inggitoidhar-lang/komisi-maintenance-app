@@ -441,7 +441,7 @@
               </div>
             </div>
 
-            <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
+            <div class="barTextTop" id="barTextTop">0/0 ? 0%</div>
 
             <div class="barOuter">
               <div class="barInner" id="barInner"></div>
@@ -556,7 +556,7 @@
 
     <div class="card">
       <div class="sectionTitle">Ringkasan Pengerjaan</div>
-      <div class="sectionNote hideNote">Aktif otomatis kalau kolom “Status Pengerjaan” & “Status Invoice” tersedia.</div>
+      <div class="sectionNote hideNote">Aktif otomatis kalau kolom ?Status Pengerjaan? & ?Status Invoice? tersedia.</div>
 
       <div class="metricGrid">
         <div class="metric brand">
@@ -572,11 +572,11 @@
           <div class="metricVal" id="workNotDone">0</div>
         </div>
         <div class="metric good">
-          <div class="metricTop"><div class="metricLabel">Selesai → Sudah Jadi Invoice</div></div>
+          <div class="metricTop"><div class="metricLabel">Selesai ? Sudah Jadi Invoice</div></div>
           <div class="metricVal" id="workDoneInvoiced">0</div>
         </div>
         <div class="metric bad">
-          <div class="metricTop"><div class="metricLabel">Selesai → Belum Jadi Invoice</div></div>
+          <div class="metricTop"><div class="metricLabel">Selesai ? Belum Jadi Invoice</div></div>
           <div class="metricVal" id="workDoneNotInvoiced">0</div>
         </div>
       </div>
@@ -674,7 +674,7 @@
       </div>
     </div>
 
-    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+    <div class="copyright">? Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
@@ -810,7 +810,7 @@
       const target = Number(computedTarget || 0);
       const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
 
-      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} • ${formatNumber(percent)}%`;
+      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} ? ${formatNumber(percent)}%`;
 
       const bar = document.getElementById("barInner");
       const barTextTop = document.getElementById("barTextTop");
@@ -860,7 +860,7 @@
     }
     function getDummyWithinTop3(){
       return [
-        { name:"Safi’i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
+        { name:"Safi?i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
         { name:"Bima Prakoso", posisi:"Maintenance", total: 6946250, spkCount: 49 },
         { name:"Raka Firmansyah", posisi:"Maintenance", total: 5170000, spkCount: 37 },
       ];
