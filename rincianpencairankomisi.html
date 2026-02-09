@@ -27,6 +27,16 @@
 
       --bg1:#0b2a57;
       --bg2:#0b3b8a;
+
+      /* scrollbar dark (header tone) */
+      --scrollTrack: rgba(11, 42, 87, .12);
+      --scrollThumb: rgba(11, 42, 87, .62);
+      --scrollThumbHover: rgba(11, 42, 87, .78);
+
+      /* dashboard-ish card tints */
+      --cardBlueBg: rgba(0,160,198,.08);
+      --cardGreenBg: rgba(11,128,67,.08);
+      --cardRedBg: rgba(176,0,32,.07);
     }
 
     *{ box-sizing:border-box; }
@@ -49,14 +59,14 @@
       box-shadow: 0 24px 70px rgba(0,0,0,.18);
     }
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    .leftTop{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; } /* jarak logo-teks lebih lega */
-    .logoApp{ height: 46px; width:auto; display:block; } /* ✅ LOGO DIBESARIN (sebelumnya 34px) */
+    .leftTop{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .logoApp{ height: 46px; width:auto; display:block; }
     .title{ font-size: 18px; font-weight: 800; letter-spacing: .2px; color:#fff; }
     .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
 
     .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    /* status pill (samain format homepage: 1 line) */
+    /* status pill */
     .statusPill{
       display:inline-flex; align-items:center; gap:10px;
       padding: 10px 12px; border-radius: 999px;
@@ -109,34 +119,54 @@
     .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 800; min-height: 18px; }
     .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; font-weight: 600; }
 
-    /* Nama + Posisi (baru) */
+    /* ===== NAMA (samain konsep dashboard: nama + pill di samping) ===== */
     .nameRow{
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
       gap: 16px;
       flex-wrap:wrap;
       margin: 4px 0 8px;
     }
-    .metaBlock{ min-width: 220px; }
-    .metaLabel{
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .22px;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .metaValue{
-      margin-top: 4px;
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--brand); /* nama biru muda */
-    }
-    .metaValue.small{
-      font-size: 14px;
-      font-weight: 800;
+
+    /* label "Nama" harus sama rasa dengan "Rincian" (font 16, bold) */
+    .nameTitle{
+      font-weight:800;
+      font-size:16px;
+      color: var(--text);
+      margin-bottom: 6px;
     }
 
+    .nameLine{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .nameValue{
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1.2;
+    }
+
+    /* pill di samping nama (dashboard-style) */
+    .rolePill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.92);
+      font-weight: 800;
+      font-size: 12px;
+      color: rgba(15,23,42,.72);
+      white-space: nowrap;
+    }
+
+    /* ===== Cards summary (pakai konsep dashboard: tint + border bawah + icon kanan) ===== */
     .totalsRow{
       display:grid;
       grid-template-columns: repeat(3, minmax(220px, 1fr));
@@ -147,32 +177,67 @@
     @media (max-width: 980px){ .totalsRow{ grid-template-columns: repeat(2, minmax(220px, 1fr)); } }
     @media (max-width: 520px){ .totalsRow{ grid-template-columns: 1fr; } }
 
-    .totalCard{
+    .sumCard{
       border:1px solid rgba(15,23,42,.10);
       border-radius: 16px;
       padding: 14px;
       background:#fff;
+      position: relative;
+      overflow: hidden;
     }
-    .totalTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
-    .totalLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
+
+    /* ✅ REVISI: pill + icon posisinya persis dashboard (kanan atas sejajar) */
+    .sumTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .sumLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
+
+    .sumRight{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex: 0 0 auto;
+    }
+
+    .sumIcon{
+      width: 30px; height: 30px;
+      border-radius: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.70);
+      flex: 0 0 auto;
+    }
+
+    .sumVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
+
     .pill{
       font-size: 12px;
       font-weight: 800;
       padding: 5px 10px;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.10);
-      background:#f8fafc;
-      color: var(--muted);
+      background: rgba(255,255,255,.85);
+      color: rgba(15,23,42,.68);
       white-space:nowrap;
     }
-    .totalVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
 
-    .totalCard.all{ border-color: rgba(0,160,198,.22); background: rgba(0,160,198,.05); }
-    .totalCard.all .totalVal{ color: var(--brand); }
-    .totalCard.unpaid{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.04); }
-    .totalCard.unpaid .totalVal{ color: var(--unpaid); }
-    .totalCard.paid{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.04); }
-    .totalCard.paid .totalVal{ color: var(--paid); }
+    .sumCard.all{ background: var(--cardBlueBg); border-color: rgba(0,160,198,.22); border-bottom: 4px solid rgba(0,160,198,.85); }
+    .sumCard.all .sumVal{ color: var(--brand); }
+    .sumCard.paid{ background: var(--cardGreenBg); border-color: rgba(11,128,67,.22); border-bottom: 4px solid rgba(11,128,67,.85); }
+    .sumCard.paid .sumVal{ color: var(--paid); }
+    .sumCard.unpaid{ background: var(--cardRedBg); border-color: rgba(176,0,32,.22); border-bottom: 4px solid rgba(176,0,32,.85); }
+    .sumCard.unpaid .sumVal{ color: var(--unpaid); }
+
+    /* ✅ REVISI: tile icon ikut warna card (dashboard vibes) */
+    .sumCard.all .sumIcon{ background: rgba(0,160,198,.12); border-color: rgba(0,160,198,.20); color: rgba(0,160,198,1); }
+    .sumCard.paid .sumIcon{ background: rgba(11,128,67,.12); border-color: rgba(11,128,67,.20); color: rgba(11,128,67,1); }
+    .sumCard.unpaid .sumIcon{ background: rgba(176,0,32,.12); border-color: rgba(176,0,32,.20); color: rgba(176,0,32,1); }
 
     .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .seg button{
@@ -248,15 +313,15 @@
       padding: 8px;
     }
 
-    /* scrollbar biru */
+    /* scrollbar biru tua (samain header/table header tone) */
     .checkList::-webkit-scrollbar{ width:10px; height:10px; }
-    .checkList::-webkit-scrollbar-track{ background: rgba(0,160,198,.10); border-radius: 999px; }
+    .checkList::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
     .checkList::-webkit-scrollbar-thumb{
-      background: rgba(0,160,198,.60);
+      background: var(--scrollThumb);
       border-radius: 999px;
-      border: 2px solid rgba(0,160,198,.10);
+      border: 2px solid var(--scrollTrack);
     }
-    .checkList::-webkit-scrollbar-thumb:hover{ background: rgba(0,160,198,.75); }
+    .checkList::-webkit-scrollbar-thumb:hover{ background: var(--scrollThumbHover); }
 
     .checkItem{
       display:flex;
@@ -266,7 +331,7 @@
       border-radius: 12px;
       cursor:pointer;
     }
-    .checkItem:hover{ background: rgba(0,160,198,.06); }
+    .checkItem:hover{ background: rgba(11,42,87,.06); }
     .checkItem input{
       width: 18px; height: 18px;
       margin-top: 2px;
@@ -301,6 +366,17 @@
       border-radius: 16px;
       background:#fff;
     }
+
+    /* scrollbar table: samain filter */
+    .tableWrap::-webkit-scrollbar{ width:10px; height:10px; }
+    .tableWrap::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .tableWrap::-webkit-scrollbar-thumb{
+      background: var(--scrollThumb);
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+    .tableWrap::-webkit-scrollbar-thumb:hover{ background: var(--scrollThumbHover); }
+
     table{ width:100%; border-collapse: collapse; }
     th, td{
       padding: 10px 10px;
@@ -311,7 +387,6 @@
       background:#fff;
     }
 
-    /* header table solid + z-index tinggi */
     th{
       position: sticky;
       top: 0;
@@ -328,7 +403,7 @@
       box-shadow: 0 2px 0 rgba(15,23,42,.10);
     }
 
-    /* ✅ sort active: biru header (gradient), teks putih */
+    /* sort active: biru tua gradient, teks putih */
     th.sortActive{
       color: #fff !important;
       background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important;
@@ -349,20 +424,7 @@
     .rincianRight{ display:flex; align-items:center; gap:10px; justify-content:flex-end; }
 
     .btnIconWhite{
-      width: 44px;
       height: 44px;
-      border-radius: 14px;
-      border: 1px solid rgba(15,23,42,.12);
-      background:#fff;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .btnIconWhite:hover{ background: var(--soft); }
-
-    .btnIconText{
-      height:44px;
       padding: 0 14px;
       border-radius: 999px;
       border: 1px solid rgba(15,23,42,.12);
@@ -374,8 +436,27 @@
       gap:10px;
       font-weight: 800;
       font-size: 14px;
+      color: #0b1220;
     }
-    .btnIconText:hover{ background: var(--soft); }
+    .btnIconWhite:hover{ background: var(--soft); }
+    .btnIconWhite:disabled{ opacity:.55; cursor:not-allowed; }
+
+    /* reset button (konsisten & simple) */
+    .btnReset{
+      height:44px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0b1220;
+    }
+    .btnReset:hover{ background: var(--soft); }
 
     .copyright{
       text-align:center;
@@ -385,6 +466,29 @@
       color: rgba(15,23,42,.55);
       letter-spacing:.2px;
     }
+
+    /* =========================
+       ✅ REVISI: SCROLLBAR SEMUA (PAGE + CHECKLIST + TABLE) jadi gradient kayak header
+       - Tidak mengubah yang lain, hanya override scrollbar
+       ========================= */
+    :root{
+      --scrollThumbGrad: linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    body::-webkit-scrollbar{ width:10px; height:10px; }
+    body::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    body::-webkit-scrollbar-thumb{
+      background: var(--scrollThumbGrad);
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+    body::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    .checkList::-webkit-scrollbar-thumb{ background: var(--scrollThumbGrad); }
+    .checkList::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    .tableWrap::-webkit-scrollbar-thumb{ background: var(--scrollThumbGrad); }
+    .tableWrap::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
   </style>
 </head>
 
@@ -393,7 +497,8 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png" alt="Jendela360" />
+          <!-- (1) LOGO HEADER: sesuai request -->
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Cek Komisi" />
           <div>
             <div class="title">Rincian Pencairan Komisi</div>
             <div class="subtitle">Cek rincian komisi berdasarkan invoice yang telah terbit</div>
@@ -439,31 +544,67 @@
     </div>
 
     <div class="card" id="mainCard" style="display:none;">
-      <!-- Nama + Posisi -->
+      <!-- (3) NAMA: samain dashboard (nama + pill di samping) -->
       <div class="nameRow">
-        <div class="metaBlock">
-          <div class="metaLabel">Nama</div>
-          <div class="metaValue" id="namaMitra">-</div>
-        </div>
-
-        <div class="metaBlock" style="text-align:right;">
-          <div class="metaLabel">Posisi</div>
-          <div class="metaValue small" id="posisiMitra">Pelaksana</div>
+        <div>
+          <div class="nameTitle">Nama</div>
+          <div class="nameLine">
+            <div class="nameValue" id="namaMitra">-</div>
+            <div class="rolePill" id="posisiMitraPill">Pelaksana</div>
+          </div>
         </div>
       </div>
 
+      <!-- (7) Card summary: konsep dashboard -->
       <div class="totalsRow">
-        <div class="totalCard all">
-          <div class="totalTop"><div class="totalLabel">Total Komisi</div><div class="pill" id="spkAll">0 SPK</div></div>
-          <div class="totalVal" id="totalAll">Rp 0</div>
+        <div class="sumCard all">
+          <div class="sumTop">
+            <div class="sumLabel">Total Komisi</div>
+            <div class="sumRight">
+              <div class="pill" id="spkAll">0 SPK</div>
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h7v7H4V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 4h7v7h-7V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M4 13h7v7H4v-7Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 13h7v7h-7v-7Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalAll">Rp 0</div>
         </div>
-        <div class="totalCard paid">
-          <div class="totalTop"><div class="totalLabel">Sudah Cair</div><div class="pill" id="spkPaid">0 SPK</div></div>
-          <div class="totalVal" id="totalPaid">Rp 0</div>
+
+        <div class="sumCard paid">
+          <div class="sumTop">
+            <div class="sumLabel">Sudah Cair</div>
+            <div class="sumRight">
+              <div class="pill" id="spkPaid">0 SPK</div>
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalPaid">Rp 0</div>
         </div>
-        <div class="totalCard unpaid">
-          <div class="totalTop"><div class="totalLabel">Belum Cair</div><div class="pill" id="spkUnpaid">0 SPK</div></div>
-          <div class="totalVal" id="totalUnpaid">Rp 0</div>
+
+        <div class="sumCard unpaid">
+          <div class="sumTop">
+            <div class="sumLabel">Belum Cair</div>
+            <div class="sumRight">
+              <div class="pill" id="spkUnpaid">0 SPK</div>
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M10.3 4.3 2.7 19.7a2 2 0 0 0 1.8 2.3h15a2 2 0 0 0 1.8-2.3L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalUnpaid">Rp 0</div>
         </div>
       </div>
 
@@ -484,6 +625,7 @@
         <div><label>Cetak Invoice (Awal)</label><input type="date" id="tglCetakFrom" /></div>
         <div><label>Cetak Invoice (Akhir)</label><input type="date" id="tglCetakTo" /></div>
 
+        <!-- (filter periode & pekerjaan tetap ADA) -->
         <div><label>Periode Pencairan</label><div id="periodeBox" class="checkList oneRow"></div></div>
         <div><label>Pekerjaan</label><div id="pekerjaanBox" class="checkList oneRow"></div></div>
 
@@ -495,15 +637,14 @@
         <div><label>Cari Kode Unit</label><input id="qUnit" placeholder="contoh: NWCC003" /></div>
         <div><label>Cari No. SPK</label><input id="qSpk" placeholder="contoh: A26JAN2731" /></div>
 
+        <!-- (9) tombol reset konsisten -->
         <div style="display:flex; align-items:end;">
-          <button class="btnIconText" onclick="clearFilters()" title="Hapus Filter" aria-label="Hapus Filter">
+          <button class="btnReset" onclick="clearFilters()" title="Reset Filter" aria-label="Reset Filter">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M3 21h18" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
-              <path d="M7 20 16 11" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
-              <path d="M14 5l5 5" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M11 8l5 5" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 12a9 9 0 1 1-3-6.7" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 3v7h-7" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Hapus Filter
+            Reset
           </button>
         </div>
       </div>
@@ -516,12 +657,15 @@
         </div>
         <div class="rincianRight">
           <div id="countInfo" class="soft" style="margin:0;color:var(--muted);">-</div>
-          <button id="btnExportPdf" class="btnIconWhite" onclick="exportPdf()" disabled title="Export PDF" aria-label="Export PDF">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+
+          <!-- (6) tombol export jadi "Unduh Rincian" + icon -->
+          <button id="btnExportPdf" class="btnIconWhite" onclick="exportPdf()" disabled title="Unduh Rincian" aria-label="Unduh Rincian">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M12 3v10" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
               <path d="M8 11l4 4 4-4" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M5 21h14" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
             </svg>
+            Unduh Rincian
           </button>
         </div>
       </div>
@@ -553,15 +697,16 @@
       </div>
     </div>
 
-    <div class="copyright">? Internal Tools by HCGA Jendela360 (IIA)</div>
+    <!-- (5) footer © -->
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
   <script>
     const APP_URL = "<?= appUrl ?>";
     const PREFILL_EMAIL = "<?= prefillEmail ?>";
 
-    // ✅ PDF logo pakai logo "sebelumnya" (yang kamu minta)
-    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770465091/Logo_Jendela_Putih_yykal8.png";
+    // (2) LOGO EXPORT PDF (beda dengan header)
+    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770355270/Logo_Jendela_Warna_asbatd.png";
 
     let EMAIL = "";
     let ALL_ROWS = [];
@@ -909,7 +1054,7 @@
           document.getElementById('namaMitra').innerText = res.namaMitra || "-";
 
           const posisi = res.posisiMitra || res.posisi || "Pelaksana";
-          document.getElementById('posisiMitra').innerText = posisi;
+          document.getElementById('posisiMitraPill').innerText = posisi;
 
           sessionStorage.setItem("mitraEmail", res.email);
 
