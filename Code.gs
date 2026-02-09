@@ -32,7 +32,7 @@ function doGet(e) {
   const appUrl = ScriptApp.getService().getUrl();
   const email = (e && e.parameter && e.parameter.email) ? String(e.parameter.email).trim().toLowerCase() : "";
 
-  // page ? file mapping
+  // page → file mapping
   // default: login
   let file = "login";
 
@@ -68,7 +68,7 @@ function doGet(e) {
     };
 
     return t.evaluate()
-      .setTitle("Pemeriksa Komisi ? Maintenance")
+      .setTitle("Pemeriksa Komisi – Maintenance")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 
   } catch (err) {
@@ -85,7 +85,7 @@ function doGet(e) {
         <ol>
           <li>Pastikan URL /exec yang dibuka berasal dari deployment project ini.</li>
           <li>Pastikan file HTML ada: login.html, dashboard.html, rincianpencairankomisi.html, placeholder.html, ranking.html</li>
-          <li>Setelah ganti file/kode: Deploy ? Manage deployments ? Edit ? New version ? Deploy</li>
+          <li>Setelah ganti file/kode: Deploy → Manage deployments → Edit → New version → Deploy</li>
           <li>Buka lagi /exec di tab baru atau hard refresh</li>
         </ol>
       </div>`
@@ -235,7 +235,7 @@ function requestOtp(emailInput){
       'Berlaku selama 5 menit.\n\n' +
       'Jangan bagikan kode ini ke siapa pun.\n\n' +
       'Terima Kasih - Admin Cek Komisi Divisi Maintenance Jendela360\n\n' +
-      '? Internal Tools by HCGA Jendela360 (IIA)';
+      '© Internal Tools by HCGA Jendela360 (IIA)';
 
     // HTML body: OTP bold & besar + logo persis di bawah copyright
     const logoBottom = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658191/5_totgo8.png";
@@ -258,7 +258,7 @@ function requestOtp(emailInput){
         <br/>
         <div>Terima Kasih - Admin Cek Komisi Divisi Maintenance Jendela360</div>
         <div style="margin-top:10px; font-size:12px; color:#64748b;">
-          ? Internal Tools by HCGA Jendela360 (IIA)
+          © Internal Tools by HCGA Jendela360 (IIA)
         </div>
         <div style="margin-top:10px; text-align:center;">
           <img src="${logoBottom}" alt="Jendela360" style="height:64px; width:auto; display:inline-block;" />
