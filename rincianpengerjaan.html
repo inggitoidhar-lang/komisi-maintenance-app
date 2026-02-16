@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root{
+      --brand:#00a0c6;
+      --text:#0b1220;
+      --muted:#64748b;
+      --border:rgba(15, 23, 42, .10);
+      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+      --radius: 18px;
+
+      --bg1:#0b2a57;
+      --bg2:#0b3b8a;
+
+      --soft:#f7fafc;
+
+      --scrollTrack: rgba(11, 42, 87, .12);
+      --scrollThumb: rgba(11, 42, 87, .62);
+      --scrollThumbHover: rgba(11, 42, 87, .78);
+
+      --cardBlueBg: rgba(0,160,198,.08);
+      --cardGreenBg: rgba(11,128,67,.08);
+      --cardRedBg: rgba(176,0,32,.07);
+      --cardGrayBg: rgba(100,116,139,.10);
+
+      --done:#0b8043;
+      --notdone:#b00020;
+      --gray:#64748b;
+
+      --invoiceGreenBg: rgba(11,128,67,.10);
+      --invoiceGreenBorder: rgba(11,128,67,.32);
+      --invoiceGreenText: rgba(11,128,67,1);
+
+      --invoiceRedBg: rgba(176,0,32,.09);
+      --invoiceRedBorder: rgba(176,0,32,.28);
+      --invoiceRedText: rgba(176,0,32,1);
+
+      --hlBlueBg: rgba(0,160,198,.12);
+      --hlBlueBorder: rgba(0,160,198,.30);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:#ffffff;
+      min-height: 100vh;
+    }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
+
+    /* header (identic style) */
+    .top{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.18);
+    }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .leftTop{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .logoApp{ height: 46px; width:auto; display:block; }
+    .title{ font-size: 18px; font-weight: 800; letter-spacing: .2px; color:#fff; }
+    .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
+
+    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .statusPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.75);
+      font-weight: 800; font-size: 13px;
+      white-space: nowrap;
+    }
+    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
+    .statusText{ display:inline-flex; align-items:center; gap:8px; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 800; }
+    .statusText .email{ color: #fff; font-weight: 800; }
+
+    /* ✅ REVISI: tampilkan "• Login sebagai Pengguna" seperti dashboard */
+    .statusText .sep{ color: rgba(255,255,255,.65); font-weight: 900; }
+    .statusText .asLabel{ color: rgba(255,255,255,.75); font-weight: 800; }
+    .statusText .role{ color:#fff; font-weight: 900; }
+
+    .btnSmall{
+      height:44px; padding: 0 14px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      font-weight: 800; font-size: 14px;
+      color:#fff;
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    .btnSmall:hover{ background: rgba(255,255,255,.18); }
+
+    .btnIcon{
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .btnIcon:hover{ background: rgba(255,255,255,.18); }
+
+    .card{
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 800; min-height: 18px; }
+    .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; font-weight: 600; }
+
+    /* name row */
+    .nameRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 16px;
+      flex-wrap:wrap;
+      margin: 4px 0 8px;
+    }
+    .nameTitle{
+      font-weight:800;
+      font-size:16px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .nameLine{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .nameValue{
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1.2;
+    }
+    .rolePill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.92);
+      font-weight: 800;
+      font-size: 12px;
+      color: rgba(15,23,42,.72);
+      white-space: nowrap;
+    }
+
+    /* summary cards (5 sejajar) */
+    .totalsRow{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(200px, 1fr));
+      gap: 10px;
+      align-items:stretch;
+      margin-top: 12px;
+    }
+    @media (max-width: 1180px){ .totalsRow{ grid-template-columns: repeat(2, minmax(220px, 1fr)); } }
+    @media (max-width: 520px){ .totalsRow{ grid-template-columns: 1fr; } }
+
+    .sumCard{
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      padding: 14px;
+      background:#fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .sumTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .sumLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
+    .sumRight{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex: 0 0 auto;
+    }
+    .sumIcon{
+      width: 30px; height: 30px;
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.70);
+      flex: 0 0 auto;
+    }
+    .sumVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
+
+    .sumCard.all{ background: var(--cardBlueBg); border-color: rgba(0,160,198,.22); border-bottom: 4px solid rgba(0,160,198,.85); }
+    .sumCard.all .sumVal{ color: var(--brand); }
+
+    .sumCard.done{ background: var(--cardGreenBg); border-color: rgba(11,128,67,.22); border-bottom: 4px solid rgba(11,128,67,.85); }
+    .sumCard.done .sumVal{ color: var(--done); }
+
+    .sumCard.notdone{ background: var(--cardRedBg); border-color: rgba(176,0,32,.22); border-bottom: 4px solid rgba(176,0,32,.85); }
+    .sumCard.notdone .sumVal{ color: var(--notdone); }
+
+    .sumCard.inv{ background: var(--cardGreenBg); border-color: rgba(11,128,67,.22); border-bottom: 4px solid rgba(11,128,67,.85); }
+    .sumCard.inv .sumVal{ color: var(--done); }
+
+    .sumCard.noinv{ background: var(--cardRedBg); border-color: rgba(176,0,32,.22); border-bottom: 4px solid rgba(176,0,32,.85); }
+    .sumCard.noinv .sumVal{ color: var(--notdone); }
+
+    .sumCard.all .sumIcon{ background: rgba(0,160,198,.12); border-color: rgba(0,160,198,.20); color: rgba(0,160,198,1); }
+    .sumCard.done .sumIcon{ background: rgba(11,128,67,.12); border-color: rgba(11,128,67,.20); color: rgba(11,128,67,1); }
+    .sumCard.notdone .sumIcon{ background: rgba(176,0,32,.12); border-color: rgba(176,0,32,.20); color: rgba(176,0,32,1); }
+    .sumCard.inv .sumIcon{ background: rgba(11,128,67,.12); border-color: rgba(11,128,67,.20); color: rgba(11,128,67,1); }
+    .sumCard.noinv .sumIcon{ background: rgba(176,0,32,.12); border-color: rgba(176,0,32,.20); color: rgba(176,0,32,1); }
+
+    /* filter */
+    .seg{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .seg button{
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor:pointer;
+      font-size: 14px;
+      font-family: inherit;
+      user-select:none;
+    }
+    .seg button.active-all{
+      border-color: rgba(0,160,198,.55);
+      background: rgba(0,160,198,.12);
+      color: var(--brand);
+    }
+    .seg button.active-done{
+      border-color: rgba(11,128,67,.55);
+      background: rgba(11,128,67,.12);
+      color: var(--done);
+    }
+    .seg button.active-notdone{
+      border-color: rgba(176,0,32,.55);
+      background: rgba(176,0,32,.12);
+      color: var(--notdone);
+    }
+    .seg button.active-inv{
+      border-color: rgba(11,128,67,.55);
+      background: rgba(11,128,67,.12);
+      color: rgba(11,128,67,1);
+    }
+    .seg button.active-noinv{
+      border-color: rgba(176,0,32,.55);
+      background: rgba(176,0,32,.09);
+      color: rgba(176,0,32,1);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, minmax(200px, 1fr)); } }
+    @media (max-width: 520px){ .grid{ grid-template-columns: 1fr; } }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    input{
+      width:100%;
+      height:48px;
+      padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      font-size: 15px;
+      outline:none;
+      background:#fff;
+      font-family: inherit;
+      font-weight: 700;
+    }
+
+    .checkList{
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      padding: 6px 10px;
+      height: 48px;
+      overflow:auto;
+      background:#fff;
+    }
+    .checkList::-webkit-scrollbar{ width:10px; height:10px; }
+    .checkList::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .checkList::-webkit-scrollbar-thumb{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+    .checkList::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    .checkItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 6px 6px;
+      border-radius: 12px;
+      cursor:pointer;
+      min-height: 34px;
+    }
+    .checkItem:hover{ background: rgba(11,42,87,.06); }
+    .checkItem input{
+      width: 18px; height: 18px;
+      margin: 0;
+      accent-color: var(--brand);
+      flex: 0 0 auto;
+    }
+    .checkItem span{
+      font-size: 14px;
+      line-height: 1.2;
+      white-space: nowrap;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .btnReset{
+      height:48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0b1220;
+      width:100%;
+      justify-content:center;
+    }
+    .btnReset:hover{ background: var(--soft); }
+
+    /* table */
+    .tableWrap{
+      overflow:auto;
+      max-height: 60vh;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      background:#fff;
+    }
+    .tableWrap::-webkit-scrollbar{ width:10px; height:10px; }
+    .tableWrap::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .tableWrap::-webkit-scrollbar-thumb{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+    .tableWrap::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    table{ width:100%; border-collapse: collapse; }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(15,23,42,.10);
+      text-align:left;
+      white-space: nowrap;
+      font-size: 14px;
+      background:#fff;
+      vertical-align: top;
+    }
+    th{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #fff !important;
+      opacity: 1 !important;
+      font-size: 12px;
+      letter-spacing: .22px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 800;
+      cursor: pointer;
+      user-select:none;
+      box-shadow: 0 2px 0 rgba(15,23,42,.10);
+      padding: 8px 10px;
+      line-height: 1.15;
+    }
+    th.sortActive{
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important;
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,.30);
+    }
+    .sortArrow{ width: 10px; height: 10px; opacity:.95; display:inline-block; vertical-align: middle; margin-left: 6px; color: currentColor; }
+
+    th.colApartemen, td.colApartemen,
+    th.colStatus, td.colStatus{
+      white-space: normal;
+      max-width: 180px;
+    }
+
+    .rincianHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .rincianRight{ display:flex; align-items:center; gap:10px; justify-content:flex-end; }
+
+    .btnIconWhite{
+      height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0b1220;
+    }
+    .btnIconWhite:hover{ background: var(--soft); }
+    .btnIconWhite:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid;
+      white-space:nowrap;
+    }
+    .badge.done{ color: var(--done); border-color: rgba(11,128,67,.35); background: rgba(11,128,67,.10); }
+    .badge.notdone{ color: var(--notdone); border-color: rgba(176,0,32,.35); background: rgba(176,0,32,.09); }
+    .badge.gray{ color: rgba(15,23,42,.68); border-color: rgba(15,23,42,.18); background: rgba(255,255,255,.92); }
+
+    .invoicePill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.92);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(15,23,42,.75);
+      white-space: nowrap;
+    }
+    .invoicePill.inv{
+      border-color: var(--invoiceGreenBorder);
+      background: var(--invoiceGreenBg);
+      color: var(--invoiceGreenText);
+    }
+    .invoicePill.notinv{
+      border-color: var(--invoiceRedBorder);
+      background: var(--invoiceRedBg);
+      color: var(--invoiceRedText);
+    }
+
+    .cekBtn{
+      border: 1px solid rgba(15,23,42,.16);
+      background: rgba(0,160,198,.12);
+      color: rgba(0,160,198,1);
+      font-weight: 900;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      line-height: 1;
+    }
+    .invoicePill.inv .cekBtn{
+      background: rgba(11,128,67,.16);
+      border-color: rgba(11,128,67,.30);
+      color: rgba(11,128,67,1);
+    }
+    .invoicePill.inv .cekBtn:hover{
+      background: rgba(11,128,67,.22);
+    }
+    .invoicePill.notinv .cekBtn{
+      background: rgba(176,0,32,.12);
+      border-color: rgba(176,0,32,.30);
+      color: rgba(176,0,32,1);
+    }
+    .invoicePill.notinv .cekBtn:hover{
+      background: rgba(176,0,32,.18);
+    }
+    .cekBtn:hover{ background: rgba(0,160,198,.18); }
+
+    .cekBtn.red{
+      background: rgba(176,0,32,.10);
+      color: rgba(176,0,32,1);
+      border-color: rgba(176,0,32,.20);
+      cursor: not-allowed;
+    }
+    .cekBtn.red:hover{ background: rgba(176,0,32,.10); }
+
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, .55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .modal{
+      width: min(720px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid rgba(15,23,42,.12);
+      box-shadow: 0 24px 80px rgba(0,0,0,.28);
+      overflow: hidden;
+    }
+    .modalHead{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+    }
+    .modalTitle{
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: .2px;
+    }
+    .modalClose{
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      color:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .modalClose:hover{ background: rgba(255,255,255,.18); }
+    .modalBody{
+      padding: 16px;
+    }
+    .kv{
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap: 10px 14px;
+      align-items:start;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(247,250,252,.65);
+    }
+    @media (max-width: 640px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .k{
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(15,23,42,.65);
+      text-transform: uppercase;
+      letter-spacing: .22px;
+    }
+    .v{
+      font-size: 14px;
+      font-weight: 800;
+      color: #0b1220;
+      word-break: break-word;
+      border-radius: 12px;
+      padding: 4px 6px;
+    }
+    .v.hlKomisi{
+      background: var(--hlBlueBg);
+      border: 1px solid var(--hlBlueBorder);
+      color: rgba(0,160,198,1);
+      font-weight: 900;
+    }
+
+    .modalMsg{
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #b00020;
+      min-height: 18px;
+    }
+    .modalMsg.loading{
+      color: rgba(15,23,42,.75);
+    }
+
+    .copyright{
+      text-align:center;
+      margin:16px 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(15,23,42,.55);
+      letter-spacing:.2px;
+    }
+
+    body::-webkit-scrollbar{ width:10px; height:10px; }
+    body::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    body::-webkit-scrollbar-thumb{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+    body::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="topRow">
+        <div class="leftTop">
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Cek Komisi" />
+          <div>
+            <div class="title">Rincian Pengerjaan</div>
+            <div class="subtitle">Laman Cek Rincian Pengerjaan</div>
+          </div>
+        </div>
+
+        <div class="topActions">
+          <div class="statusPill">
+            <span class="dot"></span>
+            <span class="statusText">
+              <span class="label">Sedang Masuk</span>
+              <span class="email" id="loginEmailPill">-</span>
+              <span class="sep">•</span>
+              <span class="asLabel">Login sebagai</span>
+              <span class="role" id="loginRolePill">Pengguna</span>
+            </span>
+          </div>
+
+          <button class="btnIcon" onclick="goHome()" title="Beranda" aria-label="Beranda">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 10.5L12 3l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5.5 9.5V21h13V9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 21v-6h4v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="gateCard">
+      <div style="font-weight:800;font-size:16px;">Akses Ditolak</div>
+      <div class="soft">Kamu perlu masuk dulu dari Beranda.</div>
+      <div id="gateMsg" class="msg"></div>
+      <div style="margin-top:12px;">
+        <button class="btnSmall" style="background:#fff;color:#0b1220;border-color:rgba(15,23,42,.12)" onclick="goHome()">Kembali Ke Beranda</button>
+      </div>
+    </div>
+
+    <div class="card" id="mainCard" style="display:none;">
+      <div class="nameRow">
+        <div>
+          <div class="nameTitle">Nama</div>
+          <div class="nameLine">
+            <div class="nameValue" id="namaMitra">-</div>
+            <div class="rolePill" id="posisiMitraPill">Pelaksana</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 summary cards -->
+      <div class="totalsRow">
+        <div class="sumCard all">
+          <div class="sumTop">
+            <div class="sumLabel">Total Pengerjaan</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h7v7H4V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 4h7v7h-7V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M4 13h7v7H4v-7Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 13h7v7h-7v-7Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalAll">0</div>
+        </div>
+
+        <div class="sumCard done">
+          <div class="sumTop">
+            <div class="sumLabel">Pengerjaan Sudah Selesai</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalDone">0</div>
+        </div>
+
+        <div class="sumCard notdone">
+          <div class="sumTop">
+            <div class="sumLabel">Pengerjaan Belum Selesai</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M10.3 4.3 2.7 19.7a2 2 0 0 0 1.8 2.3h15a2 2 0 0 0 1.8-2.3L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalNotDone">0</div>
+        </div>
+
+        <div class="sumCard inv">
+          <div class="sumTop">
+            <div class="sumLabel">Selesai • Sudah Jadi Invoice</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalInv">0</div>
+        </div>
+
+        <div class="sumCard noinv">
+          <div class="sumTop">
+            <div class="sumLabel">Selesai • Belum Jadi Invoice</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M10.3 4.3 2.7 19.7a2 2 0 0 0 1.8 2.3h15a2 2 0 0 0 1.8-2.3L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalNoInv">0</div>
+        </div>
+      </div>
+
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <div class="card" id="filterCard" style="display:none;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div style="font-weight:800; font-size:16px;">Filter</div>
+        <div class="seg">
+          <button id="btnAll" class="active-all" onclick="setQuickStatus('ALL')">Semua</button>
+          <button id="btnDone" onclick="setQuickStatus('DONE')">Pengerjaan Sudah Selesai</button>
+          <button id="btnNotDone" onclick="setQuickStatus('NOT_DONE')">Pengerjaan Belum Selesai</button>
+          <button id="btnInv" onclick="setQuickStatus('DONE_INVOICED')">Selesai • Sudah Jadi Invoice</button>
+          <button id="btnNoInv" onclick="setQuickStatus('DONE_NOT_INVOICED')">Selesai • Belum Jadi Invoice</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div><label>Penjadwalan Pertama (Awal)</label><input type="date" id="tglJadwalFrom" /></div>
+        <div><label>Penjadwalan Pertama (Akhir)</label><input type="date" id="tglJadwalTo" /></div>
+        <div><label>Cetak Invoice (Awal)</label><input type="date" id="tglCetakFrom" /></div>
+        <div><label>Cetak Invoice (Akhir)</label><input type="date" id="tglCetakTo" /></div>
+
+        <div>
+          <label>Pekerjaan</label>
+          <div id="pekerjaanBox" class="checkList"></div>
+        </div>
+        <div><label>Cari No. SPK</label><input id="qSpk" placeholder="contoh: A26JAN2731" /></div>
+        <div><label>Cari Kode Unit</label><input id="qUnit" placeholder="contoh: NWCC003" /></div>
+        <div style="display:flex; align-items:end;">
+          <button class="btnReset" onclick="clearFilters()" title="Reset Filter" aria-label="Reset Filter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-3-6.7" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 3v7h-7" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="tableCard" style="display:none;">
+      <div class="rincianHeader">
+        <div>
+          <div style="font-weight:800; font-size:16px;">Rincian</div>
+        </div>
+        <div class="rincianRight">
+          <div id="countInfo" class="soft" style="margin:0;color:var(--muted);">-</div>
+
+          <button id="btnExportPdf" class="btnIconWhite" onclick="exportPdf()" disabled title="Unduh Rincian" aria-label="Unduh Rincian">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v10" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 11l4 4 4-4" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 21h14" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Unduh Rincian
+          </button>
+        </div>
+      </div>
+
+      <div class="tableWrap" style="margin-top:10px;">
+        <table>
+          <thead>
+            <tr>
+              <th data-key="penjadwalanPertama" onclick="sortBy('penjadwalanPertama')">Penjadwalan Pertama <span id="s_penjadwalanPertama" class="sortArrow"></span></th>
+              <th data-key="spk" onclick="sortBy('spk')">No. SPK <span id="s_spk" class="sortArrow"></span></th>
+              <th data-key="koordinator" onclick="sortBy('koordinator')">Koordinator <span id="s_koordinator" class="sortArrow"></span></th>
+              <th data-key="posisi" onclick="sortBy('posisi')">Posisi <span id="s_posisi" class="sortArrow"></span></th>
+              <th data-key="pekerjaan" onclick="sortBy('pekerjaan')">Pekerjaan <span id="s_pekerjaan" class="sortArrow"></span></th>
+              <th data-key="unit" onclick="sortBy('unit')">Kode Unit <span id="s_unit" class="sortArrow"></span></th>
+              <th class="colApartemen" data-key="apartemen" onclick="sortBy('apartemen')">Apartemen <span id="s_apartemen" class="sortArrow"></span></th>
+              <th class="colStatus" data-key="statusPengerjaan" onclick="sortBy('statusPengerjaan')">Status Pengerjaan <span id="s_statusPengerjaan" class="sortArrow"></span></th>
+              <th data-key="cetakInvoice" onclick="sortBy('cetakInvoice')">Cetak Invoice <span id="s_cetakInvoice" class="sortArrow"></span></th>
+              <th data-key="statusJadiInvoice" onclick="sortBy('statusJadiInvoice')">Status Jadi Invoice <span id="s_statusJadiInvoice" class="sortArrow"></span></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="10">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="overlay" class="overlay" onclick="overlayClick(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Rincian Pencairan Komisi" onclick="event.stopPropagation()">
+      <div class="modalHead">
+        <div class="modalTitle">Rincian Pencairan Komisi</div>
+        <button class="modalClose" onclick="closeModal()" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modalBody">
+        <div id="modalKv" class="kv"></div>
+        <div id="modalMsg" class="modalMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const APP_URL = "<?= appUrl ?>";
+    const PREFILL_EMAIL = "<?= prefillEmail ?>";
+
+    const LOGO_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1770355270/Logo_Jendela_Warna_asbatd.png";
+
+    let EMAIL = "";
+    let LOGIN_NAME = "";
+    let ALL_ROWS = [];
+    let FILTERED_ROWS = [];
+    let QUICK_STATUS = "ALL";
+    let isLoadedOnce = false;
+
+    let SORT_KEY = "penjadwalanPertama";
+    let SORT_DIR = "desc";
+
+    const SORT_IDS = [
+      "penjadwalanPertama","spk","koordinator","posisi","pekerjaan","unit","apartemen",
+      "statusPengerjaan","cetakInvoice","statusJadiInvoice"
+    ];
+
+    function goHome(){
+      const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || "").trim().toLowerCase();
+      if (email) window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
+      else window.top.location.href = APP_URL;
+    }
+
+    function logout(){
+      try{
+        sessionStorage.removeItem("mitraEmail");
+        localStorage.removeItem("rememberToken");
+      }catch(e){}
+      window.top.location.href = APP_URL;
+    }
+
+    function getEmail(){
+      const fromTpl = (PREFILL_EMAIL || "").trim().toLowerCase();
+      const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
+      return fromTpl || fromSession;
+    }
+
+    function safeParseJson(maybeJson) {
+      if (typeof maybeJson === "object" && maybeJson !== null) return maybeJson;
+      if (typeof maybeJson !== "string") return null;
+      try { return JSON.parse(maybeJson); } catch(e){ return null; }
+    }
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(n || 0); }
+
+    function formatDateLong(d){
+      if (!d) return "";
+      const dt = new Date(d);
+      if (isNaN(dt)) return "";
+      return dt.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+    }
+    function formatDateOnly(d){ return formatDateLong(d); }
+
+    function setMessage(text){ document.getElementById('msg').innerText = text || ""; }
+
+    function norm(s){ return String(s || "").toLowerCase().trim(); }
+
+    function isDoneWork(statusText){
+      const s = norm(statusText);
+      if (!s) return false;
+      return s.includes("pekerjaan selesai") || s === "selesai" || s.includes("selesai");
+    }
+
+    function isNotDoneWork(statusText){
+      const s = norm(statusText);
+      if (!s) return false;
+
+      if (s.includes("pekerjaan dijadwalkan ulang")) return true;
+      if (s.includes("pekerjaan dibatalkan")) return true;
+      if (s.includes("belum dapat pelaksana")) return true;
+
+      if (s.includes("dalam pengerjaan")) return true;
+      if (s.includes("progress")) return true;
+      if (s.includes("ongoing")) return true;
+      if (s.includes("on going")) return true;
+      if (s.includes("belum")) return true;
+
+      return false;
+    }
+
+    function isInvoiced(statusText){
+      const s = norm(statusText);
+      if (!s) return false;
+      if (s.includes("sudah")) return true;
+      if (s.includes("terbit")) return true;
+      if (s.includes("issued")) return true;
+      if (s.includes("invoiced")) return true;
+      return false;
+    }
+
+    function renderWorkBadge(statusText){
+      if (isDoneWork(statusText)) return `<span class="badge done">${escapeHtml(statusText || "Pekerjaan Selesai")}</span>`;
+      if (isNotDoneWork(statusText)) return `<span class="badge notdone">${escapeHtml(statusText || "Belum Selesai")}</span>`;
+      return `<span class="badge gray">${escapeHtml(statusText || "-")}</span>`;
+    }
+
+    function renderInvoicePill(statusText, row){
+      const inv = isInvoiced(statusText);
+      const label = (statusText && String(statusText).trim()) ? String(statusText).trim() : (inv ? "Sudah Jadi Invoice" : "Belum Jadi Invoice");
+      const uci = (row && row.uniqueCodeInvoice) ? String(row.uniqueCodeInvoice) : "";
+
+      if (inv){
+        return `
+          <span class="invoicePill inv">
+            <span>${escapeHtml(label)}</span>
+            <button class="cekBtn" onclick="onCekClick(event,'${escapeHtml(uci)}')">CEK</button>
+          </span>
+        `;
+      }
+
+      return `
+        <span class="invoicePill notinv">
+          <span>${escapeHtml(label)}</span>
+          <button class="cekBtn red" onclick="event.stopPropagation()">CEK</button>
+        </span>
+      `;
+    }
+
+    function renderCheckboxList(containerId, items, groupName){
+      const box = document.getElementById(containerId);
+      box.innerHTML = "";
+      (items || []).forEach((it, idx) => {
+        const id = `${groupName}_${idx}`;
+        const row = document.createElement("label");
+        row.className = "checkItem";
+        row.setAttribute("for", id);
+        row.innerHTML = `<input id="${id}" type="checkbox" value="${escapeHtml(it)}" /><span>${escapeHtml(it)}</span>`;
+        row.addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+        box.appendChild(row);
+      });
+    }
+    function getCheckedValues(containerId){
+      const box = document.getElementById(containerId);
+      const inputs = box.querySelectorAll("input[type='checkbox']");
+      return Array.from(inputs).filter(i => i.checked).map(i => i.value);
+    }
+    function clearChecked(containerId){
+      const box = document.getElementById(containerId);
+      const inputs = box.querySelectorAll("input[type='checkbox']");
+      inputs.forEach(i => i.checked = false);
+    }
+
+    /* ✅ REVISI: inv/noinv dihitung hanya dari yang DONE (biar sama dashboard) */
+    function calcTotals(rows){
+      const out = { all:0, done:0, notdone:0, inv:0, noinv:0 };
+
+      (rows || []).forEach(r => {
+        out.all += 1;
+
+        const done = isDoneWork(r.statusPengerjaan);
+        if (done) out.done += 1;
+        else if (isNotDoneWork(r.statusPengerjaan)) out.notdone += 1;
+
+        if (done){
+          if (isInvoiced(r.statusJadiInvoice)) out.inv += 1;
+          else out.noinv += 1;
+        }
+      });
+
+      return out;
+    }
+
+    function renderTotals(rows){
+      const t = calcTotals(rows);
+      document.getElementById('totalAll').innerText = formatNumber(t.all);
+      document.getElementById('totalDone').innerText = formatNumber(t.done);
+      document.getElementById('totalNotDone').innerText = formatNumber(t.notdone);
+      document.getElementById('totalInv').innerText = formatNumber(t.inv);
+      document.getElementById('totalNoInv').innerText = formatNumber(t.noinv);
+    }
+
+    function renderTable(rows){
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = "";
+
+      const exportBtn = document.getElementById("btnExportPdf");
+      exportBtn.disabled = !rows || rows.length === 0;
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10">Tidak ada data sesuai filter.</td></tr>`;
+        document.getElementById('countInfo').innerText = "0 Baris";
+        return;
+      }
+
+      for (const r of rows) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatDateLong(r.penjadwalanPertama)}</td>
+          <td>${escapeHtml(r.spk || "")}</td>
+          <td>${escapeHtml(r.koordinator || "")}</td>
+          <td>${escapeHtml(r.posisi || "")}</td>
+          <td>${escapeHtml(r.pekerjaan || "")}</td>
+          <td>${escapeHtml(r.unit || "")}</td>
+          <td class="colApartemen">${escapeHtml(r.apartemen || "")}</td>
+          <td class="colStatus">${renderWorkBadge(r.statusPengerjaan)}</td>
+          <td>${formatDateOnly(r.cetakInvoice)}</td>
+          <td>${renderInvoicePill(r.statusJadiInvoice, r)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('countInfo').innerText = `${rows.length} Baris`;
+    }
+
+    function setQuickStatus(mode){
+      QUICK_STATUS = mode;
+
+      const ids = ["btnAll","btnDone","btnNotDone","btnInv","btnNoInv"];
+      ids.forEach(id => document.getElementById(id).className = "");
+
+      if (mode === "ALL") document.getElementById("btnAll").classList.add("active-all");
+      if (mode === "DONE") document.getElementById("btnDone").classList.add("active-done");
+      if (mode === "NOT_DONE") document.getElementById("btnNotDone").classList.add("active-notdone");
+      if (mode === "DONE_INVOICED") document.getElementById("btnInv").classList.add("active-inv");
+      if (mode === "DONE_NOT_INVOICED") document.getElementById("btnNoInv").classList.add("active-noinv");
+
+      if (isLoadedOnce) applyFilters();
+    }
+
+    function clearSortIndicators(){
+      SORT_IDS.forEach(k => {
+        const el = document.getElementById("s_" + k);
+        if (el) el.innerHTML = "";
+      });
+      document.querySelectorAll("th").forEach(th => th.classList.remove("sortActive"));
+    }
+    function arrowSvg(dir){
+      const up = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 12.5 10 7.5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      const down = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 7.5 10 12.5l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      return dir === "asc" ? up : down;
+    }
+    function getSortValue(row, key){
+      if (key === "penjadwalanPertama" || key === "cetakInvoice") {
+        const d = new Date(row[key]);
+        return isNaN(d) ? 0 : d.getTime();
+      }
+      return String(row[key] || "").toLowerCase().trim();
+    }
+    function applySorting(){
+      const dirMul = (SORT_DIR === "asc") ? 1 : -1;
+      FILTERED_ROWS.sort((a,b) => {
+        const va = getSortValue(a, SORT_KEY);
+        const vb = getSortValue(b, SORT_KEY);
+        if (typeof va === "number" && typeof vb === "number") return (va - vb) * dirMul;
+        if (va < vb) return -1 * dirMul;
+        if (va > vb) return  1 * dirMul;
+        return 0;
+      });
+
+      clearSortIndicators();
+      const th = document.querySelector(`th[data-key="${SORT_KEY}"]`);
+      if (th) th.classList.add("sortActive");
+      const el = document.getElementById("s_" + SORT_KEY);
+      if (el) el.innerHTML = arrowSvg(SORT_DIR);
+    }
+    function sortBy(key){
+      if (!key) return;
+      if (SORT_KEY === key) SORT_DIR = (SORT_DIR === "asc") ? "desc" : "asc";
+      else { SORT_KEY = key; SORT_DIR = "asc"; }
+      applySorting();
+      renderTable(FILTERED_ROWS);
+    }
+
+    function applyFilters(){
+      if (!ALL_ROWS || ALL_ROWS.length === 0) {
+        renderTotals([]);
+        renderTable([]);
+        return;
+      }
+
+      const jadwalFrom = document.getElementById('tglJadwalFrom').value;
+      const jadwalTo   = document.getElementById('tglJadwalTo').value;
+      const cetakFrom  = document.getElementById('tglCetakFrom').value;
+      const cetakTo    = document.getElementById('tglCetakTo').value;
+
+      const pekerjaanPicked = getCheckedValues("pekerjaanBox");
+
+      const qUnit = (document.getElementById("qUnit").value || "").trim().toLowerCase();
+      const qSpk  = (document.getElementById("qSpk").value || "").trim().toLowerCase();
+
+      const fromJ = jadwalFrom ? new Date(jadwalFrom + "T00:00:00") : null;
+      const toJ   = jadwalTo   ? new Date(jadwalTo   + "T23:59:59") : null;
+      const fromC = cetakFrom  ? new Date(cetakFrom  + "T00:00:00") : null;
+      const toC   = cetakTo    ? new Date(cetakTo    + "T23:59:59") : null;
+
+      FILTERED_ROWS = ALL_ROWS.filter(r => {
+        if (LOGIN_NAME && r.pelaksana) {
+          if (String(r.pelaksana || "").trim().toLowerCase() !== String(LOGIN_NAME).trim().toLowerCase()) return false;
+        }
+
+        if (QUICK_STATUS === "DONE" && !isDoneWork(r.statusPengerjaan)) return false;
+        if (QUICK_STATUS === "NOT_DONE" && !isNotDoneWork(r.statusPengerjaan)) return false;
+
+        if (QUICK_STATUS === "DONE_INVOICED") {
+          if (!isDoneWork(r.statusPengerjaan)) return false;
+          if (!isInvoiced(r.statusJadiInvoice)) return false;
+        }
+        if (QUICK_STATUS === "DONE_NOT_INVOICED") {
+          if (!isDoneWork(r.statusPengerjaan)) return false;
+          if (isInvoiced(r.statusJadiInvoice)) return false;
+        }
+
+        if (fromJ || toJ) {
+          const d = new Date(r.penjadwalanPertama);
+          if (isNaN(d)) return false;
+          if (fromJ && d < fromJ) return false;
+          if (toJ && d > toJ) return false;
+        }
+        if (fromC || toC) {
+          const d = new Date(r.cetakInvoice);
+          if (isNaN(d)) return false;
+          if (fromC && d < fromC) return false;
+          if (toC && d > toC) return false;
+        }
+
+        if (pekerjaanPicked.length > 0 && !pekerjaanPicked.includes(r.pekerjaan || "")) return false;
+
+        if (qUnit) { if (!String(r.unit || "").toLowerCase().includes(qUnit)) return false; }
+        if (qSpk) { if (!String(r.spk || "").toLowerCase().includes(qSpk)) return false; }
+
+        return true;
+      });
+
+      applySorting();
+      renderTotals(FILTERED_ROWS);
+      renderTable(FILTERED_ROWS);
+      setMessage("");
+    }
+
+    function clearFilters(){
+      document.getElementById('tglJadwalFrom').value = "";
+      document.getElementById('tglJadwalTo').value = "";
+      document.getElementById('tglCetakFrom').value = "";
+      document.getElementById('tglCetakTo').value = "";
+      clearChecked("pekerjaanBox");
+      document.getElementById('qUnit').value = "";
+      document.getElementById('qSpk').value = "";
+      setQuickStatus("ALL");
+      applyFilters();
+    }
+
+    function bindAutoApply(){
+      ["tglJadwalFrom","tglJadwalTo","tglCetakFrom","tglCetakTo"].forEach(id => {
+        document.getElementById(id).addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+      });
+      ["qUnit","qSpk"].forEach(id => {
+        document.getElementById(id).addEventListener("input", () => { if (isLoadedOnce) applyFilters(); });
+      });
+    }
+
+    function startLoad(email){
+      document.getElementById("gateCard").style.display = "none";
+      document.getElementById("mainCard").style.display = "";
+      document.getElementById("filterCard").style.display = "";
+      document.getElementById("tableCard").style.display = "";
+
+      document.getElementById("loginEmailPill").innerText = email || "-";
+      // role tampil dulu aja (hardcode)
+      document.getElementById("loginRolePill").innerText = "Pengguna";
+
+      document.getElementById('tbody').innerHTML = `<tr><td colspan="10">Loading...</td></tr>`;
+
+      google.script.run
+        .withSuccessHandler((jsonString) => {
+          const res = safeParseJson(jsonString);
+          if (!res || !res.ok){
+            setMessage((res && res.message) ? res.message : "Gagal mengambil data.");
+            document.getElementById('tbody').innerHTML = `<tr><td colspan="10">${escapeHtml((res && res.message) ? res.message : "Gagal")}</td></tr>`;
+            return;
+          }
+
+          LOGIN_NAME = res.namaMitra || "";
+          document.getElementById('namaMitra').innerText = res.namaMitra || "-";
+          document.getElementById('posisiMitraPill').innerText = res.posisiMitra || "Pelaksana";
+
+          ALL_ROWS = res.rows || [];
+
+          const fo = res.filterOptions || {};
+          const jobs = (fo.pekerjaan && fo.pekerjaan.length) ? fo.pekerjaan : ["AC","Cleaning","Fixing"];
+          renderCheckboxList("pekerjaanBox", jobs, "pekerjaan");
+
+          SORT_KEY = "penjadwalanPertama";
+          SORT_DIR = "desc";
+
+          sessionStorage.setItem("mitraEmail", res.email || email);
+
+          isLoadedOnce = true;
+          setQuickStatus("ALL");
+          applyFilters();
+        })
+        .withFailureHandler((err) => {
+          const msg = "Error: " + (err && err.message ? err.message : err);
+          setMessage(msg);
+          document.getElementById('tbody').innerHTML = `<tr><td colspan="10">${escapeHtml(msg)}</td></tr>`;
+        })
+        .getPengerjaanDatasetByEmail(email);
+    }
+
+    function showGate(msg){
+      document.getElementById("gateCard").style.display = "";
+      document.getElementById("mainCard").style.display = "none";
+      document.getElementById("filterCard").style.display = "none";
+      document.getElementById("tableCard").style.display = "none";
+      document.getElementById("gateMsg").innerText = msg || "Silakan masuk lewat Beranda dulu.";
+    }
+
+    function overlayClick(e){ closeModal(); }
+    function openModal(){
+      document.getElementById("overlay").style.display = "flex";
+      document.getElementById("modalMsg").className = "modalMsg loading";
+      document.getElementById("modalMsg").innerText = "Memuat rincian pencairan komisi...";
+    }
+    function closeModal(){
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    function formatCurrency(v){
+      const n = Number(v);
+      if (!isFinite(n)) return "-";
+      return "Rp " + formatNumber(n);
+    }
+
+    function formatPercentSmart(x){
+      if (x === null || x === undefined || x === "") return "-";
+      const s = String(x).trim();
+      if (s.includes("%")) return s;
+      const num = Number(String(x).replace(",", "."));
+      if (!isFinite(num)) return s;
+      if (num > 0 && num <= 1) return String(Math.round(num * 100)) + "%";
+      if (num > 1 && num <= 100) return String(Math.round(num)) + "%";
+      return String(num) + "%";
+    }
+
+    function setModalKv(data){
+      const kv = document.getElementById("modalKv");
+      const rows = [
+        ["Cetak Invoice", data.cetakInvoice],
+        ["Periode Pencairan", data.periode],
+        ["Penjadwalan Pertama", data.penjadwalanPertama],
+        ["No. SPK", data.spk],
+        ["Koordinator", data.koordinator],
+        ["Posisi", data.posisi],
+        ["Pekerjaan", data.pekerjaan],
+        ["Kode Unit", data.unit],
+        ["Nama Apartemen", data.apartemen],
+        ["Biaya Jasa", data.biayaJasa],
+        ["% Komisi", data.persenKomisi],
+        ["Komisi", data.komisi],
+        ["Status Cair", data.statusCair],
+        ["Waktu Cair", data.waktuCair],
+      ];
+
+      kv.innerHTML = rows.map(([k,v]) => {
+        const isKomisi = String(k).toLowerCase().includes("komisi") && String(k).toLowerCase() === "komisi";
+        const vClass = isKomisi ? "v hlKomisi" : "v";
+        return `
+          <div class="k">${escapeHtml(k)}</div>
+          <div class="${vClass}">${escapeHtml(v || "-")}</div>
+        `;
+      }).join("");
+    }
+
+    function onCekClick(ev, uniqueCodeInvoice){
+      ev.stopPropagation();
+
+      if (!uniqueCodeInvoice){
+        openModal();
+        setModalKv({
+          cetakInvoice: "-",
+          periode: "-",
+          penjadwalanPertama: "-",
+          spk: "-",
+          koordinator: "-",
+          posisi: "-",
+          pekerjaan: "-",
+          unit: "-",
+          apartemen: "-",
+          biayaJasa: "-",
+          persenKomisi: "-",
+          komisi: "-",
+          statusCair: "-",
+          waktuCair: "-",
+        });
+        document.getElementById("modalMsg").className = "modalMsg";
+        document.getElementById("modalMsg").innerText = "Unique Code Invoice belum tersedia untuk data ini.";
+        return;
+      }
+
+      openModal();
+
+      setModalKv({
+        cetakInvoice: "-",
+        periode: "-",
+        penjadwalanPertama: "-",
+        spk: "-",
+        koordinator: "-",
+        posisi: "-",
+        pekerjaan: "-",
+        unit: "-",
+        apartemen: "-",
+        biayaJasa: "-",
+        persenKomisi: "-",
+        komisi: "-",
+        statusCair: "-",
+        waktuCair: "-",
+      });
+
+      google.script.run
+        .withSuccessHandler((jsonString) => {
+          const res = safeParseJson(jsonString);
+          if (!res || !res.ok){
+            document.getElementById("modalMsg").className = "modalMsg";
+            document.getElementById("modalMsg").innerText = (res && res.message) ? res.message : "Gagal mengambil rincian komisi.";
+            return;
+          }
+
+          const rows = res.rows || [];
+          if (!rows.length){
+            document.getElementById("modalMsg").className = "modalMsg";
+            document.getElementById("modalMsg").innerText = "Data komisi tidak ditemukan untuk Unique Code Invoice ini.";
+            return;
+          }
+
+          const r = rows[0];
+
+          setModalKv({
+            cetakInvoice: formatDateOnly(r.tglCetak),
+            periode: r.periode || "-",
+            penjadwalanPertama: formatDateOnly(r.tglKerja),
+            spk: r.spk || "-",
+            koordinator: r.koordinator || "-",
+            posisi: r.posisi || "-",
+            pekerjaan: r.pekerjaan || "-",
+            unit: r.unit || "-",
+            apartemen: r.apartemen || "-",
+            biayaJasa: (r.biaya !== undefined && r.biaya !== null) ? formatCurrency(r.biaya) : "-",
+            persenKomisi: formatPercentSmart(r.persenPelaksana),
+            komisi: (r.komisiPelaksana !== undefined && r.komisiPelaksana !== null) ? formatCurrency(r.komisiPelaksana) : "-",
+            statusCair: r.statusPencairan || "-",
+            waktuCair: formatDateOnly(r.waktuPencairan),
+          });
+
+          document.getElementById("modalMsg").className = "modalMsg";
+          document.getElementById("modalMsg").innerText = "";
+        })
+        .withFailureHandler((err) => {
+          document.getElementById("modalMsg").className = "modalMsg";
+          document.getElementById("modalMsg").innerText =
+            "Error: " + (err && err.message ? err.message : err);
+        })
+        .getKomisiDetailByUniqueCode(getEmail(), uniqueCodeInvoice);
+    }
+
+    function loadImageToDataUrl(url){
+      return new Promise((resolve) => {
+        try{
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            try{
+              const canvas = document.createElement("canvas");
+              canvas.width = img.naturalWidth;
+              canvas.height = img.naturalHeight;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0);
+              resolve(canvas.toDataURL("image/png"));
+            } catch(e){ resolve(null); }
+          };
+          img.onerror = () => resolve(null);
+          img.src = url;
+        } catch(e){ resolve(null); }
+      });
+    }
+
+    function formatDownloadedAt(dt){
+      const d = dt.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+      const t = dt.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+      return `${d} pukul ${t}`;
+    }
+
+    function currentFilterSummary(){
+      const parts = [];
+      parts.push(`Quick: ${QUICK_STATUS}`);
+
+      const jf = document.getElementById('tglJadwalFrom').value;
+      const jt = document.getElementById('tglJadwalTo').value;
+      if (jf || jt) parts.push(`Penjadwalan: ${jf || "-"} s/d ${jt || "-"}`);
+
+      const cf = document.getElementById('tglCetakFrom').value;
+      const ct = document.getElementById('tglCetakTo').value;
+      if (cf || ct) parts.push(`Cetak Invoice: ${cf || "-"} s/d ${ct || "-"}`);
+
+      const pek = getCheckedValues("pekerjaanBox");
+      if (pek.length) parts.push(`Pekerjaan: ${pek.join(", ")}`);
+
+      const qUnit = (document.getElementById("qUnit").value || "").trim();
+      if (qUnit) parts.push(`Unit: ${qUnit}`);
+
+      const qSpk = (document.getElementById("qSpk").value || "").trim();
+      if (qSpk) parts.push(`SPK: ${qSpk}`);
+
+      return parts.join(" • ");
+    }
+
+    async function exportPdf(){
+      if (!FILTERED_ROWS || FILTERED_ROWS.length === 0) return;
+
+      const exportBtn = document.getElementById("btnExportPdf");
+      exportBtn.disabled = true;
+
+      try{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+        const nama = document.getElementById("namaMitra").innerText || "-";
+        const email = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase() || "-";
+        const now = new Date();
+        const downloadedAt = formatDownloadedAt(now);
+        const logoData = await loadImageToDataUrl(LOGO_URL);
+
+        let y = 44;
+        if (logoData){
+          doc.addImage(logoData, "PNG", 40, 26, 90, 26);
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(20);
+        doc.text("Laporan Histori Rincian Pengerjaan", 140, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(80);
+        doc.text("Laporan progress pengerjaan & status invoice berdasarkan filter", 140, y + 18);
+        doc.text(`Diunduh pada: ${downloadedAt}`, 140, y + 38);
+
+        y = y + 72;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(20);
+        doc.text("Nama Mitra:", 40, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(String(nama), 140, y);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Email:", 420, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(String(email), 480, y);
+
+        y += 18;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Filter:", 40, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(currentFilterSummary(), 140, y);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Sort:", 420, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${SORT_KEY} (${SORT_DIR})`, 480, y);
+
+        y += 18;
+
+        const head = [[
+          "Penjadwalan Pertama","No. SPK","Koordinator","Posisi","Pekerjaan",
+          "Kode Unit","Apartemen","Status Pengerjaan","Cetak Invoice","Status Jadi Invoice"
+        ]];
+
+        const body = FILTERED_ROWS.map(r => ([
+          formatDateOnly(r.penjadwalanPertama),
+          r.spk || "",
+          r.koordinator || "",
+          r.posisi || "",
+          r.pekerjaan || "",
+          r.unit || "",
+          r.apartemen || "",
+          (r.statusPengerjaan || "").trim() || "-",
+          formatDateOnly(r.cetakInvoice),
+          (r.statusJadiInvoice || "").trim() || "-"
+        ]));
+
+        doc.autoTable({
+          startY: y + 8,
+          head,
+          body,
+          styles: { fontSize: 9, cellPadding: 5 },
+          headStyles: { fillColor: [11, 42, 87], textColor: 255, fontStyle: "bold" },
+          alternateRowStyles: { fillColor: [245, 247, 250] },
+          margin: { left: 40, right: 40 }
+        });
+
+        const safeNama = String(nama || "mitra").replace(/[^\w\-]+/g, "_").slice(0,40);
+        doc.save(`Histori_Pengerjaan_${safeNama}.pdf`);
+
+      } finally {
+        exportBtn.disabled = !(FILTERED_ROWS && FILTERED_ROWS.length > 0);
+      }
+    }
+
+    bindAutoApply();
+
+    (function init(){
+      EMAIL = getEmail();
+      if (!EMAIL){
+        showGate("Kamu belum masuk di Beranda. Balik ke Beranda dulu ya.");
+        return;
+      }
+      startLoad(EMAIL);
+    })();
+  </script>
+</body>
+</html>
