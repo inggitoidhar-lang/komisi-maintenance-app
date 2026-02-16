@@ -97,11 +97,9 @@
     }
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 
-    /* ✅ jarak logo <-> teks dibesarin */
     .leftTop{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
 
-    /* ✅ LOGO DIBESARIN */
-    .logoApp{ height: 44px; width:auto; display:block; } /* sebelumnya 30px */
+    .logoApp{ height: 44px; width:auto; display:block; }
 
     .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
     .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; }
@@ -121,6 +119,25 @@
     .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
     .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
     .statusText .email{ color: #fff; font-weight: 900; }
+    #loginRolePill{ opacity:.95; }
+
+    .pillClickable{
+      cursor:pointer;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      transition: background .15s ease, transform .05s ease;
+      user-select:none;
+    }
+    .pillClickable:hover{ background: rgba(255,255,255,.18); }
+    .pillClickable:active{ transform: translateY(1px); }
+    .pillDisabled{
+      cursor: default !important;
+      opacity: .9;
+      border-color: rgba(255,255,255,.16) !important;
+      background: rgba(255,255,255,.08) !important;
+    }
 
     .btnSmall{
       height:44px; padding: 0 14px; border-radius: 999px;
@@ -161,7 +178,6 @@
 
     .hello{ font-size: 14px; font-weight: 900; color:#0b1220; }
 
-    /* ✅ Nama tetap biru */
     .helloName{
       font-size: 18px;
       font-weight: 900;
@@ -173,32 +189,29 @@
       flex-wrap:wrap;
     }
 
-    /* ✅ pill posisi + masa kerja (STYLE: kayak pill di header/rincian) */
     .miniPillHeaderStyle{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
 
-  border: 1px solid rgba(15,23,42,.14);
-  background: rgba(15,23,42,.06);
-  color: rgba(11,18,32,.78);
+      border: 1px solid rgba(15,23,42,.14);
+      background: rgba(15,23,42,.06);
+      color: rgba(11,18,32,.78);
 
-  font-weight: 900;
-  font-size: 12px;
-  white-space: nowrap;
-  box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
-}
+      font-weight: 900;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+    }
 
-.miniPillHeaderStyle .mutedLabel{ display:none; } /* biar kalau kepake gak muncul */
-.miniPillHeaderStyle .valWhite{ color: rgba(11,18,32,.78); font-weight: 900; }
+    .miniPillHeaderStyle .mutedLabel{ display:none; }
+    .miniPillHeaderStyle .valWhite{ color: rgba(11,18,32,.78); font-weight: 900; }
 
-    
     .pillHide{ display:none !important; }
 
-    /* ===== Target align ===== */
     .leftCol{
       display:flex;
       flex-direction:column;
@@ -230,30 +243,29 @@
     .progressTitle{ font-weight: 900; }
     .progressSub{ font-size: 12px; color: var(--muted); font-weight: 800; margin-top:4px; line-height:1.25; }
 
-.barRowTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin: 6px 0 10px 0;
-}
+    .barRowTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin: 6px 0 10px 0;
+    }
 
-.barHint{
-  font-size: 12px;
-  font-weight: 900;
-  color: rgba(15,23,42,.45);
-  letter-spacing: .2px;
-}
+    .barHint{
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(15,23,42,.45);
+      letter-spacing: .2px;
+    }
 
-.barTextTop{
-  font-size: 12px;
-  font-weight: 900;
-  color: rgba(0,160,198,1); /* biru muda */
-  letter-spacing: .2px;
-  text-align:right;
-  margin: 0; /* supaya gak ngedorong layout */
-}
-
+    .barTextTop{
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(0,160,198,1);
+      letter-spacing: .2px;
+      text-align:right;
+      margin: 0;
+    }
 
     .barOuter{
       width:100%;
@@ -271,7 +283,6 @@
       transition: width .25s ease;
     }
 
-    /* ===== Filter ===== */
     .filterBox{
       border: 1px solid rgba(15,23,42,.10);
       border-radius: 18px;
@@ -347,7 +358,6 @@
       overflow:hidden;
     }
 
-    /* ✅ header ranking card jadi gradient + text putih */
     .rankCardHeader{
       padding: 12px;
       border-bottom: 1px solid rgba(255,255,255,.18);
@@ -365,25 +375,25 @@
       max-height: 152px;
       overflow:auto;
     }
-.rankTableWrap::-webkit-scrollbar{
-  width:10px;
-  height:10px;
-}
+    .rankTableWrap::-webkit-scrollbar{
+      width:10px;
+      height:10px;
+    }
 
-.rankTableWrap::-webkit-scrollbar-track{
-  background: rgba(11,42,87,.18); /* biru tua soft */
-  border-radius: 999px;
-}
+    .rankTableWrap::-webkit-scrollbar-track{
+      background: rgba(11,42,87,.18);
+      border-radius: 999px;
+    }
 
-.rankTableWrap::-webkit-scrollbar-thumb{
-  background: linear-gradient(135deg, var(--bg1), var(--bg2)); /* sama kayak header */
-  border-radius: 999px;
-  border: 2px solid rgba(255,255,255,.15);
-}
+    .rankTableWrap::-webkit-scrollbar-thumb{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.15);
+    }
 
-.rankTableWrap::-webkit-scrollbar-thumb:hover{
-  background: linear-gradient(135deg, #0b3b8a, #0b2a57);
-}
+    .rankTableWrap::-webkit-scrollbar-thumb:hover{
+      background: linear-gradient(135deg, #0b3b8a, #0b2a57);
+    }
 
     table{ width:100%; border-collapse: collapse; font-size: 12px; }
     th, td{
@@ -418,12 +428,6 @@
     @media (max-width: 700px){ .metricGrid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); } }
     @media (max-width: 420px){ .metricGrid{ grid-template-columns: 1fr; } }
 
-    /* ===============================
-       ✅ METRIC CARD (new style)
-       - background soft
-       - bottom line attached
-       - icon right
-       =============================== */
     .metric{
       position: relative;
       border:1px solid rgba(15,23,42,.10);
@@ -434,12 +438,10 @@
       box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
     }
 
-    /* inner bg tint */
     .metric.brand{ background: rgba(0,160,198,.08); border-color: rgba(0,160,198,.16); }
     .metric.good{ background: rgba(11,128,67,.06); border-color: rgba(11,128,67,.16); }
     .metric.bad{ background: rgba(176,0,32,.06); border-color: rgba(176,0,32,.16); }
 
-    /* bottom line attached */
     .metric::after{
       content:"";
       position:absolute;
@@ -467,7 +469,6 @@
       font-weight: 900;
     }
 
-    /* pill existing */
     .pill{
       font-size: 11px;
       font-weight: 900;
@@ -479,13 +480,11 @@
       white-space:nowrap;
     }
 
-    /* value color follow line */
     .metricVal{ font-size: 22px; font-weight: 900; letter-spacing: .2px; color: rgba(11,18,32,.90); }
     .metric.brand .metricVal{ color: rgba(0,160,198,1); }
     .metric.good .metricVal{ color: rgba(11,128,67,1); }
     .metric.bad .metricVal{ color: rgba(176,0,32,1); }
 
-    /* icon right */
     .metricIcon{
       width: 26px;
       height: 26px;
@@ -524,6 +523,187 @@
     }
 
     .hideNote{ display:none !important; }
+
+    /* =========================
+       MODAL "Login Sebagai"
+       ========================= */
+    .modalBack{
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    .modalBack.show{ display:flex; }
+
+    .modalCard{
+      width: min(760px, 100%);
+      background:#fff;
+      border-radius: 20px;
+      border: 1px solid rgba(15,23,42,.12);
+      box-shadow: 0 30px 80px rgba(2,6,23,.35);
+      overflow:hidden;
+    }
+    .modalHeader{
+      padding: 14px 14px;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modalTitle{
+      font-weight: 900;
+      letter-spacing:.2px;
+      font-size: 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .modalSub{
+      font-size: 12px;
+      font-weight: 800;
+      color: rgba(255,255,255,.75);
+      margin-top: 3px;
+    }
+    .modalClose{
+      height: 40px;
+      width: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      backdrop-filter: blur(10px);
+    }
+    .modalClose:hover{ background: rgba(255,255,255,.18); }
+
+    .modalBody{
+      padding: 14px;
+    }
+
+    .segRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 12px;
+    }
+    .segBtn{
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14);
+      background:#fff;
+      cursor:pointer;
+      font-weight: 900;
+      font-family: inherit;
+      color: rgba(11,18,32,.85);
+      transition: background .15s ease, transform .05s ease, box-shadow .15s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .segBtn:hover{ background: rgba(15,23,42,.05); }
+    .segBtn:active{ transform: translateY(1px); }
+    .segBtn.active{
+      border-color: rgba(0,160,198,.30);
+      background: rgba(0,160,198,.10);
+      color: rgba(0,160,198,1);
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+    }
+
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items:end;
+    }
+    @media (max-width: 720px){ .formGrid{ grid-template-columns: 1fr; } }
+
+    .select{
+      width:100%;
+      height:48px;
+      padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      font-size: 14px;
+      outline:none;
+      background:#fff;
+      font-family: inherit;
+      font-weight: 800;
+      color: rgba(11,18,32,.92);
+    }
+
+    .hintBox{
+      margin-top: 10px;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      background: rgba(15,23,42,.03);
+      padding: 10px 12px;
+      color: rgba(11,18,32,.72);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .previewBox{
+      margin-top: 12px;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      padding: 12px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .previewLeft{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+      min-width: 220px;
+    }
+    .previewLabel{
+      font-size: 11px;
+      font-weight: 900;
+      color: rgba(11,18,32,.55);
+      text-transform: uppercase;
+      letter-spacing:.2px;
+    }
+    .previewName{
+      font-size: 14px;
+      font-weight: 900;
+      color: rgba(11,18,32,.90);
+    }
+    .previewMeta{
+      font-size: 12px;
+      font-weight: 800;
+      color: rgba(11,18,32,.62);
+    }
+
+    .modalActions{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btnDanger{
+      background: rgba(176,0,32,.08);
+      border: 1px solid rgba(176,0,32,.20);
+      color: rgba(176,0,32,1);
+    }
+    .btnDanger:hover{ background: rgba(176,0,32,.10); }
   </style>
 </head>
 
@@ -532,7 +712,6 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <!-- ✅ ganti logo header -->
           <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Jendela360" />
           <div>
             <div class="title">Beranda</div>
@@ -546,6 +725,9 @@
             <span class="statusText">
               <span class="label">Sedang Masuk</span>
               <span class="email" id="loginEmailPill">-</span>
+
+              <span class="label" style="opacity:.85;">• Login sebagai</span>
+              <span class="email pillClickable pillDisabled" id="loginRolePill" title="Pilih mode akses">Pengguna</span>
             </span>
           </div>
 
@@ -568,36 +750,36 @@
         <div class="leftCol">
           <div class="hello">Halo,</div>
 
-          <!-- ✅ Nama + pill posisi + pill masa kerja (style header) -->
           <div class="helloName">
             <span id="namaMitra">-</span>
 
-            <!-- posisi (dummy dulu) -->
-            <span id="posisiPill" class="miniPillHeaderStyle">Maintenance</span>
+            <span id="posisiPill" class="miniPillHeaderStyle">-</span>
 
-            <!-- masa kerja (dummy dulu) -->
-            <span id="masaKerjaPill" class="miniPillHeaderStyle">
-  <span class="valWhite" id="masaKerjaVal">1 Tahun 3 Bulan 25 Hari</span>
-</span>
+            <span id="divisiPill" class="miniPillHeaderStyle">
+              <span class="valWhite" id="divisiVal">-</span>
+            </span>
 
+            <span id="statusKaryawanPill" class="miniPillHeaderStyle">
+              <span class="valWhite" id="statusKaryawanVal">-</span>
+            </span>
           </div>
 
           <div class="progressWrap">
             <div class="progressTop">
               <div>
                 <div class="progressTitle">Pencapaian Target</div>
-                <div class="progressSub">Berdasarkan jumlah SPK yang sudah jadi invoice pada periode filter</div>
+                <div class="progressSub">Berdasarkan jumlah SPK pada periode filter</div>
               </div>
             </div>
 
-           <div class="barRowTop">
-  <div class="barHint">Progress</div>
-  <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
-</div>
+            <div class="barRowTop">
+              <div class="barHint">Progress</div>
+              <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
+            </div>
 
-<div class="barOuter">
-  <div class="barInner" id="barInner"></div>
-</div>
+            <div class="barOuter">
+              <div class="barInner" id="barInner"></div>
+            </div>
           </div>
         </div>
 
@@ -662,7 +844,7 @@
             </button>
           </div>
           <div class="sectionNote">
-            Peringkat berdasarkan pengerjaan yang sudah menjadi invoice pada periode filter.
+            Peringkat berdasarkan total komisi (periode filter).
           </div>
         </div>
       </div>
@@ -708,7 +890,6 @@
 
     <div class="card">
       <div class="sectionTitle">Ringkasan Pengerjaan</div>
-      <div class="sectionNote hideNote">Aktif otomatis kalau kolom “Status Pengerjaan” & “Status Invoice” tersedia.</div>
 
       <div class="metricGrid">
         <div class="metric brand">
@@ -776,10 +957,8 @@
         </div>
       </div>
 
-      <div class="sectionNote hideNote" id="workMeta" style="margin-top:10px;"></div>
-
       <div style="margin-top:14px;">
-        <button class="btn primary block" onclick="goPage('histori')">
+        <button class="btn primary block" onclick="goHistoriPengerjaan()">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
               <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -790,14 +969,13 @@
               <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          Cek Histori Pengerjaan
+          Cek Rincian Pengerjaan
         </button>
       </div>
     </div>
 
     <div class="card">
       <div class="sectionTitle">Ringkasan Pencairan Komisi</div>
-      <div class="sectionNote hideNote">Total komisi, sudah cair, dan belum cair.</div>
 
       <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
         <div class="metric brand">
@@ -867,7 +1045,6 @@
 
     <div class="card">
       <div class="sectionTitle">Ringkasan Pendapatan Bersih</div>
-      <div class="sectionNote hideNote">Aktif otomatis kalau kolom pemasukan/potongan tersedia.</div>
 
       <div class="metricGrid" style="grid-template-columns: repeat(3, minmax(220px, 1fr));">
         <div class="metric brand">
@@ -909,8 +1086,6 @@
         </div>
       </div>
 
-      <div class="sectionNote hideNote" id="netMeta" style="margin-top:10px;"></div>
-
       <div style="margin-top:14px;">
         <button class="btn primary block" onclick="goPage('bersih')">
           <span class="icon" aria-hidden="true">
@@ -931,12 +1106,90 @@
     <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
   </div>
 
+  <!-- MODAL -->
+  <div class="modalBack" id="roleModalBack" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="roleModalTitle">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="roleModalTitle">Pilih Mode Akses</div>
+          <div class="modalSub" id="roleModalSubtitle">Khusus Leader / Management</div>
+        </div>
+        <button class="modalClose" onclick="closeRoleModal()" aria-label="Tutup">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <div class="modalBody">
+        <div class="segRow" id="modeSegRow">
+          <button class="segBtn active" data-mode="staff" onclick="selectMode('staff')" id="segStaff">Login sebagai Staff</button>
+          <button class="segBtn" data-mode="leader" onclick="selectMode('leader')" id="segLeader">Login sebagai Leader</button>
+        </div>
+
+        <div class="formGrid">
+          <div>
+            <div class="labelSmall">Divisi (scope)</div>
+            <select class="select" id="impersonateDivisi">
+              <option value="">(Auto)</option>
+              <option value="AC">AC</option>
+              <option value="Fixing">Fixing</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="labelSmall">Pilih Orang</div>
+            <select class="select" id="impersonatePerson">
+              <option value="">— Pilih nama —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hintBox" id="roleHint"></div>
+
+        <div class="previewBox" id="impersonatePreview">
+          <div class="previewLeft">
+            <div class="previewLabel">Preview</div>
+            <div class="previewName" id="previewName">—</div>
+            <div class="previewMeta" id="previewMeta">Mode: Login sebagai Staff</div>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="pill" id="previewRolePill">Role: Staff</span>
+            <span class="pill" id="previewDivisiPill">Divisi: -</span>
+          </div>
+        </div>
+
+        <div class="modalActions">
+          <button class="btn ghost btnDanger" onclick="resetImpersonationUI()" title="Kembali ke akun asli">Reset</button>
+          <button class="btn ghost" onclick="closeRoleModal()">Batal</button>
+          <button class="btn primary" onclick="applyImpersonationUI()">Terapkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const APP_URL = "<?= appUrl ?>";
     const PREFILL_EMAIL = "<?= prefillEmail ?>";
 
     const KEY_EMAIL = "mitraEmail";
     const KEY_REMEMBER_TOKEN = "rememberToken";
+
+    const KEY_EFFECTIVE_MODE = "effectiveMode";      // staff | leader
+    const KEY_EFFECTIVE_EMAIL = "effectiveEmail";    // email target impersonate
+    const KEY_EFFECTIVE_NAME = "effectiveName";      // nama target (optional)
+
+    let AUTH_USER = { email:"", role_akun:"Staff", divisi:"", nama:"" };
+    let VIEW_USER = { email:"", nama:"", posisi:"", divisi:"", status_karyawan:"", role_akun:"" };
+
+    let UI_STATE = { mode:"staff", divisi:"", personEmail:"", personName:"" };
+    let LISTENERS_BOUND = false;
 
     function safeParse(m){
       if (typeof m === "object" && m) return m;
@@ -991,6 +1244,11 @@
     function logout(){
       sessionStorage.removeItem(KEY_EMAIL);
       localStorage.removeItem(KEY_REMEMBER_TOKEN);
+
+      sessionStorage.removeItem(KEY_EFFECTIVE_MODE);
+      sessionStorage.removeItem(KEY_EFFECTIVE_EMAIL);
+      sessionStorage.removeItem(KEY_EFFECTIVE_NAME);
+
       goLogin();
     }
 
@@ -1000,29 +1258,248 @@
       window.top.location.href = APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
     }
 
-    /* ✅ Nama + optional Posisi + optional Masa Kerja
-       - sekarang default dummy tampil, tapi kalau backend ngirim data nanti otomatis override
-    */
+    function goHistoriPengerjaan(){
+      goPage("histori");
+    }
+
+    /* =========================
+       ROLE MODAL
+       ========================= */
+    function openRoleModal(){
+      const back = document.getElementById("roleModalBack");
+      back.classList.add("show");
+      back.setAttribute("aria-hidden","false");
+
+      const divSel = document.getElementById("impersonateDivisi");
+      divSel.value = UI_STATE.divisi || (AUTH_USER.divisi || "");
+
+      document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
+
+      refreshImpersonationCandidates();
+      syncHint();
+      syncPreview();
+    }
+
+    function closeRoleModal(){
+      const back = document.getElementById("roleModalBack");
+      back.classList.remove("show");
+      back.setAttribute("aria-hidden","true");
+    }
+
+    function selectMode(mode){
+      UI_STATE.mode = mode;
+
+      document.querySelectorAll(".segBtn").forEach(btn => {
+        const m = btn.getAttribute("data-mode");
+        if (m === mode) btn.classList.add("active");
+        else btn.classList.remove("active");
+      });
+
+      document.getElementById("impersonatePerson").value = "";
+      UI_STATE.personEmail = "";
+      UI_STATE.personName = "";
+
+      refreshImpersonationCandidates();
+      syncHint();
+      syncPreview();
+    }
+
+    function syncHint(){
+      const hint = document.getElementById("roleHint");
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+
+      if (role === "leader"){
+        hint.innerHTML =
+          "<b>Kamu login sebagai Leader.</b><br/>" +
+          "Kamu hanya bisa memilih <b>Login sebagai Staff</b> dalam divisi kamu.";
+      } else if (role === "management"){
+        hint.innerHTML =
+          "<b>Kamu login sebagai Management.</b><br/>" +
+          "Kamu bisa memilih <b>Login sebagai Staff</b> atau <b>Login sebagai Leader</b>.";
+      } else {
+        hint.innerHTML =
+          "<b>Kamu login sebagai Staff.</b><br/>" +
+          "Mode akses tidak bisa diganti.";
+      }
+
+      const divSel = document.getElementById("impersonateDivisi");
+      if (role === "leader"){
+        divSel.value = AUTH_USER.divisi || "";
+        divSel.disabled = true;
+      } else if (role === "management"){
+        divSel.disabled = false;
+      } else {
+        divSel.disabled = true;
+      }
+    }
+
+    function syncPreview(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+
+      const div = divSel ? (divSel.value || "") : "";
+      const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+
+      const modeLabel = UI_STATE.mode === "leader" ? "Login sebagai Leader" : "Login sebagai Staff";
+
+      document.getElementById("previewMeta").innerText = `Mode: ${modeLabel}`;
+      document.getElementById("previewRolePill").innerText = `Role: ${UI_STATE.mode === "leader" ? "Leader" : "Staff"}`;
+      document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || (AUTH_USER.divisi || "-")}`;
+
+      document.getElementById("previewName").innerText =
+        personName && !personName.startsWith("—") ? personName : "— pilih orang dulu —";
+    }
+
+    function resetImpersonationUI(){
+      UI_STATE.mode = "staff";
+      UI_STATE.personEmail = "";
+      UI_STATE.personName = "";
+      UI_STATE.divisi = AUTH_USER.divisi || "";
+
+      sessionStorage.removeItem(KEY_EFFECTIVE_MODE);
+      sessionStorage.removeItem(KEY_EFFECTIVE_EMAIL);
+      sessionStorage.removeItem(KEY_EFFECTIVE_NAME);
+
+      applyEffectiveRolePillLabel();
+      closeRoleModal();
+
+      applyHomeFilter(); // reload current filter w/ auth
+    }
+
+    function applyImpersonationUI(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+
+      const div = divSel ? (divSel.value || "") : "";
+      const personEmail = personSel ? (personSel.value || "") : "";
+      const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+
+      if (!personEmail){
+        setMessage("Pilih orang dulu sebelum menerapkan.");
+        return;
+      }
+
+      UI_STATE.divisi = div;
+      UI_STATE.personEmail = personEmail;
+      UI_STATE.personName = (personName && !personName.startsWith("—")) ? personName : "";
+
+      sessionStorage.setItem(KEY_EFFECTIVE_MODE, UI_STATE.mode);
+      sessionStorage.setItem(KEY_EFFECTIVE_EMAIL, UI_STATE.personEmail);
+      sessionStorage.setItem(KEY_EFFECTIVE_NAME, UI_STATE.personName || "");
+
+      applyEffectiveRolePillLabel();
+      closeRoleModal();
+
+      applyHomeFilter(); // reload current filter w/ effective
+    }
+
+    function applyEffectiveRolePillLabel(){
+      const rolePill = document.getElementById("loginRolePill");
+      const mode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "");
+      const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+
+      if (mode && effEmail){
+        rolePill.textContent = (mode === "leader") ? "Leader" : "Staff";
+      } else {
+        rolePill.textContent = AUTH_USER.role_akun || "Pengguna";
+      }
+    }
+
+    function setupRolePillInteractivity(){
+      const rolePill = document.getElementById("loginRolePill");
+      const role = String(AUTH_USER.role_akun || "").trim().toLowerCase();
+
+      rolePill.classList.add("pillDisabled");
+      rolePill.onclick = null;
+
+      if (role === "leader" || role === "management"){
+        rolePill.classList.remove("pillDisabled");
+        rolePill.onclick = () => {
+          if (role === "leader"){
+            document.getElementById("segLeader").style.display = "none";
+            selectMode("staff");
+          } else {
+            document.getElementById("segLeader").style.display = "inline-flex";
+            selectMode("staff");
+          }
+
+          syncHint();
+          openRoleModal();
+        };
+      }
+    }
+
+    // isi kandidat dari backend
+    // return: { ok:true, items:[{email,nama,divisi,role_akun}] }
+    function refreshImpersonationCandidates(){
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+      if (!(role === "leader" || role === "management")) return;
+
+      const mode = UI_STATE.mode;
+      const div = (document.getElementById("impersonateDivisi").value || "").trim();
+      const personSel = document.getElementById("impersonatePerson");
+
+      // reset options keep placeholder
+      const first = personSel.options[0];
+      personSel.innerHTML = "";
+      personSel.appendChild(first);
+
+      const addFallback = (msg) => {
+        if (personSel.options.length <= 1){
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = msg || "— Tidak ada kandidat —";
+          personSel.appendChild(opt);
+        }
+      };
+
+      try{
+        google.script.run
+          .withSuccessHandler((json) => {
+            const res = safeParse(json);
+            if (!res || !res.ok || !Array.isArray(res.items)){
+              addFallback("— Kandidat belum tersedia —");
+              return;
+            }
+            if (res.items.length === 0){
+              addFallback("— Tidak ada kandidat —");
+              return;
+            }
+            res.items.forEach(it => {
+              const opt = document.createElement("option");
+              opt.value = String(it.email || "").trim().toLowerCase();
+              opt.textContent = String(it.nama || it.email || "-");
+              personSel.appendChild(opt);
+            });
+          })
+          .withFailureHandler(() => addFallback("— Gagal load kandidat —"))
+          .getImpersonationCandidates(AUTH_USER.email, mode, div);
+      }catch(e){
+        addFallback("— Kandidat belum tersedia —");
+      }
+    }
+
+    /* =========================
+       SETTERS (VIEW)
+       ========================= */
     function setProfile(res){
-      const nama = (res && res.namaMitra) ? res.namaMitra : "-";
+      const nama = (res && res.namaMitra) ? String(res.namaMitra).trim() : "-";
       document.getElementById("namaMitra").innerText = nama || "-";
 
-      const posisiPill = document.getElementById("posisiPill");
-      const masaPill = document.getElementById("masaKerjaPill");
-      const masaVal = document.getElementById("masaKerjaVal");
+      const posisi = (res && res.posisi) ? String(res.posisi).trim() : "";
+      const divisi = (res && res.divisi) ? String(res.divisi).trim() : "";
+      const statusK = (res && res.status_karyawan) ? String(res.status_karyawan).trim() : "";
+      const roleAkun = (res && res.role_akun) ? String(res.role_akun).trim() : "";
 
-      const posisi = (res && (res.posisi || res.role || res.jabatan)) ? String(res.posisi || res.role || res.jabatan).trim() : "";
-      const masaKerja = (res && (res.masaKerjaText || res.tenureText || res.masaKerja)) ? String(res.masaKerjaText || res.tenureText || res.masaKerja).trim() : "";
+      document.getElementById("posisiPill").textContent = posisi || "-";
+      document.getElementById("divisiVal").textContent = divisi || "-";
+      document.getElementById("statusKaryawanVal").textContent = statusK || "-";
 
-      // posisi: kalau ada data, override; kalau nggak ada, biarin dummy "Maintenance"
-      if (posisi){
-        posisiPill.textContent = posisi;
-      }
-
-      // masa kerja: kalau ada data, override; kalau nggak ada, biarin dummy
-      if (masaKerja){
-        masaVal.textContent = masaKerja;
-      }
+      VIEW_USER.nama = nama || "";
+      VIEW_USER.posisi = posisi || "";
+      VIEW_USER.divisi = divisi || "";
+      VIEW_USER.status_karyawan = statusK || "";
+      VIEW_USER.role_akun = roleAkun || "";
     }
 
     function setWork(res){
@@ -1031,8 +1508,6 @@
       document.getElementById("workNotDone").innerText = formatNumber(res.workNotDone || 0);
       document.getElementById("workDoneInvoiced").innerText = formatNumber(res.workDoneInvoiced || 0);
       document.getElementById("workDoneNotInvoiced").innerText = formatNumber(res.workDoneNotInvoiced || 0);
-      const wm = document.getElementById("workMeta");
-      if (wm) wm.innerText = "";
     }
 
     function setKomisi(res){
@@ -1048,8 +1523,6 @@
       document.getElementById("netTotal").innerText = formatMoney(res.netTotal || 0);
       document.getElementById("netIncome").innerText = formatMoney(res.netIncome || 0);
       document.getElementById("netDeduction").innerText = formatMoney(res.netDeduction || 0);
-      const nm = document.getElementById("netMeta");
-      if (nm) nm.innerText = "";
     }
 
     function parseIsoDate(iso){
@@ -1079,10 +1552,7 @@
       const m = monthsInclusive(fromIso, toIso);
       const computedTarget = (m === null) ? Number(t.target || 0) : (Number(m) * 100);
 
-      const backendAch = Number(t.achieved || 0);
-      const fallbackAch = Number(res.workAll || 0);
-      const achieved = backendAch > 0 ? backendAch : fallbackAch;
-
+      const achieved = Number(t.achieved || 0);
       const target = Number(computedTarget || 0);
       const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
 
@@ -1120,32 +1590,9 @@
       });
     }
 
-    function getDummyAcrossTop10(){
-      return [
-        { name:"Aldo Pratama", posisi:"Maintenance", total: 9816250, spkCount: 84 },
-        { name:"Rizky Mahendra", posisi:"Maintenance", total: 9055000, spkCount: 79 },
-        { name:"Nanda Putri", posisi:"Sales Ops", total: 8860000, spkCount: 74 },
-        { name:"Fajar Nugroho", posisi:"Project", total: 8525000, spkCount: 70 },
-        { name:"Dewi Lestari", posisi:"Maintenance", total: 8210000, spkCount: 68 },
-        { name:"Hendra Saputra", posisi:"Technician", total: 7980000, spkCount: 65 },
-        { name:"Sinta Maharani", posisi:"Technician", total: 7725000, spkCount: 62 },
-        { name:"Bayu Ramadhan", posisi:"Project", total: 7540000, spkCount: 60 },
-        { name:"Kevin Wijaya", posisi:"Maintenance", total: 7350000, spkCount: 58 },
-        { name:"Tari Ananda", posisi:"Technician", total: 7025000, spkCount: 55 },
-      ];
-    }
-    function getDummyWithinTop3(){
-      return [
-        { name:"Safi’i Ahmad Gojali", posisi:"Maintenance", total: 8116250, spkCount: 55, isMe:true },
-        { name:"Bima Prakoso", posisi:"Maintenance", total: 6946250, spkCount: 49 },
-        { name:"Raka Firmansyah", posisi:"Maintenance", total: 5170000, spkCount: 37 },
-      ];
-    }
-
-    function loadSummary(fromIso, toIso){
+    // ✅ AMAN: selalu lewat auth+effective
+    function loadViewSummary(authEmail, effectiveEmail, fromIso, toIso){
       setMessage("");
-      const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
-      if (!email){ goLogin(); return; }
 
       google.script.run
         .withSuccessHandler((json) => {
@@ -1160,37 +1607,109 @@
           setTarget(res, fromIso || "", toIso || "");
 
           const r = res.rankings || {};
-          const across = (r.acrossDivisions || []);
-          const within = (r.withinDivision || []);
+          renderRankingTable("tbodyAcross", (r.acrossDivisions || []));
+          renderRankingTable("tbodyWithin", (r.withinDivision || []));
+        })
+        .withFailureHandler((err) => setMessage("Error: " + (err && err.message ? err.message : err)))
+        .getHomepageSummaryByAuthEmailWithFilter(
+          String(authEmail || "").trim().toLowerCase(),
+          String(effectiveEmail || "").trim().toLowerCase(),
+          fromIso || "",
+          toIso || ""
+        );
+    }
 
-          renderRankingTable("tbodyAcross", (across && across.length) ? across : getDummyAcrossTop10());
-          renderRankingTable("tbodyWithin", (within && within.length) ? within : getDummyWithinTop3());
+    // ✅ init auth + load view (respect impersonation saved)
+    function initAuthAndView(loginEmail){
+      AUTH_USER.email = loginEmail || "";
+
+      // ambil auth profile via summary biasa (self) lalu set pill interactivity
+      google.script.run
+        .withSuccessHandler((json) => {
+          const res = safeParse(json);
+          if (!res || !res.ok){
+            setMessage((res && res.message) ? res.message : "Gagal load akun.");
+            return;
+          }
+
+          AUTH_USER.role_akun = String(res.role_akun || "Staff");
+          AUTH_USER.divisi = String(res.divisi || "");
+          AUTH_USER.nama = String(res.namaMitra || "");
+
+          setupRolePillInteractivity();
+
+          document.getElementById("loginEmailPill").innerText = loginEmail || "-";
+
+          const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim().toLowerCase();
+          const effMode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "").trim().toLowerCase();
+
+          applyEffectiveRolePillLabel();
+
+          const from = document.getElementById("dateFrom").value || "";
+          const to = document.getElementById("dateTo").value || "";
+
+          if (effEmail && (effMode === "staff" || effMode === "leader")){
+            loadViewSummary(AUTH_USER.email, effEmail, from, to);
+          } else {
+            loadViewSummary(AUTH_USER.email, AUTH_USER.email, from, to);
+          }
+
+          bindModalListenersOnce();
         })
-        .withFailureHandler((err) => {
-          setMessage("Error: " + (err && err.message ? err.message : err));
-        })
-        .getHomepageSummaryByEmailWithFilter(email, fromIso || "", toIso || "");
+        .withFailureHandler((err) => setMessage("Error: " + (err && err.message ? err.message : err)))
+        .getHomepageSummaryByEmailWithFilter(loginEmail, "", "");
+    }
+
+    function bindModalListenersOnce(){
+      if (LISTENERS_BOUND) return;
+      LISTENERS_BOUND = true;
+
+      document.getElementById("impersonateDivisi").addEventListener("change", () => {
+        UI_STATE.divisi = document.getElementById("impersonateDivisi").value || "";
+        refreshImpersonationCandidates();
+        syncPreview();
+      });
+      document.getElementById("impersonatePerson").addEventListener("change", () => {
+        const personSel = document.getElementById("impersonatePerson");
+        UI_STATE.personEmail = personSel.value || "";
+        UI_STATE.personName = personSel.options[personSel.selectedIndex]?.text || "";
+        syncPreview();
+      });
     }
 
     function applyHomeFilter(){
       const from = document.getElementById("dateFrom").value || "";
       const to = document.getElementById("dateTo").value || "";
-      loadSummary(from, to);
+
+      const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim().toLowerCase();
+      const effMode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "").trim().toLowerCase();
+
+      if (effEmail && (effMode === "staff" || effMode === "leader")){
+        loadViewSummary(AUTH_USER.email, effEmail, from, to);
+      } else {
+        loadViewSummary(AUTH_USER.email, AUTH_USER.email, from, to);
+      }
     }
 
     function resetHomeFilter(){
       document.getElementById("dateFrom").value = "";
       document.getElementById("dateTo").value = "";
-      loadSummary("", "");
+      applyHomeFilter();
     }
+
+    // close modal when click outside
+    document.addEventListener("click", (e) => {
+      const back = document.getElementById("roleModalBack");
+      if (!back.classList.contains("show")) return;
+      if (e.target === back) closeRoleModal();
+    });
 
     (function init(){
       requireLoginOrRedirect()
         .then((email) => {
-          document.getElementById("loginEmailPill").innerText = email || "-";
           document.getElementById("dateFrom").value = "";
           document.getElementById("dateTo").value = "";
-          loadSummary("", "");
+          initAuthAndView(email);
         })
         .catch(() => goLogin());
     })();
