@@ -212,6 +212,16 @@ function emailValid_(emailInput) {
 const CACHE_USER_TTL = 300;     // 5 min
 const CACHE_AKUNLIST_TTL = 180; // 3 min
 
+/**
+ * ✅ PATCH: DB_Akun header FIXED ORDER (kolom A-G):
+ * A nama
+ * B email
+ * C posisi
+ * D divisi
+ * E status karyawan
+ * F role akun
+ * G status aplikasi
+ */
 function getUserByEmail_(emailInput) {
   const email = emailValid_(emailInput);
   if (!email) return null;
@@ -232,15 +242,19 @@ function getUserByEmail_(emailInput) {
 
   const header = values[0];
 
-  const iNama = idxOfAnyHeader_(header, ["nama", "Nama"]);
-  const iEmail = idxOfAnyHeader_(header, ["email", "Email"]);
-  const iPosisi = idxOfAnyHeader_(header, ["posisi", "Posisi"]);
-  const iDivisi = idxOfAnyHeader_(header, ["divisi", "Divisi"]);
-  const iStatusKaryawan = idxOfAnyHeader_(header, ["status_karyawan", "status karyawan", "Status Karyawan"]);
-  const iRoleAkun = idxOfAnyHeader_(header, ["role_akun", "role akun", "Role Akun"]);
-  const iStatusAplikasi = idxOfAnyHeader_(header, ["status_aplikasi", "status aplikasi", "Status Aplikasi"]);
+  // ✅ pakai index sesuai urutan header yang kamu kasih
+  const iNama = 0;
+  const iEmail = 1;
+  const iPosisi = 2;
+  const iDivisi = 3;
+  const iStatusKaryawan = 4;
+  const iRoleAkun = 5;
+  const iStatusAplikasi = 6;
 
-  if (iEmail === -1) throw new Error(`Header "email" tidak ditemukan di ${SHEET_AKUN}.`);
+  // (opsional) safety: kalau header ternyata tidak sesuai, fallback ke pencarian lama
+  const headerLooksRight =
+    normHeader_(header[iNama]) === normHeader_("nama") &&
+    normHeader_(header[iEmail]) === normHeader_("email");
 
   const data = values.slice(1);
   for (const r of data) {
@@ -248,25 +262,55 @@ function getUserByEmail_(emailInput) {
     if (rowEmail !== email) continue;
 
     const user = {
-      nama: (iNama !== -1) ? asText_(r[iNama]).trim() : "",
+      nama: asText_(r[iNama]).trim(),
       email: rowEmail,
-      posisi: (iPosisi !== -1) ? asText_(r[iPosisi]).trim() : "",
-      divisi: (iDivisi !== -1) ? asText_(r[iDivisi]).trim() : "",
-      status_karyawan: (iStatusKaryawan !== -1) ? asText_(r[iStatusKaryawan]).trim() : "",
-      role_akun: (iRoleAkun !== -1) ? asText_(r[iRoleAkun]).trim() : "",
-      status_aplikasi: (iStatusAplikasi !== -1) ? asBool_(r[iStatusAplikasi]) : false,
+      posisi: asText_(r[iPosisi]).trim(),
+      divisi: asText_(r[iDivisi]).trim(),
+      status_karyawan: asText_(r[iStatusKaryawan]).trim(),
+      role_akun: asText_(r[iRoleAkun]).trim(),
+      status_aplikasi: asBool_(r[iStatusAplikasi]),
     };
 
     try { cache.put(cKey, JSON.stringify(user), CACHE_USER_TTL); } catch (e) {}
     return user;
   }
 
+  // fallback lama jika header ternyata tidak sesuai (biar nggak ngecrash kalau suatu hari berubah)
+  if (!headerLooksRight) {
+    const iNama2 = idxOfAnyHeader_(header, ["nama", "Nama"]);
+    const iEmail2 = idxOfAnyHeader_(header, ["email", "Email"]);
+    const iPosisi2 = idxOfAnyHeader_(header, ["posisi", "Posisi"]);
+    const iDivisi2 = idxOfAnyHeader_(header, ["divisi", "Divisi"]);
+    const iStatusKaryawan2 = idxOfAnyHeader_(header, ["status_karyawan", "status karyawan", "Status Karyawan"]);
+    const iRoleAkun2 = idxOfAnyHeader_(header, ["role_akun", "role akun", "Role Akun"]);
+    const iStatusAplikasi2 = idxOfAnyHeader_(header, ["status_aplikasi", "status aplikasi", "Status Aplikasi"]);
+    if (iEmail2 === -1) throw new Error(`Header "email" tidak ditemukan di ${SHEET_AKUN}.`);
+
+    for (const rr of data) {
+      const rowEmail2 = String(rr[iEmail2] || "").trim().toLowerCase();
+      if (rowEmail2 !== email) continue;
+
+      const user2 = {
+        nama: (iNama2 !== -1) ? asText_(rr[iNama2]).trim() : "",
+        email: rowEmail2,
+        posisi: (iPosisi2 !== -1) ? asText_(rr[iPosisi2]).trim() : "",
+        divisi: (iDivisi2 !== -1) ? asText_(rr[iDivisi2]).trim() : "",
+        status_karyawan: (iStatusKaryawan2 !== -1) ? asText_(rr[iStatusKaryawan2]).trim() : "",
+        role_akun: (iRoleAkun2 !== -1) ? asText_(rr[iRoleAkun2]).trim() : "",
+        status_aplikasi: (iStatusAplikasi2 !== -1) ? asBool_(rr[iStatusAplikasi2]) : false,
+      };
+      try { cache.put(cKey, JSON.stringify(user2), CACHE_USER_TTL); } catch (e) {}
+      return user2;
+    }
+  }
+
   return null;
 }
 
 /**
- * Ambil semua akun aktif dari DB_Akun (buat pilihan impersonate)
+ * Ambil semua akun dari DB_Akun
  * - includeNonActive=false => hanya status_aplikasi TRUE
+ * - includeNonActive=true  => semua
  */
 function getAllUsers_(includeNonActive) {
   const cache = CacheService.getScriptCache();
@@ -285,15 +329,18 @@ function getAllUsers_(includeNonActive) {
 
   const header = values[0];
 
-  const iNama = idxOfAnyHeader_(header, ["nama", "Nama"]);
-  const iEmail = idxOfAnyHeader_(header, ["email", "Email"]);
-  const iPosisi = idxOfAnyHeader_(header, ["posisi", "Posisi"]);
-  const iDivisi = idxOfAnyHeader_(header, ["divisi", "Divisi"]);
-  const iStatusKaryawan = idxOfAnyHeader_(header, ["status_karyawan", "status karyawan", "Status Karyawan"]);
-  const iRoleAkun = idxOfAnyHeader_(header, ["role_akun", "role akun", "Role Akun"]);
-  const iStatusAplikasi = idxOfAnyHeader_(header, ["status_aplikasi", "status aplikasi", "Status Aplikasi"]);
+  // ✅ pakai index sesuai urutan header yang kamu kasih
+  const iNama = 0;
+  const iEmail = 1;
+  const iPosisi = 2;
+  const iDivisi = 3;
+  const iStatusKaryawan = 4;
+  const iRoleAkun = 5;
+  const iStatusAplikasi = 6;
 
-  if (iEmail === -1) throw new Error(`Header "email" tidak ditemukan di ${SHEET_AKUN}.`);
+  const headerLooksRight =
+    normHeader_(header[iNama]) === normHeader_("nama") &&
+    normHeader_(header[iEmail]) === normHeader_("email");
 
   const out = [];
   const data = values.slice(1);
@@ -302,17 +349,47 @@ function getAllUsers_(includeNonActive) {
     if (!email) continue;
 
     const u = {
-      nama: (iNama !== -1) ? asText_(r[iNama]).trim() : "",
+      nama: asText_(r[iNama]).trim(),
       email,
-      posisi: (iPosisi !== -1) ? asText_(r[iPosisi]).trim() : "",
-      divisi: (iDivisi !== -1) ? asText_(r[iDivisi]).trim() : "",
-      status_karyawan: (iStatusKaryawan !== -1) ? asText_(r[iStatusKaryawan]).trim() : "",
-      role_akun: (iRoleAkun !== -1) ? asText_(r[iRoleAkun]).trim() : "",
-      status_aplikasi: (iStatusAplikasi !== -1) ? asBool_(r[iStatusAplikasi]) : false,
+      posisi: asText_(r[iPosisi]).trim(),
+      divisi: asText_(r[iDivisi]).trim(),
+      status_karyawan: asText_(r[iStatusKaryawan]).trim(),
+      role_akun: asText_(r[iRoleAkun]).trim(),
+      status_aplikasi: asBool_(r[iStatusAplikasi]),
     };
 
     if (!includeNonActive && !u.status_aplikasi) continue;
     out.push(u);
+  }
+
+  // fallback lama jika header ternyata tidak sesuai
+  if (!headerLooksRight) {
+    const iNama2 = idxOfAnyHeader_(header, ["nama", "Nama"]);
+    const iEmail2 = idxOfAnyHeader_(header, ["email", "Email"]);
+    const iPosisi2 = idxOfAnyHeader_(header, ["posisi", "Posisi"]);
+    const iDivisi2 = idxOfAnyHeader_(header, ["divisi", "Divisi"]);
+    const iStatusKaryawan2 = idxOfAnyHeader_(header, ["status_karyawan", "status karyawan", "Status Karyawan"]);
+    const iRoleAkun2 = idxOfAnyHeader_(header, ["role_akun", "role akun", "Role Akun"]);
+    const iStatusAplikasi2 = idxOfAnyHeader_(header, ["status_aplikasi", "status aplikasi", "Status Aplikasi"]);
+    if (iEmail2 === -1) throw new Error(`Header "email" tidak ditemukan di ${SHEET_AKUN}.`);
+
+    out.length = 0;
+    for (const r2 of data) {
+      const email2 = String(r2[iEmail2] || "").trim().toLowerCase();
+      if (!email2) continue;
+
+      const u2 = {
+        nama: (iNama2 !== -1) ? asText_(r2[iNama2]).trim() : "",
+        email: email2,
+        posisi: (iPosisi2 !== -1) ? asText_(r2[iPosisi2]).trim() : "",
+        divisi: (iDivisi2 !== -1) ? asText_(r2[iDivisi2]).trim() : "",
+        status_karyawan: (iStatusKaryawan2 !== -1) ? asText_(r2[iStatusKaryawan2]).trim() : "",
+        role_akun: (iRoleAkun2 !== -1) ? asText_(r2[iRoleAkun2]).trim() : "",
+        status_aplikasi: (iStatusAplikasi2 !== -1) ? asBool_(r2[iStatusAplikasi2]) : false,
+      };
+      if (!includeNonActive && !u2.status_aplikasi) continue;
+      out.push(u2);
+    }
   }
 
   try { cache.put(cKey, JSON.stringify(out), CACHE_AKUNLIST_TTL); } catch (e) {}
@@ -1266,14 +1343,7 @@ function getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso)
   }
 }
 
-/***** ✅✅✅ FIX UTAMA UNTUK DASHBOARD (AUTH + EFFECTIVE) ✅✅✅
- * Dashboard.html kamu manggil:
- *   getHomepageSummaryByAuthEmailWithFilter(authEmail, effectiveEmail, fromIso, toIso)
- *
- * RULE PENTING:
- * - Staff: effectiveEmail DIPAKSA = authEmail (biar "ingat saya" tidak kebawa impersonate dari cache FE)
- * - Leader/Management: boleh effective beda, tapi wajib lolos canImpersonate_()
- */
+/***** ✅✅✅ FIX UTAMA UNTUK DASHBOARD (AUTH + EFFECTIVE) ✅✅✅ */
 function getHomepageSummaryByAuthEmailWithFilter(authEmailInput, effectiveEmailInput, dateFromIso, dateToIso) {
   const authEmail = emailValid_(authEmailInput);
   const effEmailCandidate = emailValid_(effectiveEmailInput);
@@ -1283,7 +1353,6 @@ function getHomepageSummaryByAuthEmailWithFilter(authEmailInput, effectiveEmailI
   }
 
   try {
-    // pastikan auth terdaftar & aktif
     if (!isEmailAllowed_(authEmail)) {
       return JSON.stringify({ ok: false, message: "Akses ditolak: akun login tidak terdaftar / non-aktif." });
     }
@@ -1295,15 +1364,12 @@ function getHomepageSummaryByAuthEmailWithFilter(authEmailInput, effectiveEmailI
 
     const authRole = normalizeRole_(authUser.role_akun);
 
-    // ✅ Staff: apapun yang FE kirim, kita paksa pakai auth (prevent kebawa effectiveEmail dari localStorage)
     if (authRole !== "leader" && authRole !== "management") {
       return getHomepageSummaryByEmailWithFilter(authEmail, dateFromIso || "", dateToIso || "");
     }
 
-    // Leader/Management: effective default = auth (kalau kosong)
     const effectiveEmail = effEmailCandidate || authEmail;
 
-    // kalau effective beda dari auth -> cek izin impersonate
     if (effectiveEmail && effectiveEmail !== authEmail) {
       if (!isEmailAllowed_(effectiveEmail)) {
         return JSON.stringify({ ok: false, message: "Target akses tidak valid / non-aktif." });
@@ -1319,7 +1385,6 @@ function getHomepageSummaryByAuthEmailWithFilter(authEmailInput, effectiveEmailI
       }
     }
 
-    // lolos -> ringkasan berdasarkan effective
     return getHomepageSummaryByEmailWithFilter(effectiveEmail, dateFromIso || "", dateToIso || "");
 
   } catch (e) {
@@ -1327,21 +1392,356 @@ function getHomepageSummaryByAuthEmailWithFilter(authEmailInput, effectiveEmailI
   }
 }
 
-/***** ✅ RANKING PAGE DATA (ranking.html) — biar aman kalau dibuka *****/
-function getRankingPageDataByEmailWithFilter(emailInput, dateFromIso, dateToIso) {
-  const res = JSON.parse(getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso));
-  if (!res || !res.ok) return JSON.stringify(res || { ok: false, message: "Gagal ambil ranking." });
-
-  return JSON.stringify({
-    ok: true,
-    email: res.email,
-    namaMitra: res.namaMitra || "",
-    posisi: res.posisi || "",
-    rankings: res.rankings || { acrossDivisions: [], withinDivision: [] }
-  });
-}
-
+/***** TEST *****/
 function TEST_openSheet() {
   const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
   SpreadsheetApp.openById(id).getSheets()[0].getName();
+}
+
+/***** ===========================
+ *  ✅ RANKING BACKEND (ranking.html) — FIXED + SUPPORT DIVISION LIST + PROFILE + TREND (Logic A)
+ *
+ *  RULES FIX:
+ *  1) Sumber kebenaran peserta ranking = DB_Akun:
+ *     - status_aplikasi = TRUE
+ *     - status_karyawan mengandung "aktif" (case-insensitive)
+ *  2) Semua karyawan aktif tetap muncul walau invoiceQty = 0 (biar count match, misal 39)
+ *  3) Divisi selalu dari DB_Akun (bukan dari slip)
+ *  4) Within-division rank di-rerank ulang mulai dari 1
+ *  5) Invoice valid: "ID Komisi Cair" harus terisi
+ *  6) Date filter: "Tanggal Cetak Invoice" inclusive
+ *  7) Nominal invoice: "Biaya Penagihan Jasa" (ubah kalau mau)
+ *  8) ✅ Return divisions[] untuk dropdown management
+ *  9) ✅ Return profile untuk header (nama + pill posisi + pill divisi)
+ *  10) ✅ TREND Logic A: pembanding = previous period dengan DURASI SAMA (berdasarkan QTY)
+ * ============================ */
+
+const RANKING_NOMINAL_HEADER = "Biaya Penagihan Jasa"; // <-- ganti kalau mau
+
+function isActiveKaryawan_(statusKaryawan) {
+  const s = String(statusKaryawan || "").trim().toLowerCase();
+  return !!s && s.includes("aktif");
+}
+
+function normalizeDivisiDisplay_(dv) {
+  const s = String(dv || "").trim();
+  return s ? s : "-";
+}
+
+function getActiveEmployees_() {
+  const all = getAllUsers_(true);
+  return all
+    .filter(u => u && u.email)
+    .filter(u => !!u.status_aplikasi)
+    .filter(u => isActiveKaryawan_(u.status_karyawan))
+    .map(u => ({
+      email: String(u.email || "").trim().toLowerCase(),
+      nama: String(u.nama || "").trim(),
+      divisi: normalizeDivisiDisplay_(u.divisi),
+      role_akun: String(u.role_akun || "").trim(),
+      posisi: String(u.posisi || "").trim()
+    }));
+}
+
+function buildDateRange_(dateFromIso, dateToIso) {
+  const fromD = clampToDayStart_(parseDate_(dateFromIso || ""));
+  const toD = clampToDayEnd_(parseDate_(dateToIso || ""));
+  return { fromD, toD, hasFilter: !!(fromD || toD) };
+}
+
+function inRange_(dt, range) {
+  if (!dt) return false;
+  if (range.hasFilter) {
+    if (range.fromD && dt < range.fromD) return false;
+    if (range.toD && dt > range.toD) return false;
+  }
+  return true;
+}
+
+/** fallback lama (tetap dipakai kalau filter belum lengkap) */
+function previousFullMonthRange_(dateFromIso, dateToIso) {
+  const base = parseDate_(dateFromIso || "") || parseDate_(dateToIso || "") || new Date();
+  const y = base.getFullYear();
+  const m = base.getMonth();
+  const prevFirst = new Date(y, m - 1, 1);
+  const prevLast = new Date(y, m, 0);
+  prevFirst.setHours(0,0,0,0);
+  prevLast.setHours(23,59,59,999);
+  return { fromD: prevFirst, toD: prevLast, hasFilter: true };
+}
+
+/** ✅ Logic A terbaik: previous period dengan DURASI SAMA (inclusive day count) */
+function previousSameLengthRange_(dateFromIso, dateToIso) {
+  const fromD = clampToDayStart_(parseDate_(dateFromIso || ""));
+  const toD = clampToDayEnd_(parseDate_(dateToIso || ""));
+
+  // kalau filter belum lengkap, aman fallback
+  if (!fromD || !toD) return previousFullMonthRange_(dateFromIso, dateToIso);
+
+  const MS = 24 * 60 * 60 * 1000;
+  const days = Math.round((toD.getTime() - fromD.getTime()) / MS) + 1; // inclusive
+
+  const prevTo = new Date(fromD.getTime() - 1);
+  prevTo.setHours(23, 59, 59, 999);
+
+  const prevFrom = new Date(prevTo.getTime() - (days - 1) * MS);
+  prevFrom.setHours(0, 0, 0, 0);
+
+  return { fromD: prevFrom, toD: prevTo, hasFilter: true };
+}
+
+function aggregateInvoiceByEmail_(ss, dateRange) {
+  const sh = ss.getSheetByName(SHEET_NAME);
+  if (!sh) throw new Error(`Sheet "${SHEET_NAME}" tidak ditemukan.`);
+
+  const values = sh.getDataRange().getValues();
+  if (values.length < 2) return new Map();
+
+  const header = values[0];
+  const data = values.slice(1);
+
+  const iId = idxOfAnyHeader_(header, ["ID Komisi Cair", "ID Komisi"]);
+  const iEmail = idxOfAnyHeader_(header, ["Email Mitra", "Email"]);
+  const iNama = idxOfAnyHeader_(header, ["Nama Mitra", "Nama"]);
+  const iTglCetak = idxOfAnyHeader_(header, ["Tanggal Cetak Invoice", "Tgl Cetak Invoice", "Cetak Invoice"]);
+  const iNominal = idxOfAnyHeader_(header, [RANKING_NOMINAL_HEADER]);
+
+  const must = [];
+  if (iId === -1) must.push("ID Komisi Cair");
+  if (iEmail === -1) must.push("Email Mitra");
+  if (iTglCetak === -1) must.push("Tanggal Cetak Invoice");
+  if (iNominal === -1) must.push(RANKING_NOMINAL_HEADER);
+  if (must.length) throw new Error("Header wajib belum ketemu: " + must.join(", "));
+
+  const map = new Map();
+
+  for (const r of data) {
+    const idKom = String(r[iId] || "").trim();
+    if (!idKom) continue;
+
+    const dt = parseDate_(r[iTglCetak]);
+    if (!inRange_(dt, dateRange)) continue;
+
+    const email = String(r[iEmail] || "").trim().toLowerCase();
+    if (!email) continue;
+
+    const name = (iNama !== -1) ? String(r[iNama] || "").trim() : "";
+    const nominal = asNumber_(r[iNominal]);
+
+    const cur = map.get(email) || { email, name, invoiceQty: 0, invoiceNominal: 0 };
+    cur.invoiceQty += 1;
+    cur.invoiceNominal += nominal;
+    if (!cur.name && name) cur.name = name;
+
+    map.set(email, cur);
+  }
+
+  return map;
+}
+
+function buildRankedList_(employees, aggMap) {
+  const rows = employees.map(emp => {
+    const a = aggMap.get(emp.email);
+    return {
+      email: emp.email,
+      name: emp.nama || (a ? (a.name || "") : ""),
+      divisi: normalizeDivisiDisplay_(emp.divisi),
+      invoiceQty: a ? Number(a.invoiceQty || 0) : 0,
+      invoiceNominal: a ? Number(a.invoiceNominal || 0) : 0,
+      rank: 0,
+      movement: 0
+    };
+  });
+
+  rows.sort((x, y) =>
+    (Number(y.invoiceQty) - Number(x.invoiceQty)) ||
+    (Number(y.invoiceNominal) - Number(x.invoiceNominal)) ||
+    String(x.name || "").localeCompare(String(y.name || ""), "id-ID")
+  );
+
+  for (let i = 0; i < rows.length; i++) rows[i].rank = i + 1;
+
+  return rows;
+}
+
+function applyMovement_(currRows, prevRows) {
+  const prevIndex = new Map(prevRows.map(r => [r.email, Number(r.rank || 0)]));
+  for (const r of currRows) {
+    const prevRank = prevIndex.get(r.email);
+    if (!prevRank) r.movement = 1;
+    else r.movement = prevRank - Number(r.rank || 0);
+  }
+  return currRows;
+}
+
+function sumQty_(rows) {
+  return rows.reduce((acc, r) => acc + Number(r.invoiceQty || 0), 0);
+}
+function buildTrend_(qtyCurr, qtyPrev) {
+  const c = Number(qtyCurr || 0);
+  const p = Number(qtyPrev || 0);
+  const delta = c - p;
+  const denom = Math.max(1, p);
+  const growthPct = (delta / denom) * 100;
+
+  let trend = "stabil";
+  if (c > p) trend = "naik";
+  else if (c < p) trend = "turun";
+
+  return { qtyCurrent: c, qtyPrevious: p, delta: delta, growthPct: growthPct, trend: trend };
+}
+
+function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput, dateFromIso, dateToIso, divisionOverrideInput) {
+  const authEmail = emailValid_(authEmailInput);
+  const effCandidate = emailValid_(effectiveEmailInput);
+
+  if (!authEmail) return JSON.stringify({ ok:false, message:"Email auth tidak valid." });
+
+  try {
+    if (!isEmailAllowed_(authEmail)) {
+      return JSON.stringify({ ok:false, message:"Akses ditolak: akun login tidak terdaftar / non-aktif." });
+    }
+
+    const authUser = getUserByEmail_(authEmail);
+    if (!authUser || !authUser.status_aplikasi) {
+      return JSON.stringify({ ok:false, message:"Akun login tidak valid / non-aktif." });
+    }
+
+    const authRole = normalizeRole_(authUser.role_akun);
+
+    let effectiveEmail = authEmail;
+    if (authRole === "leader" || authRole === "management") {
+      effectiveEmail = effCandidate || authEmail;
+
+      if (effectiveEmail !== authEmail) {
+        if (!isEmailAllowed_(effectiveEmail)) return JSON.stringify({ ok:false, message:"Target akses tidak valid / non-aktif." });
+        const effUserTmp = getUserByEmail_(effectiveEmail);
+        if (!effUserTmp || !effUserTmp.status_aplikasi) return JSON.stringify({ ok:false, message:"Target akses tidak valid / non-aktif." });
+        if (!canImpersonate_(authUser, effUserTmp)) return JSON.stringify({ ok:false, message:"Akses ditolak: kamu tidak punya izin untuk login sebagai akun tersebut." });
+      }
+    }
+
+    const ss = getSpreadsheet_();
+
+    const activeEmployees = getActiveEmployees_();
+
+    const effUser = getUserByEmail_(effectiveEmail) || {};
+    const effDiv = normalizeDivisiDisplay_(effUser.divisi);
+
+    const divisionOverride = String(divisionOverrideInput || "").trim();
+    const divisionName = divisionOverride ? normalizeDivisiDisplay_(divisionOverride) : effDiv;
+
+    const currRange = buildDateRange_(dateFromIso, dateToIso);
+
+    // ✅ FIX UTAMA: pakai Logic A terbaik (same-length previous period)
+    const prevRange = previousSameLengthRange_(dateFromIso, dateToIso);
+
+    const currAgg = aggregateInvoiceByEmail_(ss, currRange);
+    const prevAgg = aggregateInvoiceByEmail_(ss, prevRange);
+
+    const currAll = buildRankedList_(activeEmployees, currAgg);
+    const prevAll = buildRankedList_(activeEmployees, prevAgg);
+
+    applyMovement_(currAll, prevAll);
+
+    const acrossAll = currAll.map(r => ({
+      rank: r.rank,
+      name: r.name || "-",
+      divisi: normalizeDivisiDisplay_(r.divisi),
+      invoiceQty: Number(r.invoiceQty || 0),
+      invoiceNominal: Number(r.invoiceNominal || 0),
+      movement: Number(r.movement || 0)
+    }));
+
+    // within division: filter then re-rank from 1
+    const want = String(divisionName || "").trim().toLowerCase();
+    let withinBase = currAll.filter(r => String(r.divisi || "").trim().toLowerCase() === want);
+
+    withinBase.sort((a,b) =>
+      (Number(b.invoiceQty) - Number(a.invoiceQty)) ||
+      (Number(b.invoiceNominal) - Number(a.invoiceNominal)) ||
+      String(a.name || "").localeCompare(String(b.name || ""), "id-ID")
+    );
+    for (let i=0;i<withinBase.length;i++) withinBase[i].rank = i + 1;
+
+    // prev within for movement
+    let prevWithin = prevAll.filter(r => String(r.divisi || "").trim().toLowerCase() === want);
+    prevWithin.sort((a,b) =>
+      (Number(b.invoiceQty) - Number(a.invoiceQty)) ||
+      (Number(b.invoiceNominal) - Number(a.invoiceNominal)) ||
+      String(a.name || "").localeCompare(String(b.name || ""), "id-ID")
+    );
+    for (let i=0;i<prevWithin.length;i++) prevWithin[i].rank = i + 1;
+
+    applyMovement_(withinBase, prevWithin);
+
+    const withinAll = withinBase.map(r => ({
+      rank: r.rank,
+      name: r.name || "-",
+      divisi: normalizeDivisiDisplay_(r.divisi),
+      invoiceQty: Number(r.invoiceQty || 0),
+      invoiceNominal: Number(r.invoiceNominal || 0),
+      movement: Number(r.movement || 0)
+    }));
+
+    // ✅ divisions list untuk dropdown (management)
+    const divSet = new Set();
+    for (const emp of activeEmployees) {
+      divSet.add(normalizeDivisiDisplay_(emp.divisi));
+    }
+    const divisions = Array.from(divSet).sort((a,b)=>String(a).localeCompare(String(b),"id-ID"));
+
+    // ✅ profile untuk header ranking (biar UI bisa persis dashboard)
+    const profile = {
+      nama: String(effUser.nama || "").trim(),
+      posisi: String(effUser.posisi || "").trim(),
+      divisi: normalizeDivisiDisplay_(effUser.divisi),
+      role_akun: String(effUser.role_akun || "").trim()
+    };
+
+    // ✅ TREND (QTY) - overall + within selected division
+    const currQtyAll = sumQty_(acrossAll);
+    const prevQtyAll = sumQty_(prevAll.map(r => ({ invoiceQty: r.invoiceQty })));
+    const trendAcross = buildTrend_(currQtyAll, prevQtyAll);
+
+    const currQtyWithin = sumQty_(withinAll);
+    const prevQtyWithin = sumQty_(prevWithin.map(r => ({ invoiceQty: r.invoiceQty })));
+    const trendWithin = buildTrend_(currQtyWithin, prevQtyWithin);
+
+    const rangeInfo = {
+      current: {
+        fromIso: currRange.fromD ? currRange.fromD.toISOString() : "",
+        toIso: currRange.toD ? currRange.toD.toISOString() : ""
+      },
+      previous: {
+        fromIso: prevRange.fromD ? prevRange.fromD.toISOString() : "",
+        toIso: prevRange.toD ? prevRange.toD.toISOString() : ""
+      }
+    };
+
+    return JSON.stringify({
+      ok: true,
+      authRole: authRole,
+      divisionName: divisionName,
+      divisions: divisions,
+      profile: profile,
+      countActiveEmployees: activeEmployees.length,
+
+      // data utama
+      acrossAll,
+      withinAll,
+
+      // ✅ tambahan terbaik: info compare range + trend (QTY)
+      compareRange: rangeInfo,
+      trend: {
+        basis: "qty",           // sesuai request kamu: pembandingnya qty
+        logic: "A_same_length", // Logic A: previous period same length
+        acrossAll: trendAcross,
+        withinDivision: trendWithin
+      }
+    });
+
+  } catch (e) {
+    return JSON.stringify({ ok:false, message:"Error server: " + (e && e.message ? e.message : e) });
+  }
 }
