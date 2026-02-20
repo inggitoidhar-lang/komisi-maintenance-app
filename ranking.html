@@ -1,231 +1,1283 @@
+<!-- =========================
+     ranking.html (FULL) — REV 2026-02-18 (PATCH 2026-02-18b)
+     Patch (2026-02-19):
+     - ✅ Hapus card Nama/Profile (sesuai request): langsung tampil Filter di paling atas
+   ========================= -->
 <!DOCTYPE html>
 <html>
 <head>
   <base target="_top" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peringkat</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --brand:#00a0c6; --text:#0b1220; --muted:#64748b;
-      --radius:18px; --bg1:#0b2a57; --bg2:#0b3b8a; --soft:#f7fafc;
-    }
-    *{ box-sizing:border-box; }
-    body{ margin:0; font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:#fff; }
-    .wrap{ max-width: 1180px; margin:0 auto; padding:18px; }
+      --brand:#00a0c6;
+      --text:#0b1220;
+      --muted:#64748b;
+      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+      --radius: 18px;
 
+      --bg1:#0b2a57;
+      --bg2:#0b3b8a;
+
+      --soft:#f7fafc;
+
+      --scrollTrack: rgba(11, 42, 87, .12);
+      --scrollThumbGrad: linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:#ffffff;
+      min-height: 100vh;
+    }
+
+    body::-webkit-scrollbar{ width:10px; height:10px; }
+    body::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    body::-webkit-scrollbar-thumb{
+      background: var(--scrollThumbGrad);
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
+
+    /* ===== HEADER ===== */
     .top{
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border: 1px solid rgba(255,255,255,.18);
       border-radius: var(--radius);
       padding: 14px 16px;
-      color:#fff;
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      box-shadow: 0 18px 50px rgba(2,6,23,.22);
+      width: 100%;
     }
-    .leftTop{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .logo{ height:30px; }
-    .title{ font-weight:900; }
-    .sub{ color: rgba(255,255,255,.75); font-weight:800; font-size:12px; margin-top:2px; }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .leftTop{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
+    .logoApp{ height: 44px; width:auto; display:block; }
+    .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
+    .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; }
+
+    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .statusPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.75);
+      font-weight: 900; font-size: 13px;
+      backdrop-filter: blur(10px);
+      white-space: nowrap;
+    }
+    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
+    .statusText .email{ color: #fff; font-weight: 900; }
+
+    #loginRolePill{ opacity:.95; }
+    .pillClickable{
+      cursor:pointer;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      user-select:none;
+    }
+    .pillDisabled{
+      cursor: default !important;
+      opacity: .9;
+      border-color: rgba(255,255,255,.16) !important;
+      background: rgba(255,255,255,.08) !important;
+    }
 
     .btnSmall{
       height:44px; padding: 0 14px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
-      cursor:pointer; font-weight: 900; font-size: 14px; color:#fff;
+      cursor:pointer;
+      font-weight: 900; font-size: 14px;
+      color:#fff;
+      display:inline-flex; align-items:center; gap:10px;
+      backdrop-filter: blur(10px);
     }
     .btnSmall:hover{ background: rgba(255,255,255,.18); }
 
-    .card{ margin-top:12px; border:1px solid rgba(15,23,42,.10); border-radius: var(--radius); padding:16px; box-shadow: 0 10px 24px rgba(2, 6, 23, .08); }
-
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
-    .field{ flex:1; min-width: 200px; }
-    label{ display:block; font-size:12px; color:var(--muted); font-weight:900; margin-bottom:6px; }
-    input{
-      width:100%; height:48px; border-radius: 14px; border:1px solid rgba(15,23,42,.12);
-      padding: 10px 12px; font-weight:800; font-family:inherit;
-    }
-    .btn{
-      height:48px; border-radius:14px; border:1px solid rgba(15,23,42,.14);
-      background:#fff; font-weight:900; cursor:pointer; padding: 0 12px;
-    }
-    .btn.primary{
-      border-color: transparent;
-      background: linear-gradient(135deg, rgba(0,160,198,1), rgba(0,160,198,.85));
+    .btnIcon{
+      width: 42px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.12);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       color:#fff;
+      backdrop-filter: blur(10px);
+    }
+    .btnIcon:hover{ background: rgba(255,255,255,.18); }
+
+    .icon{ width:18px; height:18px; display:inline-block; }
+    .icon svg{ width:100%; height:100%; display:block; }
+
+    /* ===== CARD ===== */
+    .card{
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-top: 12px;
+      width: 100%;
     }
 
-    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+    /* ===== BUTTONS ===== */
+    .btn{
+      height:44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 14px;
+      font-family: inherit;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+      transition: transform .05s ease, box-shadow .15s ease, background .15s ease;
+      user-select:none;
+      gap:10px;
+    }
+    .btn:active{ transform: translateY(1px); }
 
-    table{ width:100%; border-collapse: collapse; font-size: 12px; }
-    th, td{ padding: 10px 10px; border-bottom:1px solid rgba(15,23,42,.08); text-align:left; white-space:nowrap; }
-    th{ color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.2px; position:sticky; top:0; background:#fff; }
-    .wrapTable{ max-height: 520px; overflow:auto; border-radius: 14px; border:1px solid rgba(15,23,42,.08); }
-    tr.me td{ background: rgba(0,160,198,.10); font-weight:900; }
-    .msg{ margin-top:10px; color:#b00020; font-weight:900; min-height:18px; }
-    .note{ font-size:12px; color:var(--muted); font-weight:800; margin-top:6px; }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      box-shadow: 0 10px 18px rgba(11, 43, 87, .18);
+    }
+
+    .btn.ghost{
+      background:#fff;
+      border-color: rgba(15,23,42,.14);
+      color: var(--text);
+    }
+    .btn.ghost:hover{ background: var(--soft); }
+
+    /* ===== SECTION HEAD ===== */
+    .sectionHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .sectionTitle{
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .sectionSub{
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      max-width: 820px;
+    }
+
+    .pillSmall{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.92);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(15,23,42,.72);
+      white-space: nowrap;
+    }
+    .pillSmall.clickable{
+      cursor:pointer;
+      border-color: rgba(0,160,198,.35);
+      color: rgba(0,160,198,1);
+      background: rgba(0,160,198,.08);
+    }
+    .pillSmall.clickable:hover{ filter: brightness(0.98); }
+
+    /* ===== PROFILE CARD (baru) ===== */
+    .profileRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .profileLeft{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width: 240px;
+    }
+    .nameLabel{
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      letter-spacing:.2px;
+    }
+    .nameValue{
+      font-size: 18px;
+      font-weight: 1000;
+      color: var(--brand);
+      line-height: 1.1;
+    }
+    .profilePills{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .pillInfo{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14);
+      background: rgba(255,255,255,.96);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(15,23,42,.78);
+      white-space: nowrap;
+    }
+    .pillInfo .k{ color: rgba(15,23,42,.50); font-weight: 900; }
+    .pillInfo .v{ color: rgba(15,23,42,.88); font-weight: 1000; }
+
+    /* ===== FILTER CARD ===== */
+    .filterHead{ margin-bottom: 12px; }
+
+    .filterRow{
+      display:flex;
+      gap: 8px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      justify-content:flex-start;
+      width:100%;
+    }
+
+    .filterRow > .field{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .labelSmall{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      text-align:left;
+    }
+
+    input[type="date"]{
+      width: 220px;
+      height:48px;
+      padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      font-size: 14px;
+      outline:none;
+      background:#fff;
+      font-family: inherit;
+      font-weight: 800;
+    }
+
+    .filterRow .btn{
+      height:48px;
+      padding: 0 16px;
+    }
+
+    @media (max-width: 980px){
+      input[type="date"]{ width: 48vw; min-width: 160px; }
+    }
+
+    /* =========================
+       PODIUM STRIP
+       ========================= */
+    .podiumWrap{
+      margin-top: 8px;
+      margin-bottom: 10px;
+      width:100%;
+    }
+
+    .podiumStrip{
+      display:flex;
+      align-items:flex-end;
+      justify-content:stretch;
+      gap:0;
+      width:100%;
+      border-radius: 16px;
+      overflow:hidden;
+      border: 1px solid rgba(15,23,42,.08);
+      background: linear-gradient(135deg, rgba(11,42,87,.05), rgba(0,160,198,.05));
+    }
+
+    .podItem{
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 10px 8px 10px;
+      border-right: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .podItem:last-child{ border-right: none; }
+
+    .podName{
+      font-weight: 1000;
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align:center;
+    }
+
+    .podDiv{
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(15,23,42,.60);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align:center;
+    }
+
+    .pillBlueWide{
+      margin-top: 9px;
+      width: 100%;
+      max-width: 220px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,160,198,.22);
+      background: rgba(0,160,198,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 0 10px;
+      gap:6px;
+    }
+
+    .pillBlueWide .nomText{
+      font-weight: 1000;
+      font-size: 11.5px;
+      color: rgba(0,160,198,1);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .pillBlueWide .miniInvoice{
+      flex: 0 0 auto;
+      height: 22px;
+      padding: 0 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,160,198,.22);
+      background: rgba(255,255,255,.75);
+      color: rgba(0,160,198,1);
+      font-weight: 1000;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .podBlock{
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      position:relative;
+    }
+
+    .podBlock::before{
+      content:"";
+      position:absolute;
+      left:0; right:0; top:0;
+      height: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0));
+      opacity: .95;
+      pointer-events:none;
+    }
+
+    .podBlock::after{
+      content:"";
+      position:absolute;
+      top:0; bottom:0;
+      right:-16px;
+      width: 42px;
+      background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.22));
+      transform: skewX(-18deg);
+      opacity: .75;
+      pointer-events:none;
+    }
+
+    .podTopLabel{
+      position:absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      text-align:center;
+      font-weight: 1000;
+      font-size: 12px;
+      color: rgba(255,255,255,.92);
+      letter-spacing: .25px;
+      line-height: 1;
+    }
+
+    .podRank{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 1000;
+      font-size: 36px;
+      letter-spacing: .8px;
+      color: rgba(255,255,255,.96);
+      text-shadow:
+        0 2px 0 rgba(0,0,0,.12),
+        0 10px 18px rgba(0,0,0,.18);
+      transform: translateY(6px);
+    }
+
+    .podItem.rank1 .podBlock{ height: 132px; background: linear-gradient(135deg, #0b3b8a, #00a0c6); }
+    .podItem.rank2 .podBlock{ height: 108px; }
+    .podItem.rank3 .podBlock{ height: 90px;  }
+    .podItem.rank4 .podBlock{ height: 74px;  }
+    .podItem.rank5 .podBlock{ height: 62px;  }
+
+    /* =========================
+       TABLE
+       ========================= */
+    .tableWrap{
+      overflow:auto;
+      max-height: 44vh;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 16px;
+      background:#fff;
+      width:100%;
+    }
+
+    .tableWrap::-webkit-scrollbar{ width:10px; height:10px; }
+    .tableWrap::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .tableWrap::-webkit-scrollbar-thumb{
+      background: var(--scrollThumbGrad);
+      border-radius: 999px;
+      border: 2px solid var(--scrollTrack);
+    }
+
+    table{ width:100%; border-collapse: collapse; min-width: 860px; }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(15,23,42,.10);
+      text-align:center;
+      white-space: nowrap;
+      font-size: 13.5px;
+      background:#fff;
+    }
+
+    th{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #fff !important;
+      font-size: 12px;
+      letter-spacing: .22px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 900;
+      cursor: pointer;
+      user-select:none;
+      box-shadow: 0 2px 0 rgba(15,23,42,.10);
+    }
+
+    th.sortActive{
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important;
+      box-shadow: inset 0 -2px 0 rgba(255,255,255,.30);
+    }
+    .sortArrow{ width: 10px; height: 10px; opacity:.95; display:inline-block; vertical-align: middle; margin-left: 6px; color: currentColor; }
+
+    .moneyCell{ background: rgba(0,160,198,.07); font-weight: 900; }
+
+    .mv{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.85);
+      font-weight: 1000;
+      font-size: 11px;
+      color: rgba(15,23,42,.72);
+    }
+    .mv.up{ border-color: rgba(11,128,67,.22); background: rgba(11,128,67,.10); color: rgba(11,128,67,1); }
+    .mv.down{ border-color: rgba(176,0,32,.22); background: rgba(176,0,32,.09); color: rgba(176,0,32,1); }
+    .mv.stable{ border-color: rgba(15,23,42,.12); background: rgba(15,23,42,.04); color: rgba(15,23,42,.62); }
+
+    .copyright{
+      text-align:center;
+      margin:16px 0;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(15,23,42,.55);
+      letter-spacing:.2px;
+    }
+
+    /* ===== MODAL ===== */
+    .modalOverlay{
+      position:fixed;
+      inset:0;
+      background: rgba(2,6,23,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .modal{
+      width: 100%;
+      max-width: 520px;
+      background:#fff;
+      border-radius: 18px;
+      border: 1px solid rgba(15,23,42,.12);
+      box-shadow: 0 30px 80px rgba(2,6,23,.35);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(11,42,87,.08), rgba(0,160,198,.08));
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modalTitle{
+      font-weight: 1000;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .modalBody{ padding: 14px 16px; }
+    .modalSub{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+    .select{
+      width: 100%;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,.12);
+      padding: 0 12px;
+      font-weight: 900;
+      font-family: inherit;
+      outline:none;
+    }
+    .modalActions{
+      padding: 14px 16px;
+      border-top: 1px solid rgba(15,23,42,.08);
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
+    <!-- HEADER -->
     <div class="top">
-      <div class="leftTop">
-        <img class="logo" src="<?= logoWhiteUrl ?>" alt="Jendela360">
-        <div>
-          <div class="title">Ranking</div>
-          <div class="sub">Full page peringkat (ikut filter tanggal)</div>
+      <div class="topRow">
+        <div class="leftTop">
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Cek Komisi" />
+          <div>
+            <div class="title">Peringkat</div>
+            <div class="subtitle">Laman Peringkat Individu</div>
+          </div>
         </div>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btnSmall" onclick="goPage('dashboard')">Beranda</button>
-        <button class="btnSmall" onclick="logout()">Keluar</button>
+
+        <div class="topActions">
+          <div class="statusPill">
+            <span class="dot"></span>
+            <span class="statusText">
+              <span class="label">Sedang Masuk</span>
+              <span class="email" id="loginEmailPill">-</span>
+
+              <span class="label" style="opacity:.85;">• Masuk sebagai</span>
+              <span class="email pillClickable pillDisabled" id="loginRolePill" title="Mode akses">Pengguna</span>
+            </span>
+          </div>
+
+          <button class="btnIcon" onclick="goHome()" title="Beranda" aria-label="Beranda">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 10.5L12 3l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.5 9.5V21h13V9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 21v-6h4v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+
+          <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M14 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Keluar
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div style="font-weight:900;">Mitra: <span id="namaMitra">-</span> <span class="note" id="divisiText"></span></div>
+    <!-- ✅ PROFILE CARD DIHAPUS (sesuai request) -->
 
-      <div class="row" style="margin-top:12px;">
+    <!-- FILTER -->
+    <div class="card">
+      <div class="filterHead">
+        <div class="sectionTitle">Filter</div>
+        <div class="sectionSub">Filter memengaruhi seluruh data di laman ini</div>
+      </div>
+
+      <div class="filterRow">
         <div class="field">
-          <label>Tanggal Awal</label>
+          <div class="labelSmall">Tanggal Awal</div>
           <input type="date" id="dateFrom">
         </div>
+
         <div class="field">
-          <label>Tanggal Akhir</label>
+          <div class="labelSmall">Tanggal Akhir</div>
           <input type="date" id="dateTo">
         </div>
-        <div class="field" style="min-width:160px;">
-          <label>&nbsp;</label>
-          <button class="btn" onclick="resetFilter()">Reset</button>
-        </div>
-        <div class="field" style="min-width:160px;">
-          <label>&nbsp;</label>
-          <button class="btn primary" onclick="applyFilter()">Terapkan</button>
-        </div>
+
+        <button class="btn ghost" onclick="resetFilter()" title="Reset" aria-label="Reset">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 4v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Reset
+        </button>
+
+        <button class="btn primary" onclick="applyDateFilter()" title="Terapkan" aria-label="Terapkan">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Terapkan
+        </button>
       </div>
-
-      <div class="msg" id="msg"></div>
-
-      <div class="grid">
-        <div>
-          <div style="font-weight:900; margin-bottom:8px;">Antar Divisi</div>
-          <div class="wrapTable">
-            <table>
-              <thead>
-                <tr><th>Rank</th><th>Nama</th><th>Divisi</th><th>Total</th><th>SPK</th></tr>
-              </thead>
-              <tbody id="tbAcross"><tr><td colspan="5">Loading...</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div>
-          <div style="font-weight:900; margin-bottom:8px;">Dalam Divisi</div>
-          <div class="wrapTable">
-            <table>
-              <thead>
-                <tr><th>Rank</th><th>Nama</th><th>Divisi</th><th>Total</th><th>SPK</th></tr>
-              </thead>
-              <tbody id="tbWithin"><tr><td colspan="5">Loading...</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="note" style="margin-top:12px;" id="metaNote"></div>
     </div>
 
-    <div class="note" style="text-align:center; margin:16px 0;">? Internal Tools by HCGA Jendela360 (IIA)</div>
+    <!-- SECTION 1: Peringkat antar Divisi (Top 5) -->
+    <div class="card">
+      <div class="sectionHead">
+        <div>
+          <div class="sectionTitle">Peringkat antar Divisi</div>
+          <div class="sectionSub">Peringkat ditentukan berdasarkan jumlah invoice terbanyak dalam suatu periode</div>
+        </div>
+      </div>
+
+      <div class="podiumWrap">
+        <div class="podiumStrip" id="podiumAcross"></div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-scope="across" data-key="rank" onclick="sortBy('across','rank')">Peringkat <span id="s_across_rank" class="sortArrow"></span></th>
+              <th data-scope="across" data-key="name" onclick="sortBy('across','name')">Nama <span id="s_across_name" class="sortArrow"></span></th>
+              <th data-scope="across" data-key="divisi" onclick="sortBy('across','divisi')">Divisi <span id="s_across_divisi" class="sortArrow"></span></th>
+              <th data-scope="across" data-key="invoiceQty" onclick="sortBy('across','invoiceQty')">Invoice <span id="s_across_invoiceQty" class="sortArrow"></span></th>
+              <th data-scope="across" data-key="invoiceNominal" onclick="sortBy('across','invoiceNominal')">Nominal Invoice <span id="s_across_invoiceNominal" class="sortArrow"></span></th>
+              <th data-scope="across" data-key="movement" onclick="sortBy('across','movement')">Performa <span id="s_across_movement" class="sortArrow"></span></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAcross">
+            <tr><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Peringkat dalam Divisi -->
+    <div class="card">
+      <div class="sectionHead">
+        <div>
+          <div class="sectionTitle">Peringkat dalam Divisi</div>
+          <div class="sectionSub">Peringkat ditentukan berdasarkan jumlah invoice terbanyak dalam suatu periode</div>
+        </div>
+
+        <!-- pill ini jadi clickable kalau role management -->
+        <div class="pillSmall" id="divisionPill" title="Divisi">-</div>
+      </div>
+
+      <div class="podiumWrap">
+        <div class="podiumStrip" id="podiumWithin"></div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-scope="within" data-key="rank" onclick="sortBy('within','rank')">Peringkat <span id="s_within_rank" class="sortArrow"></span></th>
+              <th data-scope="within" data-key="name" onclick="sortBy('within','name')">Nama <span id="s_within_name" class="sortArrow"></span></th>
+              <th data-scope="within" data-key="divisi" onclick="sortBy('within','divisi')">Divisi <span id="s_within_divisi" class="sortArrow"></span></th>
+              <th data-scope="within" data-key="invoiceQty" onclick="sortBy('within','invoiceQty')">Invoice <span id="s_within_invoiceQty" class="sortArrow"></span></th>
+              <th data-scope="within" data-key="invoiceNominal" onclick="sortBy('within','invoiceNominal')">Nominal Invoice <span id="s_within_invoiceNominal" class="sortArrow"></span></th>
+              <th data-scope="within" data-key="movement" onclick="sortBy('within','movement')">Performa <span id="s_within_movement" class="sortArrow"></span></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyWithin">
+            <tr><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+  </div>
+
+  <!-- MODAL PILIH DIVISI -->
+  <div class="modalOverlay" id="divModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="divModalTitle">
+      <div class="modalHead">
+        <div>
+          <div class="modalTitle" id="divModalTitle">Pilih Divisi</div>
+          <div class="modalSub">Khusus Management: pilih divisi untuk “Peringkat dalam Divisi”.</div>
+        </div>
+        <button class="btn ghost" style="height:40px" onclick="closeDivModal()">Tutup</button>
+      </div>
+      <div class="modalBody">
+        <select class="select" id="divSelect"></select>
+      </div>
+      <div class="modalActions">
+        <button class="btn ghost" onclick="resetDivisionOverride()">Reset ke Divisi Akun</button>
+        <button class="btn primary" onclick="applyDivisionOverride()">Terapkan</button>
+      </div>
+    </div>
   </div>
 
   <script>
+    /* ========= TEMPLATE VARS ========= */
     const APP_URL = "<?= appUrl ?>";
-    const KEY_EMAIL = "mitraEmail";
-    const KEY_REMEMBER_TOKEN = "rememberToken";
+    const PREFILL_EMAIL = "<?= prefillEmail ?>";
 
-    function safeParse(m){ try { return (typeof m === "object" && m) ? m : JSON.parse(m); } catch(e){ return null; } }
-    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(n || 0); }
-    function money(n){ return "Rp " + formatNumber(n || 0); }
-    function setMsg(t){ document.getElementById("msg").innerText = t || ""; }
-
-    function goLogin(){ window.top.location.href = APP_URL + "?page=login"; }
-    function goPage(page){
-      const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
-      if (!email) return goLogin();
-      window.top.location.href = APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
+    function goHome(){
+      const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || "").trim().toLowerCase();
+      if (email) window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
+      else window.top.location.href = APP_URL;
     }
+
     function logout(){
-      sessionStorage.removeItem(KEY_EMAIL);
-      localStorage.removeItem(KEY_REMEMBER_TOKEN);
-      goLogin();
-    }
-    function requireLoginFromUrlOrSession(){
-      const url = new URL(window.location.href);
-      const qEmail = (url.searchParams.get("email") || "").trim().toLowerCase();
-      if (qEmail){ sessionStorage.setItem(KEY_EMAIL, qEmail); return qEmail; }
-      const sEmail = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
-      return sEmail;
+      try{
+        sessionStorage.removeItem("mitraEmail");
+        localStorage.removeItem("rememberToken");
+      }catch(e){}
+      window.top.location.href = APP_URL;
     }
 
-    function renderTable(tbodyId, items){
-      const tb = document.getElementById(tbodyId);
-      tb.innerHTML = "";
-      if (!items || !items.length){
-        tb.innerHTML = `<tr><td colspan="5">Belum ada data</td></tr>`;
-        return;
-      }
-      items.forEach((it, idx) => {
-        const tr = document.createElement("tr");
-        if (it.isMe) tr.classList.add("me");
-        tr.innerHTML = `
-          <td>${idx+1}</td>
-          <td>${it.name || "-"}</td>
-          <td>${it.divisi || "-"}</td>
-          <td>${money(it.total || 0)}</td>
-          <td>${formatNumber(it.spkCount || 0)}</td>
-        `;
-        tb.appendChild(tr);
-      });
+    function getEmail(){
+      const fromTpl = (PREFILL_EMAIL || "").trim().toLowerCase();
+      const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
+      return fromTpl || fromSession;
     }
 
-    function load(from, to){
-      setMsg("");
-      const email = requireLoginFromUrlOrSession();
-      if (!email) return goLogin();
+    /* ========= HELPERS ========= */
+    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(n || 0); }
+    function formatRp(n){ return "Rp " + formatNumber(n || 0); }
 
-      google.script.run
-        .withSuccessHandler((json) => {
-          const res = safeParse(json);
-          if (!res){ setMsg("Response tidak valid."); return; }
-          if (!res.ok){ setMsg(res.message || "Gagal ambil ranking."); return; }
-
-          document.getElementById("namaMitra").innerText = res.namaMitra || "-";
-          document.getElementById("divisiText").innerText = res.userDivision ? ("? Divisi: " + res.userDivision) : "";
-
-          renderTable("tbAcross", res.across || []);
-          renderTable("tbWithin", res.within || []);
-
-          const miss = (res.meta && res.meta.missingHeaders) ? res.meta.missingHeaders : [];
-          document.getElementById("metaNote").innerText =
-            miss.length ? ("Catatan: beberapa kolom belum ditemukan di database: " + miss.join(", ") + ".") : "";
-        })
-        .withFailureHandler((err) => setMsg("Error: " + (err && err.message ? err.message : err)))
-        .getRankingPageDataByEmailWithFilter(email, from || "", to || "");
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
-    function applyFilter(){
-      const from = document.getElementById("dateFrom").value || "";
-      const to = document.getElementById("dateTo").value || "";
-      load(from, to);
+    function todayIsoLocal(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${dd}`;
+    }
+    function monthStartIsoLocal(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      return `${y}-${m}-01`;
+    }
+
+    // ✅ FIX: default bulan berjalan
+    function setDefaultDate(){
+      document.getElementById("dateFrom").value = monthStartIsoLocal();
+      document.getElementById("dateTo").value = todayIsoLocal();
     }
 
     function resetFilter(){
-      document.getElementById("dateFrom").value = "";
-      document.getElementById("dateTo").value = "";
-      load("", "");
+      setDefaultDate();
+      applyDateFilter();
     }
 
-    load("", "");
+    /* ========= SORTING ========= */
+    const SORT_STATE = {
+      across: { key: "rank", dir: "asc" },
+      within: { key: "rank", dir: "asc" }
+    };
+    const SORT_KEYS = ["rank","name","divisi","invoiceQty","invoiceNominal","movement"];
+
+    function arrowSvg(dir){
+      const up = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 12.5 10 7.5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      const down = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 7.5 10 12.5l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      return dir === "asc" ? up : down;
+    }
+
+    function clearSortIndicators(scope){
+      SORT_KEYS.forEach(k => {
+        const el = document.getElementById(`s_${scope}_${k}`);
+        if (el) el.innerHTML = "";
+      });
+      document.querySelectorAll(`th[data-scope="${scope}"]`).forEach(th => th.classList.remove("sortActive"));
+    }
+
+    function getSortValue(row, key){
+      if (key === "rank" || key === "invoiceQty" || key === "invoiceNominal") return Number(row[key]) || 0;
+      if (key === "movement") return Number(row.movement || 0);
+      return String(row[key] || "").toLowerCase().trim();
+    }
+
+    function sortData(scope, arr){
+      const st = SORT_STATE[scope];
+      const dirMul = (st.dir === "asc") ? 1 : -1;
+
+      arr.sort((a,b) => {
+        const va = getSortValue(a, st.key);
+        const vb = getSortValue(b, st.key);
+        if (typeof va === "number" && typeof vb === "number") return (va - vb) * dirMul;
+        if (va < vb) return -1 * dirMul;
+        if (va > vb) return  1 * dirMul;
+        return 0;
+      });
+
+      clearSortIndicators(scope);
+      const th = document.querySelector(`th[data-scope="${scope}"][data-key="${st.key}"]`);
+      if (th) th.classList.add("sortActive");
+      const el = document.getElementById(`s_${scope}_${st.key}`);
+      if (el) el.innerHTML = arrowSvg(st.dir);
+    }
+
+    function sortBy(scope, key){
+      const st = SORT_STATE[scope];
+      if (st.key === key) st.dir = (st.dir === "asc") ? "desc" : "asc";
+      else { st.key = key; st.dir = "asc"; }
+
+      if (scope === "across"){
+        sortData("across", DATA.acrossAll);
+        renderTable("across", DATA.acrossAll);
+      } else {
+        sortData("within", DATA.withinAll);
+        renderTable("within", DATA.withinAll);
+      }
+    }
+
+    /* ========= PERFORMA ========= */
+    function renderMovement(mv){
+      const n = Number(mv || 0);
+      if (n > 0) return `<span class="mv up">▲ Naik</span>`;
+      if (n < 0) return `<span class="mv down">▼ Turun</span>`;
+      return `<span class="mv stable">Stabil</span>`;
+    }
+
+    /* ========= PODIUM RENDER ========= */
+    function podItem(rank, item){
+      const safeName = escapeHtml(item.name || "-");
+      const div = escapeHtml(item.divisi || "-");
+      const qty = Number(item.invoiceQty || 0);
+      const nom = Number(item.invoiceNominal || 0);
+
+      return `
+        <div class="podItem rank${rank}">
+          <div class="podName" title="${safeName}">${safeName}</div>
+          <div class="podDiv" title="${div}">${div}</div>
+
+          <div class="pillBlueWide" title="${formatRp(nom)} • ${qty} Invoice">
+            <span class="nomText">${formatRp(nom)}</span>
+            <span class="miniInvoice">${qty} Invoice</span>
+          </div>
+
+          <div class="podBlock" aria-hidden="true">
+            <div class="podTopLabel">TOP</div>
+            <div class="podRank">#${rank}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function ensureLength(arr, max){
+      const a = (arr || []).slice(0, max);
+      while (a.length < max){
+        a.push({ rank: a.length+1, name:"-", divisi:"-", invoiceQty:0, invoiceNominal:0, movement:0 });
+      }
+      return a;
+    }
+
+    // across tampil: #4 | #2 | #1 | #3 | #5
+    // within tampil: #2 | #1 | #3
+    function reorderForCenter1(max, scope){
+      if (scope === "across" && max === 5) return [3,1,0,2,4];
+      if (scope === "within" && max === 3) return [1,0,2];
+      return Array.from({length:max}, (_,i)=>i);
+    }
+
+    function renderPodiumStrip(elId, items, max, scope){
+      const el = document.getElementById(elId);
+      const base = ensureLength(items, max);
+      const order = reorderForCenter1(max, scope);
+
+      let html = "";
+      for (let i=0; i<max; i++){
+        const idx = order[i];
+        const item = base[idx] || {};
+        const rank = (idx + 1);
+        html += podItem(rank, item);
+      }
+      el.innerHTML = html;
+    }
+
+    /* ========= TABLE RENDER ========= */
+    function renderTable(scope, rows){
+      const tbody = document.getElementById(scope === "across" ? "tbodyAcross" : "tbodyWithin");
+      tbody.innerHTML = "";
+
+      if (!rows || rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6">Tidak ada data.</td></tr>`;
+        return;
+      }
+
+      for (const r of rows){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${Number(r.rank || 0)}</td>
+          <td>${escapeHtml(r.name || "-")}</td>
+          <td>${escapeHtml(r.divisi || "-")}</td>
+          <td>${Number(r.invoiceQty || 0)}</td>
+          <td class="moneyCell">${formatRp(Number(r.invoiceNominal || 0))}</td>
+          <td>${renderMovement(r.movement)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    /* ========= STATE ========= */
+    const DATA = {
+      divisionName: "-",
+      divisions: [],
+      acrossAll: [],
+      withinAll: [],
+      role: "pengguna",
+      profile: { nama:"-", posisi:"-", divisi:"-" }
+    };
+
+    // management-only: divisi override utk within
+    let divisionOverride = "";
+
+    /* ========= DIVISIONS (PATCH) ========= */
+    function uniqDivisionsFromRows(rows){
+      const set = new Set();
+      (rows || []).forEach(r => {
+        const d = String((r && r.divisi) ? r.divisi : "").trim();
+        if (d) set.add(d);
+      });
+      return Array.from(set).sort((a,b)=>a.localeCompare(b,"id-ID"));
+    }
+
+    function refreshDivisionListFromAnySource(){
+      // prioritas: DATA.divisions (dari backend)
+      let list = (DATA.divisions && DATA.divisions.length) ? [...DATA.divisions] : [];
+
+      // fallback: unique divisi dari acrossAll (yang divisinya dari DB_Akun via backend)
+      if (!list.length) list = uniqDivisionsFromRows(DATA.acrossAll);
+
+      // fallback terakhir: divisi akun
+      if (!list.length && (DATA.profile.divisi || DATA.divisionName)) {
+        list = [DATA.profile.divisi || DATA.divisionName].filter(Boolean);
+      }
+
+      // bersihin: unik + non-empty
+      const seen = new Set();
+      const clean = [];
+      for (const d of list){
+        const x = String(d || "").trim();
+        if (!x) continue;
+        const k = x.toLowerCase();
+        if (seen.has(k)) continue;
+        seen.add(k);
+        clean.push(x);
+      }
+
+      DATA.divisions = clean.sort((a,b)=>a.localeCompare(b,"id-ID"));
+    }
+
+    /* ========= DIVISION MODAL ========= */
+    function openDivModal(){
+      // only management
+      if (String(DATA.role || "").toLowerCase() !== "management") return;
+
+      refreshDivisionListFromAnySource();
+
+      const sel = document.getElementById("divSelect");
+      sel.innerHTML = "";
+
+      const list = (DATA.divisions && DATA.divisions.length) ? DATA.divisions : [];
+      if (!list.length) {
+        const opt = document.createElement("option");
+        opt.value = DATA.profile.divisi || DATA.divisionName || "";
+        opt.textContent = DATA.profile.divisi || DATA.divisionName || "-";
+        sel.appendChild(opt);
+      } else {
+        for (const d of list){
+          const opt = document.createElement("option");
+          opt.value = d;
+          opt.textContent = d;
+          sel.appendChild(opt);
+        }
+      }
+
+      // preselect: override kalau ada, else divisionName
+      const current = (divisionOverride || DATA.divisionName || DATA.profile.divisi || "").trim();
+      if (current) sel.value = current;
+
+      document.getElementById("divModal").style.display = "flex";
+    }
+    function closeDivModal(){
+      document.getElementById("divModal").style.display = "none";
+    }
+    function resetDivisionOverride(){
+      divisionOverride = "";
+      closeDivModal();
+      applyDateFilter();
+    }
+    function applyDivisionOverride(){
+      const sel = document.getElementById("divSelect");
+      divisionOverride = String(sel.value || "").trim();
+      closeDivModal();
+      applyDateFilter();
+    }
+
+    function setDivisionPill(){
+      const pill = document.getElementById("divisionPill");
+      pill.textContent = divisionOverride ? divisionOverride : (DATA.divisionName || "-");
+
+      if (String(DATA.role || "").toLowerCase() === "management"){
+        pill.classList.add("clickable");
+        pill.title = "Klik untuk pilih divisi";
+        pill.onclick = openDivModal;
+      } else {
+        pill.classList.remove("clickable");
+        pill.title = "Divisi";
+        pill.onclick = null;
+      }
+    }
+
+    /* ========= LOAD PROFILE (from DB_Akun) ========= */
+    function loadProfile(email){
+      return new Promise((resolve) => {
+        if (!email) return resolve({ ok:false });
+
+        google.script.run
+          .withSuccessHandler((raw) => {
+            let obj = null;
+            try{ obj = JSON.parse(raw); }catch(e){}
+            if (!obj || !obj.ok || !obj.user){
+              resolve({ ok:false });
+              return;
+            }
+            const u = obj.user || {};
+            resolve({
+              ok:true,
+              nama: u.nama || "-",
+              posisi: u.posisi || "-",
+              divisi: u.divisi || "-",
+              role_akun: (u.role_akun || "").toLowerCase()
+            });
+          })
+          .withFailureHandler(() => resolve({ ok:false }))
+          .getUserByEmail(email);
+      });
+    }
+
+    /* ========= LOAD RANKING FROM BACKEND ========= */
+    function fetchRanking(authEmail, effectiveEmail, fromIso, toIso, divOverride){
+      return new Promise((resolve) => {
+        google.script.run
+          .withSuccessHandler((raw) => {
+            let obj = null;
+            try{ obj = JSON.parse(raw); }catch(e){}
+            resolve(obj || { ok:false, message:"Respon server tidak valid." });
+          })
+          .withFailureHandler((err) => {
+            resolve({ ok:false, message: String(err && err.message ? err.message : err) });
+          })
+          .getRankingDataByAuthEmailWithFilter(authEmail, effectiveEmail, fromIso, toIso, divOverride || "");
+      });
+    }
+
+    function hydrateFromBackend(payload){
+      DATA.divisionName = payload.divisionName || "-";
+
+      // kalau backend ngirim divisions, pakai (tapi tetap akan kita bersihin & fallback)
+      if (payload.divisions && Array.isArray(payload.divisions)) DATA.divisions = payload.divisions;
+
+      DATA.acrossAll = (payload.acrossAll || []).map(x => ({...x}));
+      DATA.withinAll = (payload.withinAll || []).map(x => ({...x}));
+
+      // PATCH: pastikan list divisi keisi (nggak cuma 1)
+      refreshDivisionListFromAnySource();
+
+      setDivisionPill();
+
+      // podium pakai data yg sudah urut by rank
+      const acrossSorted = [...DATA.acrossAll].sort((a,b)=>Number(a.rank)-Number(b.rank));
+      const withinSorted = [...DATA.withinAll].sort((a,b)=>Number(a.rank)-Number(b.rank));
+
+      renderPodiumStrip("podiumAcross", acrossSorted, 5, "across");
+      renderPodiumStrip("podiumWithin", withinSorted, 3, "within");
+
+      // default sort tampilan: rank asc
+      SORT_STATE.across = { key:"rank", dir:"asc" };
+      SORT_STATE.within = { key:"rank", dir:"asc" };
+
+      sortData("across", DATA.acrossAll);
+      renderTable("across", DATA.acrossAll);
+
+      sortData("within", DATA.withinAll);
+      renderTable("within", DATA.withinAll);
+    }
+
+    function showError(scope, message){
+      const tbody = document.getElementById(scope === "across" ? "tbodyAcross" : "tbodyWithin");
+      tbody.innerHTML = `<tr><td colspan="6">${escapeHtml(message || "Terjadi kesalahan.")}</td></tr>`;
+    }
+
+    async function applyDateFilter(){
+      const email = getEmail();
+      const fromIso = document.getElementById("dateFrom").value;
+      const toIso = document.getElementById("dateTo").value;
+
+      // loading
+      document.getElementById("tbodyAcross").innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
+      document.getElementById("tbodyWithin").innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
+      document.getElementById("podiumAcross").innerHTML = "";
+      document.getElementById("podiumWithin").innerHTML = "";
+
+      // auth & effective: sementara pakai email yang sama (kalau nanti kamu tambahin impersonation, tinggal ganti di sini)
+      const authEmail = email;
+      const effectiveEmail = email;
+
+      const res = await fetchRanking(authEmail, effectiveEmail, fromIso, toIso, divisionOverride);
+
+      if (!res || !res.ok){
+        showError("across", (res && res.message) ? res.message : "Gagal ambil data ranking.");
+        showError("within", (res && res.message) ? res.message : "Gagal ambil data ranking.");
+        return;
+      }
+
+      hydrateFromBackend(res);
+    }
+
+    (function init(){
+      setDefaultDate();
+
+      const email = getEmail();
+      if (email){
+        sessionStorage.setItem("mitraEmail", email);
+        document.getElementById("loginEmailPill").innerText = email;
+      } else {
+        document.getElementById("loginEmailPill").innerText = "-";
+      }
+
+      // load profile utk role + divisi (card nama sudah dihapus)
+      if (email){
+        loadProfile(email).then(p => {
+          if (p && p.ok){
+            DATA.profile.nama = p.nama || "-";
+            DATA.profile.posisi = p.posisi || "-";
+            DATA.profile.divisi = p.divisi || "-";
+            DATA.role = p.role_akun || "pengguna";
+
+            // role label
+            const r = String(DATA.role || "").toLowerCase();
+            document.getElementById("loginRolePill").innerText =
+              (r === "management") ? "Management" :
+              (r === "leader") ? "Leader" :
+              (r === "staff") ? "Staff" : "Pengguna";
+
+            // default division shown
+            DATA.divisionName = DATA.profile.divisi || "-";
+            setDivisionPill();
+
+            applyDateFilter();
+          } else {
+            document.getElementById("loginRolePill").innerText = "Pengguna";
+            applyDateFilter();
+          }
+        });
+      } else {
+        document.getElementById("loginRolePill").innerText = "Pengguna";
+        applyDateFilter();
+      }
+
+      // close modal on overlay click
+      document.getElementById("divModal").addEventListener("click", (e) => {
+        if (e.target && e.target.id === "divModal") closeDivModal();
+      });
+    })();
   </script>
 </body>
 </html>
