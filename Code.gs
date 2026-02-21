@@ -61,8 +61,22 @@ function doGet(e) {
 
     t.__debug = { file: file + ".html", page: page, deployedAt: new Date().toISOString() };
 
+    const PAGE_TITLES = {
+      "login":     "Cek Komisi DMT Jendela360 | Masuk",
+      "home":      "Cek Komisi DMT Jendela360 | Beranda",
+      "dashboard": "Cek Komisi DMT Jendela360 | Beranda",
+      "komisi":    "Cek Komisi DMT Jendela360 | Rincian Pencairan Komisi",
+      "histori":   "Cek Komisi DMT Jendela360 | Rincian Histori Pengerjaan",
+      "pengerjaan":"Cek Komisi DMT Jendela360 | Rincian Histori Pengerjaan",
+      "ranking":   "Cek Komisi DMT Jendela360 | Peringkat",
+      "bersih":    "Cek Komisi DMT Jendela360 | Pendapatan Bersih"
+    };
+    const pageTitle = PAGE_TITLES[page] || "Cek Komisi DMT Jendela360";
+    const FAVICON_URL = "https://res.cloudinary.com/dkps3vy8m/image/upload/v1771692199/Untitled_design_gyys0m.png";
+
     return t.evaluate()
-      .setTitle("Pemeriksa Komisi – Maintenance")
+      .setTitle(pageTitle)
+      .setFaviconUrl(FAVICON_URL)
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 
   } catch (err) {
@@ -789,7 +803,7 @@ function getImpersonationCandidates(authEmailInput, modeInput, divisiInput) {
 
 /***** MAIN DATASET (rincianpencairankomisi.html) *****/
 function getKomisiDatasetByEmail(emailInput) {
-  const result = { ok: false, message: "", email: "", namaMitra: "", rows: [], filterOptions: { periode: [], pekerjaan: [] } };
+  const result = { ok: false, message: "", email: "", namaMitra: "", roleAkun: "", posisiMitra: "", divisiMitra: "", statusKaryawan: "", rows: [], filterOptions: { periode: [], pekerjaan: [] } };
 
   const email = emailValid_(emailInput);
   result.email = email || String(emailInput || "").trim().toLowerCase();
@@ -799,6 +813,14 @@ function getKomisiDatasetByEmail(emailInput) {
     return JSON.stringify(result);
   }
 
+  // ✅ Cache check (90 detik)
+  const cache = CacheService.getScriptCache();
+  const cKey = "komisi_" + email;
+  try {
+    const hit = cache.get(cKey);
+    if (hit) return hit;
+  } catch(e) {}
+
   try {
     if (!isEmailAllowed_(email)) {
       result.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
@@ -807,6 +829,10 @@ function getKomisiDatasetByEmail(emailInput) {
 
     const user = getUserByEmail_(email);
     if (user && user.nama) result.namaMitra = user.nama;
+    if (user) result.roleAkun = user.role_akun || "";
+    if (user) result.posisiMitra = user.posisi || "";
+    if (user) result.divisiMitra = user.divisi || "";
+    if (user) result.statusKaryawan = user.status_karyawan || "";
 
     const ss = getSpreadsheet_();
     const sh = ss.getSheetByName(SHEET_NAME);
@@ -889,7 +915,10 @@ function getKomisiDatasetByEmail(emailInput) {
     result.rows = rows;
     result.filterOptions.periode = Array.from(setPeriode).sort();
     result.filterOptions.pekerjaan = Array.from(setPekerjaan).sort();
-    return JSON.stringify(result);
+
+    const resultStr = JSON.stringify(result);
+    try { cache.put(cKey, resultStr, 90); } catch(e) {}
+    return resultStr;
 
   } catch (e) {
     result.message = "Error server: " + (e && e.message ? e.message : e);
@@ -905,6 +934,9 @@ function getPengerjaanDatasetByEmail(emailInput) {
     email: "",
     namaMitra: "",
     posisiMitra: "Pelaksana",
+    roleAkun: "",
+    divisiMitra: "",
+    statusKaryawan: "",
     rows: [],
     filterOptions: { pekerjaan: [] }
   };
@@ -916,6 +948,14 @@ function getPengerjaanDatasetByEmail(emailInput) {
     out.message = "Email tidak valid.";
     return JSON.stringify(out);
   }
+
+  // ✅ Cache check (90 detik)
+  const cache = CacheService.getScriptCache();
+  const cKey = "pengerjaan_" + email;
+  try {
+    const hit = cache.get(cKey);
+    if (hit) return hit;
+  } catch(e) {}
 
   try {
     if (!isEmailAllowed_(email)) {
@@ -929,6 +969,9 @@ function getPengerjaanDatasetByEmail(emailInput) {
     if (user) {
       out.namaMitra = user.nama || "";
       out.posisiMitra = (user.posisi && String(user.posisi).trim()) ? String(user.posisi).trim() : out.posisiMitra;
+      out.roleAkun = user.role_akun || "";
+      out.divisiMitra = user.divisi || "";
+      out.statusKaryawan = user.status_karyawan || "";
     }
 
     const sh = ss.getSheetByName(SHEET_PENGERJAAN);
@@ -997,7 +1040,9 @@ function getPengerjaanDatasetByEmail(emailInput) {
     if (!out.namaMitra) out.namaMitra = rows.length ? (rows[0].pelaksana || "") : "";
     out.filterOptions.pekerjaan = Array.from(jobs).sort();
 
-    return JSON.stringify(out);
+    const outStr = JSON.stringify(out);
+    try { cache.put(cKey, outStr, 90); } catch(e) {}
+    return outStr;
 
   } catch (e) {
     out.message = "Error server: " + (e && e.message ? e.message : e);
@@ -1156,6 +1201,11 @@ function getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso)
     out.message = "Email tidak valid.";
     return JSON.stringify(out);
   }
+
+  // ✅ Cache check (90 detik)
+  const cache = CacheService.getScriptCache();
+  const cKey = "sum_" + email + "_" + (dateFromIso||"") + "_" + (dateToIso||"");
+  try { const hit = cache.get(cKey); if (hit) return hit; } catch(e) {}
 
   try {
     if (!isEmailAllowed_(email)) {
@@ -1334,7 +1384,9 @@ function getHomepageSummaryByEmailWithFilter(emailInput, dateFromIso, dateToIso)
 
     out.ok = true;
     out.message = "";
-    return JSON.stringify(out);
+    const sumStr = JSON.stringify(out);
+    try { cache.put(cKey, sumStr, 90); } catch(e) {}
+    return sumStr;
 
   } catch (e) {
     out.ok = false;
@@ -1597,6 +1649,11 @@ function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput
 
   if (!authEmail) return JSON.stringify({ ok:false, message:"Email auth tidak valid." });
 
+  // ✅ Cache check (90 detik)
+  const cache = CacheService.getScriptCache();
+  const cKey = "rank_" + authEmail + "_" + (effectiveEmailInput||"") + "_" + (dateFromIso||"") + "_" + (dateToIso||"") + "_" + (divisionOverrideInput||"");
+  try { const hit = cache.get(cKey); if (hit) return hit; } catch(e) {}
+
   try {
     if (!isEmailAllowed_(authEmail)) {
       return JSON.stringify({ ok:false, message:"Akses ditolak: akun login tidak terdaftar / non-aktif." });
@@ -1644,13 +1701,16 @@ function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput
 
     applyMovement_(currAll, prevAll);
 
+    const effNama = String(effUser.nama || "").trim().toLowerCase();
+
     const acrossAll = currAll.map(r => ({
       rank: r.rank,
       name: r.name || "-",
       divisi: normalizeDivisiDisplay_(r.divisi),
       invoiceQty: Number(r.invoiceQty || 0),
       invoiceNominal: Number(r.invoiceNominal || 0),
-      movement: Number(r.movement || 0)
+      movement: Number(r.movement || 0),
+      isMe: (!!effNama && String(r.name || "").trim().toLowerCase() === effNama)
     }));
 
     // within division: filter then re-rank from 1
@@ -1681,7 +1741,8 @@ function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput
       divisi: normalizeDivisiDisplay_(r.divisi),
       invoiceQty: Number(r.invoiceQty || 0),
       invoiceNominal: Number(r.invoiceNominal || 0),
-      movement: Number(r.movement || 0)
+      movement: Number(r.movement || 0),
+      isMe: (!!effNama && String(r.name || "").trim().toLowerCase() === effNama)
     }));
 
     // ✅ divisions list untuk dropdown (management)
@@ -1719,7 +1780,7 @@ function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput
       }
     };
 
-    return JSON.stringify({
+    const rankStr = JSON.stringify({
       ok: true,
       authRole: authRole,
       divisionName: divisionName,
@@ -1740,6 +1801,8 @@ function getRankingDataByAuthEmailWithFilter(authEmailInput, effectiveEmailInput
         withinDivision: trendWithin
       }
     });
+    try { cache.put(cKey, rankStr, 300); } catch(e) {}
+    return rankStr;
 
   } catch (e) {
     return JSON.stringify({ ok:false, message:"Error server: " + (e && e.message ? e.message : e) });
