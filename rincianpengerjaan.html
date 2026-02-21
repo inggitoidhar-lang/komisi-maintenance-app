@@ -3,10 +3,13 @@
 <head>
   <base target="_top" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cek Komisi DMT Jendela360 | Rincian Histori Pengerjaan</title>
+  <link rel="icon" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771692199/Untitled_design_gyys0m.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" as="image" fetchpriority="high">
 
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
@@ -66,35 +69,44 @@
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       border: 1px solid rgba(255,255,255,.18);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 10px 14px;
       box-shadow: 0 24px 70px rgba(0,0,0,.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    .leftTop{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-    .logoApp{ height: 46px; width:auto; display:block; }
-    .title{ font-size: 18px; font-weight: 800; letter-spacing: .2px; color:#fff; }
-    .subtitle{ margin-top:4px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 700; }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:nowrap; }
+    .leftTop{ display:flex; align-items:center; gap:18px; flex-wrap:nowrap; flex-shrink:0; }
+    .logoApp{ height: 44px; width:auto; display:block; flex-shrink:0; }
+    .title{ display:inline-flex; align-items:center; padding:6px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.12); color:#fff; font-size:15px; font-weight:900; letter-spacing:.2px; white-space:nowrap; backdrop-filter:blur(10px); }
+    .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; white-space:nowrap; }
 
-    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-
+    .topActions{ display:flex; align-items:center; gap:8px; flex:1 1 auto; justify-content:flex-end; min-width:0; overflow:hidden; }
+    .statusPill{ flex-shrink:1; min-width:0; }
+    @media(max-width:600px){
+      .top{ padding:8px 10px; }
+      .logoApp{ height:36px; }
+      .title{ font-size:13px; }
+      .subtitle{ display:none; }
+      .statusText .label{ display:none; }
+      .topActions{ gap:5px; }
+      .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
+      .btnIcon{ width:36px; height:38px; }
+    }
     .statusPill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px; border-radius: 999px;
+      display:inline-flex; align-items:center; gap:7px;
+      padding: 6px 10px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
       color: rgba(255,255,255,.75);
-      font-weight: 800; font-size: 13px;
+      font-weight: 800; font-size: 11px;
       white-space: nowrap;
     }
-    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
-    .statusText{ display:inline-flex; align-items:center; gap:8px; }
-    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 800; }
-    .statusText .email{ color: #fff; font-weight: 800; }
-
-    /* ✅ REVISI: tampilkan "• Login sebagai Pengguna" seperti dashboard */
-    .statusText .sep{ color: rgba(255,255,255,.65); font-weight: 900; }
-    .statusText .asLabel{ color: rgba(255,255,255,.75); font-weight: 800; }
-    .statusText .role{ color:#fff; font-weight: 900; }
+    .dot{ width:7px;height:7px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.20); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
+    .statusText .email{ color: #fff; font-weight: 900; }
+    #loginRolePill{ opacity:.95; }
 
     .btnSmall{
       height:44px; padding: 0 14px; border-radius: 999px;
@@ -174,6 +186,29 @@
       color: rgba(15,23,42,.72);
       white-space: nowrap;
     }
+
+    .miniPillHeaderStyle{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14);
+      background: rgba(15,23,42,.06);
+      color: rgba(11,18,32,.78);
+      font-weight: 900;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+    }
+    .miniPillHeaderStyle .mutedLabel{
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(11,18,32,.55);
+      letter-spacing: .2px;
+    }
+    .miniPillHeaderStyle .valWhite{ color: rgba(11,18,32,.78); font-weight: 900; }
 
     /* summary cards (5 sejajar) */
     .totalsRow{
@@ -391,7 +426,7 @@
     th, td{
       padding: 10px 10px;
       border-bottom: 1px solid rgba(15,23,42,.10);
-      text-align:left;
+      text-align:center;
       white-space: nowrap;
       font-size: 14px;
       background:#fff;
@@ -640,6 +675,123 @@
       border: 2px solid var(--scrollTrack);
     }
     body::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    .pillClickable{
+      cursor:pointer; padding: 2px 8px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.10);
+      transition: background .15s ease, transform .05s ease; user-select:none;
+    }
+    .pillClickable:hover{ background: rgba(255,255,255,.18); }
+    .pillClickable:active{ transform: translateY(1px); }
+    .pillDisabled{
+      cursor: default !important; opacity: .9;
+      border-color: rgba(255,255,255,.16) !important; background: rgba(255,255,255,.08) !important;
+    }
+
+    .loadingBack{
+      position: fixed; inset: 0; background: rgba(2,6,23,.45);
+      display:none; align-items:center; justify-content:center; padding: 16px; z-index: 10000;
+    }
+    .loadingBack.show{ display:flex; }
+    .loadingInner{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+    .loadingCard{
+      width: min(480px, 92vw); background:#fff; border-radius: 24px;
+      border: 1px solid rgba(15,23,42,.10); box-shadow: 0 24px 64px rgba(2,6,23,.28);
+      padding: 28px 24px 22px; display:flex; flex-direction:column; align-items:center; gap:22px;
+    }
+    .spinner{
+      width: 50px; height: 50px; border-radius: 999px;
+      border: 3px solid rgba(15,23,42,.07); border-top-color: #00aeef;
+      animation: spin 0.75s linear infinite; flex: 0 0 auto;
+    }
+    @keyframes spin{ to { transform: rotate(360deg); } }
+    .loadingLogo{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto; }
+    .loadingTextWrap{ display:flex; flex-direction:column; gap:3px; align-items:center; text-align:center; }
+    .loadingTitle{ font-weight: 900; font-size: 15px; color: rgba(11,18,32,.92); }
+    .loadingSub{ font-weight: 800; font-size: 12px; color: rgba(11,18,32,.55); line-height:1.4; }
+
+    /* ===== ROLE MODAL ===== */
+    .modalBack{
+      position: fixed; inset: 0; background: rgba(2,6,23,.55);
+      display:none; align-items:center; justify-content:center; padding: 16px; z-index: 9999;
+    }
+    .modalBack.show{ display:flex; }
+    .modalCard{
+      width: min(760px, 100%); background:#fff; border-radius: 20px;
+      border: 1px solid rgba(15,23,42,.12); box-shadow: 0 30px 80px rgba(2,6,23,.35); overflow:hidden;
+    }
+    .modalHeader{
+      padding: 14px; background: linear-gradient(135deg, var(--bg1), var(--bg2)); color:#fff;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .modalCard .modalTitle{
+      font-weight: 900; letter-spacing:.2px; font-size: 14px;
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .modalCard .modalSub{
+      font-size: 12px; font-weight: 800; color: rgba(255,255,255,.75); margin-top: 3px;
+    }
+    .modalCard .modalClose{
+      height: 40px; width: 40px; border-radius: 999px; flex-shrink:0;
+      border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.12);
+      cursor:pointer; color:#fff; display:inline-flex; align-items:center; justify-content:center;
+      backdrop-filter: blur(10px);
+    }
+    .modalCard .modalClose:hover{ background: rgba(255,255,255,.18); }
+    .modalCard .modalBody{ padding: 14px; }
+    .segRow{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px; }
+    .segBtn{
+      height: 40px; padding: 0 14px; border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14); background:#fff; cursor:pointer;
+      font-weight: 900; font-family: inherit; color: rgba(11,18,32,.85);
+      transition: background .15s ease, transform .05s ease;
+      display:inline-flex; align-items:center; gap:10px; user-select:none;
+    }
+    .segBtn:hover{ background: rgba(15,23,42,.05); }
+    .segBtn:active{ transform: translateY(1px); }
+    .segBtn.active{
+      border-color: rgba(0,160,198,.30); background: rgba(0,160,198,.10); color: rgba(0,160,198,1);
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+    }
+    .formGrid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items:end; }
+    @media (max-width: 720px){ .formGrid{ grid-template-columns: 1fr; } }
+    .rmSelect{
+      width:100%; height:48px; padding: 12px; border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px; font-size: 14px; outline:none; background:#fff;
+      font-family: inherit; font-weight: 800; color: rgba(11,18,32,.92);
+    }
+    .hintBox{
+      margin-top: 10px; border: 1px solid rgba(15,23,42,.10); border-radius: 16px;
+      background: rgba(15,23,42,.03); padding: 10px 12px; color: rgba(11,18,32,.72);
+      font-size: 12px; font-weight: 800; line-height: 1.35;
+    }
+    .previewBox{
+      margin-top: 12px; border: 1px solid rgba(15,23,42,.10); border-radius: 16px;
+      padding: 12px; background:#fff; display:flex; align-items:center;
+      justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    .previewLeft{ display:flex; flex-direction:column; gap:3px; min-width: 220px; }
+    .previewLabel{ font-size: 11px; font-weight: 900; color: rgba(11,18,32,.55); text-transform: uppercase; letter-spacing:.2px; }
+    .previewName{ font-size: 14px; font-weight: 900; color: rgba(11,18,32,.90); }
+    .previewMeta{ font-size: 12px; font-weight: 800; color: rgba(11,18,32,.62); }
+    .rmActions{ margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btnDanger{ background: rgba(176,0,32,.08) !important; border: 1px solid rgba(176,0,32,.20) !important; color: rgba(176,0,32,1) !important; }
+    .btnDanger:hover{ background: rgba(176,0,32,.14) !important; }
+    .btn{
+      height: 40px; padding: 0 14px; border-radius: 999px; font-weight: 900;
+      font-family: inherit; cursor:pointer; display:inline-flex; align-items:center;
+      gap:10px; user-select:none; border: 1px solid transparent; font-size: 14px;
+    }
+    .btn.ghost{ background:#fff; border-color: rgba(15,23,42,.14); color: rgba(11,18,32,.85); }
+    .btn.ghost:hover{ background: rgba(15,23,42,.05); }
+    .btn.primary{ background: linear-gradient(135deg, var(--bg1), var(--bg2)); color:#fff; }
+    .btn.primary:hover{ filter: brightness(1.08); }
+    .labelSmall{ font-size: 12px; font-weight: 800; color: rgba(11,18,32,.62); margin-bottom: 6px; display:block; }
+    .rmPill{
+      display:inline-flex; align-items:center; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.14); background: rgba(15,23,42,.06);
+      font-size: 12px; font-weight: 800; color: rgba(11,18,32,.72);
+    }
   </style>
 </head>
 
@@ -648,11 +800,8 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Cek Komisi" />
-          <div>
-            <div class="title">Rincian Pengerjaan</div>
-            <div class="subtitle">Laman Cek Rincian Pengerjaan</div>
-          </div>
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" alt="Cek Komisi" loading="eager" fetchpriority="high" />
+          <div class="title">Pengerjaan</div>
         </div>
 
         <div class="topActions">
@@ -661,9 +810,8 @@
             <span class="statusText">
               <span class="label">Sedang Masuk</span>
               <span class="email" id="loginEmailPill">-</span>
-              <span class="sep">•</span>
-              <span class="asLabel">Login sebagai</span>
-              <span class="role" id="loginRolePill">Pengguna</span>
+              <span class="label" style="opacity:.85;">• Masuk sebagai</span>
+              <span class="email pillClickable pillDisabled" id="loginRolePill">Pengguna</span>
             </span>
           </div>
 
@@ -702,7 +850,9 @@
           <div class="nameTitle">Nama</div>
           <div class="nameLine">
             <div class="nameValue" id="namaMitra">-</div>
-            <div class="rolePill" id="posisiMitraPill">Pelaksana</div>
+            <span id="posisiMitraPill" class="miniPillHeaderStyle">-</span>
+            <span id="divisiMitraPill" class="miniPillHeaderStyle">-</span>
+            <span id="statusKaryawanPill" class="miniPillHeaderStyle">-</span>
           </div>
         </div>
       </div>
@@ -886,6 +1036,76 @@
       <div class="modalBody">
         <div id="modalKv" class="kv"></div>
         <div id="modalMsg" class="modalMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLE MODAL -->
+  <div class="modalBack" id="roleModalBack" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="roleModalTitle">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="roleModalTitle">Pilih Mode Akses</div>
+          <div class="modalSub" id="roleModalSubtitle">Khusus Akses Leader / Akses Management</div>
+        </div>
+        <button class="modalClose" onclick="closeRoleModal()" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modalBody">
+        <div class="segRow" id="modeSegRow">
+          <button class="segBtn active" data-mode="staff" onclick="selectMode('staff')" id="segStaff">Masuk Sebagai Staff</button>
+          <button class="segBtn" data-mode="leader" onclick="selectMode('leader')" id="segLeader">Masuk Sebagai Leader</button>
+        </div>
+        <div class="formGrid">
+          <div>
+            <div class="labelSmall">Divisi</div>
+            <select class="rmSelect" id="impersonateDivisi" onchange="syncPreview()">
+              <option value="">(Otomatis)</option>
+              <option value="AC">AC</option>
+              <option value="Fixing">Fixing</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="General" style="display:none">General</option>
+            </select>
+          </div>
+          <div>
+            <div class="labelSmall">Pilih Nama</div>
+            <select class="rmSelect" id="impersonatePerson" onchange="syncPreview()">
+              <option value="">— Pilih nama —</option>
+            </select>
+          </div>
+        </div>
+        <div class="hintBox" id="roleHint"></div>
+        <div class="previewBox" id="impersonatePreview">
+          <div class="previewLeft">
+            <div class="previewLabel">Pratinjau</div>
+            <div class="previewName" id="previewName">—</div>
+            <div class="previewMeta" id="previewMeta">Mode: Masuk sebagai Staff</div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="rmPill" id="previewRolePill">Akses: Staff</span>
+            <span class="rmPill" id="previewDivisiPill">Divisi: -</span>
+          </div>
+        </div>
+        <div id="roleModalMsg" style="display:none; margin-top:10px; color:#b00020; font-size:13px; font-weight:800;"></div>
+        <div class="rmActions">
+          <button class="btn ghost" id="btnResetRole" onclick="resetImpersonationUI()" title="Kembali ke akun asli" style="display:none">Masuk Sebagai Akun Asli</button>
+          <button class="btn primary" onclick="applyImpersonationUI()">Terapkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loadingBack" id="loadingBack" aria-hidden="true">
+    <div class="loadingCard" role="status" aria-live="polite">
+      <img class="loadingLogo" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" alt="" draggable="false" loading="eager" fetchpriority="high">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loadingTextWrap">
+        <div class="loadingTitle" id="loadingTitle">Memuat Perangkat</div>
+        <div class="loadingSub" id="loadingSub">Mohon Tunggu</div>
       </div>
     </div>
   </div>
@@ -1260,15 +1480,15 @@
       document.getElementById("tableCard").style.display = "";
 
       document.getElementById("loginEmailPill").innerText = email || "-";
-      // role tampil dulu aja (hardcode)
       document.getElementById("loginRolePill").innerText = "Pengguna";
-
+      showLoading("Memuat data pengerjaan...", "Mohon tunggu sebentar.");
       document.getElementById('tbody').innerHTML = `<tr><td colspan="10">Loading...</td></tr>`;
 
       google.script.run
         .withSuccessHandler((jsonString) => {
           const res = safeParseJson(jsonString);
           if (!res || !res.ok){
+            hideLoading();
             setMessage((res && res.message) ? res.message : "Gagal mengambil data.");
             document.getElementById('tbody').innerHTML = `<tr><td colspan="10">${escapeHtml((res && res.message) ? res.message : "Gagal")}</td></tr>`;
             return;
@@ -1276,7 +1496,16 @@
 
           LOGIN_NAME = res.namaMitra || "";
           document.getElementById('namaMitra').innerText = res.namaMitra || "-";
-          document.getElementById('posisiMitraPill').innerText = res.posisiMitra || "Pelaksana";
+          if (!AUTH_USER.email){ AUTH_USER.email = email; AUTH_USER.role_akun = res.roleAkun || "Staff"; AUTH_USER.nama = res.namaMitra || ""; }
+          applyEffectiveRolePillLabel();
+          setupRoleClickable(AUTH_USER.role_akun || "");
+          hideLoading();
+          document.getElementById('posisiMitraPill').innerHTML =
+            `<span class="mutedLabel">Posisi</span><span class="valWhite">${escapeHtml(res.posisiMitra || "-")}</span>`;
+          document.getElementById('divisiMitraPill').innerHTML =
+            `<span class="mutedLabel">Divisi</span><span class="valWhite">${escapeHtml(res.divisiMitra || "-")}</span>`;
+          document.getElementById('statusKaryawanPill').innerHTML =
+            `<span class="mutedLabel">Status</span><span class="valWhite">${escapeHtml(res.statusKaryawan || "-")}</span>`;
 
           ALL_ROWS = res.rows || [];
 
@@ -1294,6 +1523,7 @@
           applyFilters();
         })
         .withFailureHandler((err) => {
+          hideLoading();
           const msg = "Error: " + (err && err.message ? err.message : err);
           setMessage(msg);
           document.getElementById('tbody').innerHTML = `<tr><td colspan="10">${escapeHtml(msg)}</td></tr>`;
@@ -1600,6 +1830,160 @@
 
       } finally {
         exportBtn.disabled = !(FILTERED_ROWS && FILTERED_ROWS.length > 0);
+      }
+    }
+
+    /* ===== ROLE MODAL ===== */
+    const KEY_EFFECTIVE_MODE  = "effectiveMode";
+    const KEY_EFFECTIVE_EMAIL = "effectiveEmail";
+    const KEY_EFFECTIVE_NAME  = "effectiveName";
+    let AUTH_USER = { email:"", role_akun:"Staff", divisi:"", nama:"" };
+    let UI_STATE  = { mode:"staff", divisi:"", personEmail:"", personName:"" };
+
+    function openRoleModal(){
+      const back = document.getElementById("roleModalBack");
+      back.classList.add("show"); back.setAttribute("aria-hidden","false");
+      const _msgEl = document.getElementById("roleModalMsg");
+      if (_msgEl){ _msgEl.textContent = ""; _msgEl.style.display = "none"; }
+      document.getElementById("impersonateDivisi").value = UI_STATE.divisi || AUTH_USER.divisi || "";
+      document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
+      const btnReset = document.getElementById("btnResetRole");
+      if (btnReset){
+        const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+        const isImpersonating = !!effEmail;
+        btnReset.style.display = isImpersonating ? "" : "none";
+        if (isImpersonating){
+          const r = String(AUTH_USER.role_akun || "").trim();
+          const rLabel = r ? (r.charAt(0).toUpperCase() + r.slice(1).toLowerCase()) : "Akun Asli";
+          btnReset.textContent = `Masuk sebagai ${rLabel}`;
+        }
+      }
+      refreshImpersonationCandidates();
+      syncHint(); syncPreview();
+    }
+    function closeRoleModal(){
+      const back = document.getElementById("roleModalBack");
+      back.classList.remove("show"); back.setAttribute("aria-hidden","true");
+    }
+    function selectMode(mode){
+      UI_STATE.mode = mode;
+      document.querySelectorAll(".segBtn").forEach(b => b.classList.toggle("active", b.getAttribute("data-mode") === mode));
+      document.getElementById("impersonatePerson").value = "";
+      UI_STATE.personEmail = ""; UI_STATE.personName = "";
+      refreshImpersonationCandidates(); syncHint(); syncPreview();
+    }
+    function syncHint(){
+      const hint = document.getElementById("roleHint");
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+      const divSel = document.getElementById("impersonateDivisi");
+      if (role === "leader"){
+        hint.innerHTML = "<b>Kamu masuk sebagai Leader.</b><br/>Kamu hanya bisa memilih <b>Masuk sebagai Staff</b> dalam divisi kamu.";
+        divSel.value = AUTH_USER.divisi || ""; divSel.disabled = true;
+      } else if (role === "management"){
+        hint.innerHTML = "<b>Kamu masuk sebagai Management.</b><br/>Kamu bisa memilih <b>Masuk sebagai Staff</b> atau <b>Masuk sebagai Leader</b>.";
+        divSel.disabled = false;
+      } else {
+        hint.innerHTML = "<b>Kamu masuk sebagai Staff.</b><br/>Mode akses tidak bisa diganti.";
+        divSel.disabled = true;
+      }
+    }
+    function syncPreview(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      const div = divSel ? divSel.value || "" : "";
+      const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+      document.getElementById("previewMeta").innerText = `Mode: ${UI_STATE.mode==="leader" ? "Masuk sebagai Leader" : "Masuk sebagai Staff"}`;
+      document.getElementById("previewRolePill").innerText = `Akses: ${UI_STATE.mode==="leader" ? "Leader" : "Staff"}`;
+      document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || AUTH_USER.divisi || "-"}`;
+      document.getElementById("previewName").innerText = (personName && !personName.startsWith("—")) ? personName : "— Pilih Nama —";
+    }
+    function refreshImpersonationCandidates(){
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+      if (!(role === "leader" || role === "management")) return;
+      const mode = UI_STATE.mode;
+      const div = (document.getElementById("impersonateDivisi").value || "").trim();
+      const personSel = document.getElementById("impersonatePerson");
+      const first = personSel.options[0];
+      personSel.innerHTML = ""; personSel.appendChild(first);
+      const addFallback = (msg) => {
+        if (personSel.options.length <= 1){
+          const opt = document.createElement("option");
+          opt.value = ""; opt.textContent = msg || "— Tidak ada kandidat —"; personSel.appendChild(opt);
+        }
+      };
+      try{
+        google.script.run
+          .withSuccessHandler((json) => {
+            let res; try{ res = typeof json==="string"?JSON.parse(json):json; }catch(e){}
+            if (!res||!res.ok||!Array.isArray(res.items)){ addFallback("— Kandidat belum tersedia —"); return; }
+            if (!res.items.length){ addFallback("— Tidak ada kandidat —"); return; }
+            res.items.forEach(it => {
+              const opt = document.createElement("option");
+              opt.value = String(it.email||"").trim().toLowerCase();
+              opt.textContent = String(it.nama||it.email||"-");
+              personSel.appendChild(opt);
+            });
+          })
+          .withFailureHandler(() => addFallback("— Gagal load kandidat —"))
+          .getImpersonationCandidates(AUTH_USER.email, mode, div);
+      }catch(e){ addFallback("— Kandidat belum tersedia —"); }
+    }
+    function applyEffectiveRolePillLabel(){
+      const rolePill = document.getElementById("loginRolePill");
+      const mode = sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "";
+      const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+      rolePill.textContent = (mode && effEmail) ? (mode==="leader" ? "Leader" : "Staff") : (AUTH_USER.role_akun || "Pengguna");
+    }
+    function applyImpersonationUI(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      const personEmail = personSel ? personSel.value || "" : "";
+      const personName  = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+      if (!personEmail){
+        const _msgEl = document.getElementById("roleModalMsg");
+        if (_msgEl){ _msgEl.textContent = "Pilih nama dulu sebelum menerapkan"; _msgEl.style.display = ""; }
+        return;
+      }
+      UI_STATE.divisi = divSel ? divSel.value : "";
+      UI_STATE.personEmail = personEmail;
+      UI_STATE.personName  = (personName && !personName.startsWith("—")) ? personName : "";
+      sessionStorage.setItem(KEY_EFFECTIVE_MODE,  UI_STATE.mode);
+      sessionStorage.setItem(KEY_EFFECTIVE_EMAIL, UI_STATE.personEmail);
+      sessionStorage.setItem(KEY_EFFECTIVE_NAME,  UI_STATE.personName || "");
+      applyEffectiveRolePillLabel();
+      closeRoleModal();
+      startLoad(personEmail);
+    }
+    function resetImpersonationUI(){
+      UI_STATE = { mode:"staff", divisi: AUTH_USER.divisi||"", personEmail:"", personName:"" };
+      sessionStorage.removeItem(KEY_EFFECTIVE_MODE);
+      sessionStorage.removeItem(KEY_EFFECTIVE_EMAIL);
+      sessionStorage.removeItem(KEY_EFFECTIVE_NAME);
+      applyEffectiveRolePillLabel();
+      closeRoleModal();
+      startLoad(AUTH_USER.email);
+    }
+
+    function showLoading(title, sub){
+      const back = document.getElementById("loadingBack");
+      back.classList.add("show"); back.setAttribute("aria-hidden","false");
+    }
+    function hideLoading(){
+      const back = document.getElementById("loadingBack");
+      back.classList.remove("show"); back.setAttribute("aria-hidden","true");
+    }
+    function setupRoleClickable(roleAkun){
+      const rolePill = document.getElementById("loginRolePill");
+      const r = String(roleAkun || "").trim().toLowerCase();
+      rolePill.classList.add("pillDisabled"); rolePill.onclick = null;
+      if (r === "management" || r === "leader"){
+        rolePill.classList.remove("pillDisabled");
+        rolePill.onclick = () => {
+          const segLeader = document.getElementById("segLeader");
+          if (r === "leader"){ if(segLeader) segLeader.style.display="none"; }
+          else { if(segLeader) segLeader.style.display="inline-flex"; }
+          selectMode("staff"); syncHint(); openRoleModal();
+        };
       }
     }
 
