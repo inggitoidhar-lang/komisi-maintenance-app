@@ -3,10 +3,13 @@
 <head>
   <base target="_top" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cek Komisi DMT Jendela360 | Beranda</title>
+  <link rel="icon" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771692199/Untitled_design_gyys0m.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" as="image" fetchpriority="high">
 
   <style>
     :root{
@@ -60,6 +63,7 @@
       transition: transform .05s ease, box-shadow .15s ease, background .15s ease;
       user-select:none;
       gap:10px;
+      text-decoration: none;
     }
     .btn:active{ transform: translateY(1px); }
 
@@ -91,32 +95,45 @@
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       border: 1px solid rgba(255,255,255,.18);
       border-radius: var(--radius);
-      padding: 14px 16px;
+      padding: 10px 14px;
       box-shadow: 0 18px 50px rgba(2,6,23,.22);
       width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:nowrap; }
 
-    .leftTop{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
+    .leftTop{ display:flex; align-items:center; gap:18px; flex-wrap:nowrap; flex-shrink:0; }
 
-    .logoApp{ height: 44px; width:auto; display:block; }
+    .logoApp{ height: 44px; width:auto; display:block; flex-shrink:0; }
 
-    .title{ font-size: 16px; font-weight: 900; letter-spacing: .2px; color:#fff; }
-    .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; }
+    .title{ display:inline-flex; align-items:center; padding:6px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.12); color:#fff; font-size:15px; font-weight:900; letter-spacing:.2px; white-space:nowrap; backdrop-filter:blur(10px); }
+    .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; white-space:nowrap; }
 
-    .topActions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-
+    .topActions{ display:flex; align-items:center; gap:8px; flex:1 1 auto; justify-content:flex-end; min-width:0; overflow:hidden; }
+    .statusPill{ flex-shrink:1; min-width:0; }
+    @media(max-width:600px){
+      .top{ padding:8px 10px; }
+      .logoApp{ height:36px; }
+      .title{ font-size:13px; }
+      .subtitle{ display:none; }
+      .statusText .label{ display:none; }
+      .topActions{ gap:5px; }
+      .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
+      .btnIcon{ width:36px; height:38px; }
+    }
     .statusPill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px; border-radius: 999px;
+      display:inline-flex; align-items:center; gap:7px;
+      padding: 6px 10px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(255,255,255,.12);
       color: rgba(255,255,255,.75);
-      font-weight: 900; font-size: 13px;
+      font-weight: 800; font-size: 11px;
       backdrop-filter: blur(10px);
     }
-    .dot{ width:10px;height:10px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 5px rgba(34,197,94,.14); }
-    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+    .dot{ width:7px;height:7px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.20); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap; }
     .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
     .statusText .email{ color: #fff; font-weight: 900; }
     #loginRolePill{ opacity:.95; }
@@ -258,7 +275,7 @@
     .barHint{
       font-size: 12px;
       font-weight: 900;
-      color: rgba(15,23,42,.45);
+      color: rgba(0,140,180,1);
       letter-spacing: .2px;
     }
 
@@ -273,11 +290,12 @@
 
     .barOuter{
       width:100%;
-      height: 18px;
+      height: 22px;
       border-radius: 999px;
       background: rgba(15,23,42,.08);
       overflow:hidden;
       border: 1px solid rgba(15,23,42,.08);
+      position: relative;
     }
     .barInner{
       height:100%;
@@ -285,6 +303,22 @@
       background: linear-gradient(135deg, rgba(0,160,198,1), rgba(0,160,198,.88));
       border-radius: 999px;
       transition: width .25s ease;
+      position: absolute;
+      top:0; left:0;
+    }
+    .barPctLabel{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 11px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 4px rgba(0,0,0,.7), 0 1px 5px rgba(0,0,0,.5);
+      z-index: 2;
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: .2px;
     }
 
     .filterBox{
@@ -322,14 +356,125 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       align-items:end;
-      margin-top:10px;
+      margin-top: auto;
     }
     .filterActions{
       display:flex;
       gap:10px;
-      margin-top:10px;
+      margin-top: auto;
+      padding-top: 14px;
     }
     .filterActions .btn{ flex:1; }
+
+    /* ===== 3-CARD HOME LAYOUT ===== */
+    .homeTopRow{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .homeTopRow > .card{ margin-top: 0; }
+    @media(max-width:700px){
+      .homeTopRow{ grid-template-columns: 1fr; }
+    }
+
+    /* ===== WELCOME INFO MODAL ===== */
+    .infoModalBack{
+      display:none;
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.45);
+      z-index: 9999;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+    }
+    .infoModalBack.show{ display:flex; }
+    .infoModal{
+      background:#fff;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.22);
+      max-width: 420px;
+      width:100%;
+      overflow:hidden;
+      position:relative;
+    }
+    .infoClose{
+      position:absolute;
+      top:10px; right:12px;
+      background:none;
+      border:none;
+      font-size: 18px;
+      cursor:pointer;
+      color: rgba(15,23,42,.50);
+      line-height:1;
+      padding: 4px 6px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 900;
+      z-index:1;
+    }
+    .infoClose:hover{ background: rgba(15,23,42,.06); }
+    .infoLogoWrap{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      padding: 0;
+      display:block;
+      overflow:hidden;
+    }
+    .infoLogo{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit:cover;
+    }
+    .infoBody{
+      padding: 20px 20px 22px;
+    }
+    .infoIconRow{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .infoIcon{
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(0,140,180,.12);
+      border: 2px solid rgba(0,140,180,.30);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 14px;
+      font-weight: 900;
+      color: rgba(0,140,180,1);
+      line-height:1;
+      margin-top: 1px;
+    }
+    .infoText{
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(0,140,180,1);
+      line-height: 1.55;
+      margin: 0;
+    }
+    .infoCheckLabel{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top: 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      cursor:pointer;
+      user-select:none;
+    }
+    .infoCheckLabel input[type=checkbox]{
+      width: 16px;
+      height: 16px;
+      cursor:pointer;
+      accent-color: var(--brand);
+    }
 
     .rankTopRow{
       display:flex;
@@ -425,8 +570,10 @@
     /* =========================
        ✅ PATCH: Ranking header center + pill performa like ranking.html
        ========================= */
-    .rankTableWrap th{ text-align:center; }          /* header rata tengah */
-    .rankTableWrap td{ text-align:center; }          /* isi tabel rata tengah */
+    .rankTableWrap table{ font-size:11px; }
+    .rankTableWrap th{ text-align:center; white-space:normal; line-height:1.3; }
+    .rankTableWrap td{ text-align:center; }
+    .rankTableWrap th, .rankTableWrap td{ padding: 5px 6px; }
     td.perfCell{ text-align:center; }
 
     .perfPill{
@@ -767,30 +914,33 @@
       z-index: 10000;
     }
     .loadingBack.show{ display:flex; }
+    .loadingInner{ display:flex; flex-direction:column; align-items:center; gap:16px; }
     .loadingCard{
-      width: min(420px, 92vw);
+      width: min(480px, 92vw);
       background:#fff;
-      border-radius: 18px;
-      border: 1px solid rgba(15,23,42,.12);
-      box-shadow: 0 30px 80px rgba(2,6,23,.35);
-      padding: 16px 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,.10);
+      box-shadow: 0 24px 64px rgba(2,6,23,.28);
+      padding: 28px 24px 22px;
       display:flex;
+      flex-direction:column;
       align-items:center;
-      gap:12px;
+      gap:22px;
     }
     .spinner{
-      width: 36px;
-      height: 36px;
+      width: 50px;
+      height: 50px;
       border-radius: 999px;
-      border: 4px solid rgba(15,23,42,.10);
-      border-top-color: rgba(0,160,198,1);
-      animation: spin 0.9s linear infinite;
+      border: 3px solid rgba(15,23,42,.07);
+      border-top-color: #00aeef;
+      animation: spin 0.75s linear infinite;
       flex: 0 0 auto;
     }
     @keyframes spin{ to { transform: rotate(360deg); } }
-    .loadingTextWrap{ display:flex; flex-direction:column; gap:2px; }
-    .loadingTitle{ font-weight: 900; font-size: 14px; color: rgba(11,18,32,.92); }
-    .loadingSub{ font-weight: 800; font-size: 12px; color: rgba(11,18,32,.60); line-height:1.35; }
+    .loadingLogo{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto; }
+    .loadingTextWrap{ display:flex; flex-direction:column; gap:3px; align-items:center; text-align:center; }
+    .loadingTitle{ font-weight: 900; font-size: 15px; color: rgba(11,18,32,.92); }
+    .loadingSub{ font-weight: 800; font-size: 12px; color: rgba(11,18,32,.55); line-height:1.4; }
   </style>
 </head>
 
@@ -799,11 +949,8 @@
     <div class="top">
       <div class="topRow">
         <div class="leftTop">
-          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1770658185/6_kqt426.png" alt="Jendela360" />
-          <div>
-            <div class="title">Beranda</div>
-            <div class="subtitle">Halaman ringkasan dan akses fitur</div>
-          </div>
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" alt="Jendela360" loading="eager" fetchpriority="high" />
+          <div class="title">Beranda</div>
         </div>
 
         <div class="topActions">
@@ -832,98 +979,94 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="profileRow">
-        <div class="leftCol">
-          <div class="hello">Halo,</div>
+    <!-- ===== TOP ROW: Halo card + Filter card (side by side) ===== -->
+    <div class="homeTopRow">
 
-          <div class="helloName">
-            <span id="namaMitra">-</span>
+      <!-- Card 1: Halo + Pencapaian Target -->
+      <div class="card">
+        <div class="hello">Halo,</div>
 
-            <span id="posisiPill" class="miniPillHeaderStyle">-</span>
+        <div class="helloName">
+          <span id="namaMitra">-</span>
 
-            <span id="divisiPill" class="miniPillHeaderStyle">-</span>
+          <span id="posisiPill" class="miniPillHeaderStyle">-</span>
 
-            <span id="statusKaryawanPill" class="miniPillHeaderStyle">-</span>
-          </div>
+          <span id="divisiPill" class="miniPillHeaderStyle">-</span>
 
-          <div class="progressWrap">
-            <div class="progressTop">
-              <div>
-                <div class="progressTitle">Pencapaian Target</div>
-                <div class="progressSub">Berdasarkan jumlah SPK pada periode filter</div>
-              </div>
-            </div>
-
-            <div class="barRowTop">
-              <div class="barHint">Progress</div>
-              <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
-            </div>
-
-            <div class="barOuter">
-              <div class="barInner" id="barInner"></div>
-            </div>
-          </div>
+          <span id="statusKaryawanPill" class="miniPillHeaderStyle">-</span>
         </div>
 
-        <div class="filterBox">
-          <div class="sectionTitle" style="margin:0;">Filter</div>
-          <div class="sectionNote" style="margin-top:6px;">
-            Filter memengaruhi seluruh data di beranda ini (target, peringkat, dan semua ringkasan).
-          </div>
-
-          <div class="filterGrid">
+        <div class="progressWrap">
+          <div class="progressTop">
             <div>
-              <div class="labelSmall">Tanggal Awal</div>
-              <input class="dateInput" type="date" id="dateFrom" />
-            </div>
-            <div>
-              <div class="labelSmall">Tanggal Akhir</div>
-              <input class="dateInput" type="date" id="dateTo" />
+              <div class="progressTitle">Pencapaian Target</div>
+              <div class="progressSub">Berdasarkan jumlah SPK menjadi invoice pada periode filter</div>
             </div>
           </div>
 
-          <div class="filterActions">
-            <button class="btn ghost" onclick="resetHomeFilter()">
-              <span class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M20 4v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              Reset
-            </button>
-            <button class="btn primary" onclick="applyHomeFilter()">
-              <span class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M4 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </span>
-              Terapkan
-            </button>
+          <div class="barRowTop">
+            <div class="barHint">Progres</div>
+            <div class="barTextTop" id="barTextTop">0/0 • 0%</div>
           </div>
 
-          <div id="msg" class="msg"></div>
+          <div class="barOuter">
+            <div class="barInner" id="barInner"></div>
+            <div class="barPctLabel" id="barPctLabel">0%</div>
+          </div>
         </div>
       </div>
 
+      <!-- Card 2: Filter -->
+      <div class="card" style="display:flex;flex-direction:column;">
+        <div class="sectionTitle" style="margin:0;">Filter</div>
+        <div class="sectionNote" style="margin-top:6px;">
+          Filter memengaruhi seluruh data di beranda ini (target, peringkat, dan semua ringkasan).
+        </div>
+
+        <div class="filterGrid">
+          <div>
+            <div class="labelSmall">Tanggal Awal</div>
+            <input class="dateInput" type="date" id="dateFrom" />
+          </div>
+          <div>
+            <div class="labelSmall">Tanggal Akhir</div>
+            <input class="dateInput" type="date" id="dateTo" />
+          </div>
+        </div>
+
+        <div class="filterActions">
+          <button class="btn ghost" onclick="resetHomeFilter()">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 4v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Reset
+          </button>
+          <button class="btn primary" onclick="applyHomeFilter()">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 6h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            Terapkan
+          </button>
+        </div>
+
+        <div id="msg" class="msg"></div>
+      </div>
+
+    </div>
+
+    <!-- ===== Card 3: Peringkat (full width) ===== -->
+    <div class="card">
       <div class="rankTopRow">
         <div>
           <div class="rankTitleInline">
             <div class="sectionTitle" style="margin:0;">Peringkat</div>
-
-            <button class="btn primary btnIcon" onclick="goPage('ranking')" title="Buka Ranking (Fullscreen)" aria-label="Buka Ranking (Fullscreen)">
-              <span class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M9 3H5a2 2 0 0 0-2 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M15 3h4a2 2 0 0 1 2 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M9 21H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M15 21h4a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </span>
-            </button>
           </div>
           <div class="sectionNote">
             Peringkat ditentukan berdasarkan jumlah invoice terbanyak dalam suatu periode
@@ -934,31 +1077,13 @@
       <div class="rankGrid">
         <div class="rankCard">
           <div class="rankCardHeader">
-            <div class="rankCardTitle">Peringkat Antar Divisi</div>
+            <div class="rankCardTitle">TOP 3 Peringkat Dalam Divisi</div>
           </div>
           <div class="rankTableWrap">
             <table>
               <thead>
                 <tr>
-                  <th>Peringkat</th><th>Nama</th><th>Divisi</th><th>Invoice</th><th>Nominal Invoice</th><th>Performa</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyAcross">
-                <tr><td colspan="6">Loading...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="rankCard">
-          <div class="rankCardHeader">
-            <div class="rankCardTitle">Peringkat Dalam Divisi</div>
-          </div>
-          <div class="rankTableWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Peringkat</th><th>Nama</th><th>Divisi</th><th>Invoice</th><th>Nominal Invoice</th><th>Performa</th>
+                  <th>#</th><th>Nama</th><th>Divisi</th><th>Invoice</th><th>Nominal</th><th>Performa</th>
                 </tr>
               </thead>
               <tbody id="tbodyWithin">
@@ -967,11 +1092,45 @@
             </table>
           </div>
         </div>
+
+        <div class="rankCard">
+          <div class="rankCardHeader">
+            <div class="rankCardTitle">TOP 3 Peringkat Antar Divisi</div>
+          </div>
+          <div class="rankTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Nama</th><th>Divisi</th><th>Invoice</th><th>Nominal</th><th>Performa</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyAcross">
+                <tr><td colspan="6">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <a class="btn primary block" id="btnGoRanking" href="#">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 12h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 6h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 12h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Cek Seluruh Peringkat Individu
+        </a>
       </div>
     </div>
 
     <div class="card">
-      <div class="sectionTitle">Pengerjaan</div>
+      <div class="sectionTitle">Histori Pengerjaan</div>
 
       <div class="metricGrid">
         <div class="metric brand">
@@ -1040,7 +1199,7 @@
       </div>
 
       <div style="margin-top:14px;">
-        <button class="btn primary block" onclick="goHistoriPengerjaan()">
+        <a class="btn primary block" id="btnGoHistori" href="#">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
               <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1051,8 +1210,8 @@
               <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          Cek Rincian Pengerjaan
-        </button>
+          Cek Rincian Histori Pengerjaan
+        </a>
       </div>
     </div>
 
@@ -1109,7 +1268,7 @@
       </div>
 
       <div style="margin-top:14px;">
-        <button class="btn primary block" onclick="goPage('komisi')">
+        <a class="btn primary block" id="btnGoKomisi" href="#">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
               <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1121,7 +1280,7 @@
             </svg>
           </span>
           Cek Rincian Penghitungan Komisi
-        </button>
+        </a>
       </div>
     </div>
 
@@ -1169,7 +1328,7 @@
       </div>
 
       <div style="margin-top:14px;">
-        <button class="btn primary block" onclick="goPage('bersih')">
+        <a class="btn primary block" id="btnGoBersih" href="#">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
               <path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1181,7 +1340,7 @@
             </svg>
           </span>
           Cek Ringkasan Pendapatan Bersih
-        </button>
+        </a>
       </div>
     </div>
 
@@ -1191,10 +1350,31 @@
   <!-- LOADING -->
   <div class="loadingBack" id="loadingBack" aria-hidden="true">
     <div class="loadingCard" role="status" aria-live="polite">
+      <img class="loadingLogo" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" alt="" draggable="false" loading="eager" fetchpriority="high">
       <div class="spinner" aria-hidden="true"></div>
       <div class="loadingTextWrap">
-        <div class="loadingTitle" id="loadingTitle">Sedang diproses...</div>
-        <div class="loadingSub" id="loadingSub">Mohon tunggu sebentar.</div>
+        <div class="loadingTitle" id="loadingTitle">Memuat Perangkat</div>
+        <div class="loadingSub" id="loadingSub">Mohon Tunggu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO MODAL (first-visit welcome) -->
+  <div class="infoModalBack" id="infoModalBack">
+    <div class="infoModal">
+      <button class="infoClose" onclick="closeInfoModal()">✕</button>
+      <div class="infoLogoWrap">
+        <img src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" class="infoLogo" alt="Jendela360" loading="eager" />
+      </div>
+      <div class="infoBody">
+        <div class="infoIconRow">
+          <span class="infoIcon">ℹ</span>
+          <p class="infoText">Aplikasi ini berguna untuk memeriksa pencapaian anggota tim divisi maintenance jendela360. Semua data yang terdapat pada aplikasi ini adalah data pencapaian sejak 1 Desember 2025 (Skema Baru)</p>
+        </div>
+        <label class="infoCheckLabel">
+          <input type="checkbox" id="infoDontShow" onchange="onInfoDontShow(this)" />
+          <span>Jangan tampilkan lagi</span>
+        </label>
       </div>
     </div>
   </div>
@@ -1205,7 +1385,7 @@
       <div class="modalHeader">
         <div>
           <div class="modalTitle" id="roleModalTitle">Pilih Mode Akses</div>
-          <div class="modalSub" id="roleModalSubtitle">Khusus Leader / Management</div>
+          <div class="modalSub" id="roleModalSubtitle">Khusus Akses Leader / Akses Management</div>
         </div>
         <button class="modalClose" onclick="closeRoleModal()" aria-label="Tutup">
           <span class="icon" aria-hidden="true">
@@ -1219,24 +1399,24 @@
 
       <div class="modalBody">
         <div class="segRow" id="modeSegRow">
-          <button class="segBtn active" data-mode="staff" onclick="selectMode('staff')" id="segStaff">Login sebagai Staff</button>
-          <button class="segBtn" data-mode="leader" onclick="selectMode('leader')" id="segLeader">Login sebagai Leader</button>
+          <button class="segBtn active" data-mode="staff" onclick="selectMode('staff')" id="segStaff">Masuk Sebagai Staff</button>
+          <button class="segBtn" data-mode="leader" onclick="selectMode('leader')" id="segLeader">Masuk Sebagai Leader</button>
         </div>
 
         <div class="formGrid">
           <div>
-            <div class="labelSmall">Divisi (scope)</div>
+            <div class="labelSmall">Divisi</div>
             <select class="select" id="impersonateDivisi">
-              <option value="">(Auto)</option>
+              <option value="">(Otomatis)</option>
               <option value="AC">AC</option>
               <option value="Fixing">Fixing</option>
               <option value="Cleaning">Cleaning</option>
-              <option value="General">General</option>
+              <option value="General" style="display:none">General</option>
             </select>
           </div>
 
           <div>
-            <div class="labelSmall">Pilih Orang</div>
+            <div class="labelSmall">Pilih Nama</div>
             <select class="select" id="impersonatePerson">
               <option value="">— Pilih nama —</option>
             </select>
@@ -1247,20 +1427,20 @@
 
         <div class="previewBox" id="impersonatePreview">
           <div class="previewLeft">
-            <div class="previewLabel">Preview</div>
+            <div class="previewLabel">Pratinjau</div>
             <div class="previewName" id="previewName">—</div>
-            <div class="previewMeta" id="previewMeta">Mode: Login sebagai Staff</div>
+            <div class="previewMeta" id="previewMeta">Mode: Masuk sebagai Staff</div>
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <span class="pill" id="previewRolePill">Role: Staff</span>
+            <span class="pill" id="previewRolePill">Akses: Staff</span>
             <span class="pill" id="previewDivisiPill">Divisi: -</span>
           </div>
         </div>
 
+        <div id="roleModalMsg" style="display:none; margin-top:10px; color:#b00020; font-size:13px; font-weight:800;"></div>
         <div class="modalActions">
-          <button class="btn ghost btnDanger" onclick="resetImpersonationUI()" title="Kembali ke akun asli">Reset</button>
-          <button class="btn ghost" onclick="closeRoleModal()">Batal</button>
+          <button class="btn ghost" id="btnResetRole" onclick="resetImpersonationUI()" title="Kembali ke akun asli" style="display:none">Masuk Sebagai Akun Asli</button>
           <button class="btn primary" onclick="applyImpersonationUI()">Terapkan</button>
         </div>
       </div>
@@ -1301,8 +1481,6 @@
 
     function showLoading(title, sub){
       const back = document.getElementById("loadingBack");
-      document.getElementById("loadingTitle").innerText = title || "Sedang diproses...";
-      document.getElementById("loadingSub").innerText = sub || "Mohon tunggu sebentar.";
       back.classList.add("show");
       back.setAttribute("aria-hidden","false");
     }
@@ -1358,6 +1536,28 @@
       goLogin();
     }
 
+    function buildPageUrl(page){
+      const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
+      return APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
+    }
+
+    function updateNavLinks(){
+      const ids = { btnGoRanking:"ranking", btnGoHistori:"histori", btnGoKomisi:"komisi", btnGoBersih:"bersih" };
+      Object.entries(ids).forEach(([id, page]) => {
+        const el = document.getElementById(id);
+        if (el) el.href = buildPageUrl(page);
+      });
+    }
+
+    function onNavClick(e, page){
+      // Middle-click or ctrl/cmd-click: open in new tab naturally via href
+      if (e.ctrlKey || e.metaKey || e.button === 1) return;
+      // Normal left-click: open in new tab too (as user requested tanpa close beranda)
+      e.preventDefault();
+      const url = buildPageUrl(page);
+      window.open(url, "_blank", "noopener");
+    }
+
     function goPage(page){
       const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
       if (!email){ setMessage("Kamu belum login."); goLogin(); return; }
@@ -1394,11 +1594,25 @@
       const back = document.getElementById("roleModalBack");
       back.classList.add("show");
       back.setAttribute("aria-hidden","false");
+      const _msgEl = document.getElementById("roleModalMsg");
+      if (_msgEl){ _msgEl.textContent = ""; _msgEl.style.display = "none"; }
 
       const divSel = document.getElementById("impersonateDivisi");
       divSel.value = UI_STATE.divisi || (AUTH_USER.divisi || "");
 
       document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
+
+      const btnReset = document.getElementById("btnResetRole");
+      if (btnReset){
+        const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+        const isImpersonating = !!effEmail;
+        btnReset.style.display = isImpersonating ? "" : "none";
+        if (isImpersonating){
+          const r = String(AUTH_USER.role_akun || "").trim();
+          const rLabel = r ? (r.charAt(0).toUpperCase() + r.slice(1).toLowerCase()) : "Akun Asli";
+          btnReset.textContent = `Masuk sebagai ${rLabel}`;
+        }
+      }
 
       refreshImpersonationCandidates();
       syncHint();
@@ -1409,6 +1623,15 @@
       const back = document.getElementById("roleModalBack");
       back.classList.remove("show");
       back.setAttribute("aria-hidden","true");
+    }
+    function resetRoleModalSelections(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      if (divSel) divSel.value = "";
+      if (personSel) personSel.innerHTML = '<option value="">— Pilih nama —</option>';
+      UI_STATE.personEmail = "";
+      UI_STATE.personName = "";
+      syncPreview();
     }
 
     function selectMode(mode){
@@ -1435,15 +1658,15 @@
 
       if (role === "leader"){
         hint.innerHTML =
-          "<b>Kamu login sebagai Leader.</b><br/>" +
-          "Kamu hanya bisa memilih <b>Login sebagai Staff</b> dalam divisi kamu.";
+          "<b>Kamu masuk sebagai Leader.</b><br/>" +
+          "Kamu hanya bisa memilih <b>Masuk sebagai Staff</b> dalam divisi kamu.";
       } else if (role === "management"){
         hint.innerHTML =
-          "<b>Kamu login sebagai Management.</b><br/>" +
-          "Kamu bisa memilih <b>Login sebagai Staff</b> atau <b>Login sebagai Leader</b>.";
+          "<b>Kamu masuk sebagai Management.</b><br/>" +
+          "Kamu bisa memilih <b>Masuk sebagai Staff</b> atau <b>Masuk sebagai Leader</b>.";
       } else {
         hint.innerHTML =
-          "<b>Kamu login sebagai Staff.</b><br/>" +
+          "<b>Kamu masuk sebagai Staff.</b><br/>" +
           "Mode akses tidak bisa diganti.";
       }
 
@@ -1465,14 +1688,14 @@
       const div = divSel ? (divSel.value || "") : "";
       const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
 
-      const modeLabel = UI_STATE.mode === "leader" ? "Login sebagai Leader" : "Login sebagai Staff";
+      const modeLabel = UI_STATE.mode === "leader" ? "Masuk sebagai Leader" : "Masuk sebagai Staff";
 
       document.getElementById("previewMeta").innerText = `Mode: ${modeLabel}`;
-      document.getElementById("previewRolePill").innerText = `Role: ${UI_STATE.mode === "leader" ? "Leader" : "Staff"}`;
+      document.getElementById("previewRolePill").innerText = `Akses: ${UI_STATE.mode === "leader" ? "Leader" : "Staff"}`;
       document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || (AUTH_USER.divisi || "-")}`;
 
       document.getElementById("previewName").innerText =
-        personName && !personName.startsWith("—") ? personName : "— pilih orang dulu —";
+        personName && !personName.startsWith("—") ? personName : "— Pilih Nama —";
     }
 
     function resetImpersonationUI(){
@@ -1500,7 +1723,8 @@
       const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
 
       if (!personEmail){
-        setMessage("Pilih orang dulu sebelum menerapkan.");
+        const _msgEl = document.getElementById("roleModalMsg");
+        if (_msgEl){ _msgEl.textContent = "Pilih nama dulu sebelum menerapkan"; _msgEl.style.display = ""; }
         return;
       }
 
@@ -1684,15 +1908,15 @@
       const target = Number(computedTarget || 0);
       const percent = target > 0 ? Math.round((achieved / target) * 100) : 0;
 
-      const metaText = `${formatNumber(achieved)}/${formatNumber(target)} • ${formatNumber(percent)}%`;
-
       const bar = document.getElementById("barInner");
       const barTextTop = document.getElementById("barTextTop");
+      const barPctLabel = document.getElementById("barPctLabel");
 
       const w = Math.max(0, Math.min(100, Number(percent||0)));
       bar.style.width = `${w}%`;
 
-      barTextTop.innerText = metaText;
+      barTextTop.innerText = `${formatNumber(achieved)}/${formatNumber(target)}`;
+      if (barPctLabel) barPctLabel.innerText = `${percent}%`;
     }
 
     /* =========================
@@ -1703,6 +1927,10 @@
       if (m > 0) return `<span class="perfPill perfUp"><span class="perfIcon">▲</span>Naik</span>`;
       if (m < 0) return `<span class="perfPill perfDown"><span class="perfIcon">▼</span>Turun</span>`;
       return `<span class="perfPill perfFlat">Stabil</span>`;
+    }
+
+    function filterRankable(rows){
+      return (rows || []).map((r, i) => ({...r, rank: i + 1}));
     }
 
     function renderRankingTable(tbodyId, items){
@@ -1741,8 +1969,8 @@
               return;
             }
 
-            const across = Array.isArray(res.acrossAll) ? res.acrossAll.slice(0, 10) : [];
-            const within = Array.isArray(res.withinAll) ? res.withinAll.slice(0, 3) : [];
+            const across = filterRankable(Array.isArray(res.acrossAll) ? res.acrossAll : []).slice(0, 3);
+            const within = filterRankable(Array.isArray(res.withinAll) ? res.withinAll : []).slice(0, 3);
 
             renderRankingTable("tbodyAcross", across);
             renderRankingTable("tbodyWithin", within);
@@ -1770,44 +1998,63 @@
 
       const eff = computeEffectiveFilter(fromIso, toIso);
 
-      google.script.run
-        .withSuccessHandler(async (json) => {
-          const res = safeParse(json);
-          if (!res){ setMessage("Response tidak valid."); hideLoading(); return; }
-          if (!res.ok){ setMessage(res.message || "Gagal ambil ringkasan."); hideLoading(); return; }
+      // ✅ PARALLEL: summary + ranking dijalankan serentak
+      const summaryPromise = new Promise((resolve) => {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler((err) => {
+            setMessage("Error: " + (err && err.message ? err.message : err));
+            resolve(null);
+          })
+          .getHomepageSummaryByAuthEmailWithFilter(
+            String(authEmail || "").trim().toLowerCase(),
+            String(effectiveEmail || "").trim().toLowerCase(),
+            eff.fromIso || "",
+            eff.toIso || ""
+          );
+      });
 
-          setProfile(res);
-          setWork(res);
-          setKomisi(res);
-          setNet(res);
-          setTarget(res, eff.fromIso || "", eff.toIso || "");
+      Promise.all([
+        summaryPromise,
+        loadRankingPreview(authEmail, effectiveEmail, eff.fromIso, eff.toIso)
+      ]).then(([rawSummary]) => {
+        if (rawSummary === null) { hideLoading(); return; }
 
-          await loadRankingPreview(authEmail, effectiveEmail, eff.fromIso, eff.toIso);
+        const res = safeParse(rawSummary);
+        if (!res){ setMessage("Response tidak valid."); hideLoading(); return; }
+        if (!res.ok){ setMessage(res.message || "Gagal ambil ringkasan."); hideLoading(); return; }
 
-          hideLoading();
-        })
-        .withFailureHandler((err) => { setMessage("Error: " + (err && err.message ? err.message : err)); hideLoading(); })
-        .getHomepageSummaryByAuthEmailWithFilter(
-          String(authEmail || "").trim().toLowerCase(),
-          String(effectiveEmail || "").trim().toLowerCase(),
-          eff.fromIso || "",
-          eff.toIso || ""
-        );
+        setProfile(res);
+        setWork(res);
+        setKomisi(res);
+        setNet(res);
+        setTarget(res, eff.fromIso || "", eff.toIso || "");
+        hideLoading();
+      });
     }
 
     // ✅ init auth + load view (respect impersonation saved)
     function initAuthAndView(loginEmail){
       AUTH_USER.email = loginEmail || "";
+      updateNavLinks();
 
       showLoading("Memuat beranda...", "Mengambil data akun dan ringkasan.");
 
-      // ✅ lebih cepat: ambil profil auth dari DB_Akun (bukan load summary 2x)
+      document.getElementById("loginEmailPill").innerText = loginEmail || "-";
+
+      const from = document.getElementById("dateFrom").value || "";
+      const to = document.getElementById("dateTo").value || "";
+
+      const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim().toLowerCase();
+      const effMode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "").trim().toLowerCase();
+      const effectiveEmail = (effEmail && (effMode === "staff" || effMode === "leader")) ? effEmail : loginEmail;
+
+      // ✅ PARALLEL: getUserByEmail + summary + ranking dijalankan serentak
       google.script.run
         .withSuccessHandler((json) => {
           const res = safeParse(json);
           if (!res || !res.ok || !res.user){
             setMessage((res && res.message) ? res.message : "Gagal load akun.");
-            hideLoading();
             return;
           }
 
@@ -1816,26 +2063,13 @@
           AUTH_USER.nama = String(res.user.nama || "");
 
           setupRolePillInteractivity();
-          document.getElementById("loginEmailPill").innerText = loginEmail || "-";
-
-          const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim().toLowerCase();
-          const effMode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "").trim().toLowerCase();
-
           applyEffectiveRolePillLabel();
-
-          const from = document.getElementById("dateFrom").value || "";
-          const to = document.getElementById("dateTo").value || "";
-
-          if (effEmail && (effMode === "staff" || effMode === "leader")){
-            loadViewSummary(AUTH_USER.email, effEmail, from, to);
-          } else {
-            loadViewSummary(AUTH_USER.email, AUTH_USER.email, from, to);
-          }
-
           bindModalListenersOnce();
         })
-        .withFailureHandler((err) => { setMessage("Error: " + (err && err.message ? err.message : err)); hideLoading(); })
+        .withFailureHandler((err) => { setMessage("Error: " + (err && err.message ? err.message : err)); })
         .getUserByEmail(loginEmail);
+
+      loadViewSummary(AUTH_USER.email, effectiveEmail, from, to);
     }
 
     function bindModalListenersOnce(){
@@ -1877,6 +2111,28 @@
       applyHomeFilter();
     }
 
+    /* ========= WELCOME INFO MODAL ========= */
+    function checkAndShowInfoModal(){
+      if (localStorage.getItem("jd360_info_ok")) return;
+      const el = document.getElementById("infoModalBack");
+      if (el) el.classList.add("show");
+    }
+    function closeInfoModal(){
+      const el = document.getElementById("infoModalBack");
+      if (el) el.classList.remove("show");
+    }
+    function onInfoDontShow(cb){
+      if (cb.checked) localStorage.setItem("jd360_info_ok","1");
+      else localStorage.removeItem("jd360_info_ok");
+    }
+
+    // close info modal when clicking backdrop
+    document.addEventListener("click", (e) => {
+      const back = document.getElementById("infoModalBack");
+      if (!back || !back.classList.contains("show")) return;
+      if (e.target === back) closeInfoModal();
+    });
+
     // close modal when click outside
     document.addEventListener("click", (e) => {
       const back = document.getElementById("roleModalBack");
@@ -1890,6 +2146,7 @@
           document.getElementById("dateFrom").value = "";
           document.getElementById("dateTo").value = "";
           initAuthAndView(email);
+          checkAndShowInfoModal();
         })
         .catch(() => goLogin());
     })();
