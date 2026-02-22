@@ -49,7 +49,7 @@ function doGet(e) {
   if (page === "pengerjaan") file = "rincianpengerjaan";
 
   if (page === "ranking") file = "ranking";
-  if (page === "bersih") file = "placeholder";
+  if (page === "bersih") file = "pendapatanbersih";
 
   try {
     const t = HtmlService.createTemplateFromFile(file);
