@@ -104,33 +104,47 @@
     }
     .topRow{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:nowrap; }
 
-    .leftTop{ display:flex; align-items:center; gap:18px; flex-wrap:nowrap; flex-shrink:0; }
+    .leftTop{ display:flex; align-items:center; gap:24px; flex-wrap:nowrap; flex-shrink:0; }
 
     .logoApp{ height: 44px; width:auto; display:block; flex-shrink:0; }
 
-    .title{ display:inline-flex; align-items:center; padding:6px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.12); color:#fff; font-size:15px; font-weight:900; letter-spacing:.2px; white-space:nowrap; backdrop-filter:blur(10px); }
+    .title{
+      display:inline-flex; align-items:center; gap:6px;
+      height:42px; padding: 0 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      font-weight: 900; font-size: 13px;
+      white-space: nowrap; letter-spacing: .2px;
+      cursor: pointer; font-family: inherit; -webkit-appearance:none; appearance:none;
+      box-shadow: 0 10px 18px rgba(2,6,23,.20);
+      transition: filter .15s ease;
+    }
+    .title:hover{ filter: brightness(1.08); }
     .subtitle{ margin-top:2px; color: rgba(255,255,255,.75); font-size: 12px; font-weight: 800; white-space:nowrap; }
 
     .topActions{ display:flex; align-items:center; gap:8px; flex:1 1 auto; justify-content:flex-end; min-width:0; overflow:hidden; }
-    .statusPill{ flex-shrink:1; min-width:0; }
+    .statusPill{ min-width:0; margin-right:8px; }
     @media(max-width:600px){
       .top{ padding:8px 10px; }
       .logoApp{ height:36px; }
-      .title{ font-size:13px; }
+      .title{ height:38px; font-size:12px; padding: 0 10px; }
       .subtitle{ display:none; }
       .statusText .label{ display:none; }
       .topActions{ gap:5px; }
+      .statusPill{ font-size:10px; }
       .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
       .btnIcon{ width:36px; height:38px; }
     }
     .statusPill{
       display:inline-flex; align-items:center; gap:7px;
-      padding: 6px 10px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(255,255,255,.12);
-      color: rgba(255,255,255,.75);
+      padding:0;
+      border:none;
+      background:transparent;
+      color: rgba(255,255,255,.92);
       font-weight: 800; font-size: 11px;
-      backdrop-filter: blur(10px);
+      box-shadow:none;
+      white-space: nowrap;
     }
     .dot{ width:7px;height:7px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.20); }
     .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap; }
@@ -157,16 +171,17 @@
     }
 
     .btnSmall{
-      height:44px; padding: 0 14px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(255,255,255,.12);
+      height:42px; padding: 0 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
       cursor:pointer;
-      font-weight: 900; font-size: 14px;
+      font-weight: 900; font-size: 13px;
       color:#fff;
       display:inline-flex; align-items:center; gap:10px;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 18px rgba(2,6,23,.20);
+      transition: filter .15s ease;
     }
-    .btnSmall:hover{ background: rgba(255,255,255,.18); }
+    .btnSmall:hover{ filter: brightness(1.08); }
 
     .btnIcon{
       width: 42px;
@@ -179,6 +194,33 @@
       display:inline-block;
     }
     .icon svg{ width:100%; height:100%; display:block; }
+
+    /* === Header Nav Dropdown === */
+    .navDropWrap{ position:relative; display:inline-flex; align-items:center; }
+    .navMenu{
+      position:absolute; top: calc(100% + 8px); left: 0;
+      min-width: 210px; max-width: 220px;
+      background:linear-gradient(135deg, var(--bg1), var(--bg2));
+      border:1px solid rgba(255,255,255,.20);
+      border-radius:12px; padding:6px;
+      box-shadow:0 14px 30px rgba(2,6,23,.35);
+      display:none; z-index:300;
+    }
+    .navMenu.show{ display:block; }
+    .navItem{
+      display:flex;align-items:center;gap:12px;width:100%;
+      padding:9px 10px;border-radius:10px;border:none;background:none;
+      color:rgba(255,255,255,.92);font-family:inherit;font-size:14px;font-weight:600;
+      cursor:pointer;transition:background .15s;text-align:left;
+    }
+    .navItem:hover,.navItem:active{background:rgba(255,255,255,.12);}
+    .navItem.navCurrent{background:rgba(0,160,198,.24);color:#ffffff;}
+    .navItemIcon{
+      width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.10);flex-shrink:0;
+    }
+    .navItem.navCurrent .navItemIcon{background:rgba(0,160,198,.28);}
+    .titleChevron{opacity:.55;flex-shrink:0;margin-left:2px;}
 
     .sectionTitle{ font-weight: 900; font-size: 16px; margin-bottom: 6px; }
     .sectionNote{ color: var(--muted); font-size: 12px; line-height:1.35; }
@@ -417,15 +459,10 @@
     .infoClose:hover{ background: rgba(15,23,42,.06); }
     .infoLogoWrap{
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      padding: 0;
-      display:block;
-      overflow:hidden;
+      padding:0; display:block; overflow:hidden;
     }
     .infoLogo{
-      width:100%;
-      height:auto;
-      display:block;
-      object-fit:cover;
+      width:100%; height:auto; display:block; object-fit:cover;
     }
     .infoBody{
       padding: 20px 20px 22px;
@@ -950,7 +987,35 @@
       <div class="topRow">
         <div class="leftTop">
           <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" alt="Jendela360" loading="eager" fetchpriority="high" />
-          <div class="title">Beranda</div>
+          <div class="navDropWrap" id="navDropWrap">
+            <button class="title" id="navMenuBtn" onclick="toggleNavDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Navigasi halaman">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M10 21v-6h4v6"/></svg>
+              <span>Beranda</span>
+              <svg class="titleChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="navMenu" id="navMenu">
+              <button class="navItem navCurrent" onclick="goPage('dashboard')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M10 21v-6h4v6"/></svg></span>
+                <span>Beranda</span>
+              </button>
+              <button class="navItem" onclick="goPage('ranking')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></span>
+                <span>Peringkat</span>
+              </button>
+              <button class="navItem" onclick="goPage('histori')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+                <span>Pengerjaan</span>
+              </button>
+              <button class="navItem" onclick="goPage('komisi')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+                <span>Komisi</span>
+              </button>
+              <button class="navItem" onclick="goPage('bersih')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M4 5v14a2 2 0 0 0 2 2h14v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg></span>
+                <span>Pendapatan</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="topActions">
@@ -1364,7 +1429,7 @@
     <div class="infoModal">
       <button class="infoClose" onclick="closeInfoModal()">✕</button>
       <div class="infoLogoWrap">
-        <img src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" class="infoLogo" alt="Jendela360" loading="eager" />
+        <img src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" class="infoLogo" alt="Jendela360" />
       </div>
       <div class="infoBody">
         <div class="infoIconRow">
@@ -1559,10 +1624,35 @@
     }
 
     function goPage(page){
+      closeNavDropdown();
       const email = (sessionStorage.getItem(KEY_EMAIL) || "").trim().toLowerCase();
       if (!email){ setMessage("Kamu belum login."); goLogin(); return; }
       showLoading("Membuka halaman...", "Sebentar ya.");
       window.top.location.href = APP_URL + "?page=" + encodeURIComponent(page) + "&email=" + encodeURIComponent(email);
+    }
+
+    function openNavDropdown(){
+      const menu = document.getElementById("navMenu");
+      const btn = document.getElementById("navMenuBtn");
+      if (!menu || !btn) return;
+      menu.classList.add("show");
+      btn.setAttribute("aria-expanded", "true");
+    }
+
+    function closeNavDropdown(){
+      const menu = document.getElementById("navMenu");
+      const btn = document.getElementById("navMenuBtn");
+      if (!menu || !btn) return;
+      menu.classList.remove("show");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleNavDropdown(e){
+      if (e){ e.preventDefault(); e.stopPropagation(); }
+      const menu = document.getElementById("navMenu");
+      if (!menu) return;
+      if (menu.classList.contains("show")) closeNavDropdown();
+      else openNavDropdown();
     }
 
     function goHistoriPengerjaan(){
@@ -2138,6 +2228,19 @@
       const back = document.getElementById("roleModalBack");
       if (!back.classList.contains("show")) return;
       if (e.target === back) closeRoleModal();
+    });
+
+    // close nav dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      const wrap = document.getElementById("navDropWrap");
+      const menu = document.getElementById("navMenu");
+      if (!wrap || !menu || !menu.classList.contains("show")) return;
+      if (!wrap.contains(e.target)) closeNavDropdown();
+    });
+
+    // close nav dropdown on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeNavDropdown();
     });
 
     (function init(){
