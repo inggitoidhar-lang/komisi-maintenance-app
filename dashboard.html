@@ -135,6 +135,7 @@
       .statusPill{ font-size:10px; }
       .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
       .btnIcon{ width:36px; height:38px; }
+      .logoutIconOnly{ height:60px; min-width:60px; }
     }
     .statusPill{
       display:inline-flex; align-items:center; gap:7px;
@@ -169,6 +170,18 @@
       border-color: rgba(255,255,255,.16) !important;
       background: rgba(255,255,255,.08) !important;
     }
+    .pillHasChevron{ display:inline-flex; align-items:center; gap:6px; }
+    .pillHasChevron::after{
+      content:"";
+      width:12px;
+      height:12px;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:12px 12px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      opacity:.9;
+      flex:0 0 auto;
+    }
 
     .btnSmall{
       height:42px; padding: 0 14px; border-radius: 12px;
@@ -188,6 +201,11 @@
       padding: 0;
       justify-content:center;
     }
+    .logoutIconOnly{ height:64px; min-width:64px; padding:0;
+      border:none; background:transparent; color:#fff;
+      cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    }
+    .logoutIconOnly:hover{ opacity:.9; }
     .icon{
       width:18px;
       height:18px;
@@ -458,14 +476,24 @@
     }
     .infoClose:hover{ background: rgba(15,23,42,.06); }
     .infoLogoWrap{
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      padding:0; display:block; overflow:hidden;
+      background: #ffffff;
+      padding: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
     }
     .infoLogo{
-      width:100%; height:auto; display:block; object-fit:cover;
+      width: 220px;
+      max-width: 70%;
+      height: auto;
+      display:block;
+      object-fit:contain;
     }
     .infoBody{
       padding: 20px 20px 22px;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: #ffffff;
     }
     .infoIconRow{
       display:flex;
@@ -477,21 +505,27 @@
       width: 28px;
       height: 28px;
       border-radius: 999px;
-      background: rgba(0,140,180,.12);
-      border: 2px solid rgba(0,140,180,.30);
+      background: rgba(255,255,255,.18);
+      border: 2px solid rgba(255,255,255,.45);
       display:flex;
       align-items:center;
       justify-content:center;
       font-size: 14px;
       font-weight: 900;
-      color: rgba(0,140,180,1);
+      color: #ffffff;
       line-height:1;
       margin-top: 1px;
+    }
+    .infoIcon svg{
+      width: 14px;
+      height: 14px;
+      display:block;
+      color: #ffffff;
     }
     .infoText{
       font-size: 13px;
       font-weight: 700;
-      color: rgba(0,140,180,1);
+      color: #ffffff;
       line-height: 1.55;
       margin: 0;
     }
@@ -502,7 +536,7 @@
       margin-top: 16px;
       font-size: 13px;
       font-weight: 800;
-      color: var(--muted);
+      color: #ffffff;
       cursor:pointer;
       user-select:none;
     }
@@ -510,7 +544,7 @@
       width: 16px;
       height: 16px;
       cursor:pointer;
-      accent-color: var(--brand);
+      accent-color: #ffffff;
     }
 
     .rankTopRow{
@@ -964,16 +998,41 @@
       align-items:center;
       gap:22px;
     }
-    .spinner{
-      width: 50px;
-      height: 50px;
+    .loadingProgress{
+      position: relative;
+      width: min(52vw, 220px);
+      min-width: 180px;
+      height: 10px;
       border-radius: 999px;
-      border: 3px solid rgba(15,23,42,.07);
-      border-top-color: #00aeef;
-      animation: spin 0.75s linear infinite;
+      background: rgba(16,166,202,.18);
+      border: 1px solid #10a6ca;
+      overflow: hidden;
       flex: 0 0 auto;
+      box-shadow: inset 0 0 0 1px rgba(16,166,202,.18);
     }
-    @keyframes spin{ to { transform: rotate(360deg); } }
+    .loadingProgressBar{
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      overflow: hidden;
+      background: rgba(16,166,202,.22);
+    }
+    .loadingProgressBar::before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(16,166,202,.35) 0%, #10a6ca 50%, rgba(16,166,202,.35) 100%);
+      animation: loadingSlide 1.1s linear infinite;
+      box-shadow: 0 0 10px rgba(16,166,202,.35);
+    }
+    @keyframes loadingSlide{
+      0%{ left: -100%; }
+      100%{ left: 100%; }
+    }
     .loadingLogo{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto; }
     .loadingTextWrap{ display:flex; flex-direction:column; gap:3px; align-items:center; text-align:center; }
     .loadingTitle{ font-weight: 900; font-size: 15px; color: rgba(11,18,32,.92); }
@@ -1030,7 +1089,7 @@
             </span>
           </div>
 
-          <button class="btnSmall" onclick="logout()" title="Keluar">
+          <button class="logoutIconOnly" onclick="logout()" title="Keluar" aria-label="Keluar">
             <span class="icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
                 <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1038,7 +1097,6 @@
                 <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span>
-            Keluar
           </button>
         </div>
       </div>
@@ -1404,7 +1462,7 @@
               <path d="M3 18h1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          Cek Ringkasan Pendapatan Bersih
+          Cek Rincian Pendapatan Bersih
         </a>
       </div>
     </div>
@@ -1416,7 +1474,7 @@
   <div class="loadingBack" id="loadingBack" aria-hidden="true">
     <div class="loadingCard" role="status" aria-live="polite">
       <img class="loadingLogo" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" alt="" draggable="false" loading="eager" fetchpriority="high">
-      <div class="spinner" aria-hidden="true"></div>
+      <div class="loadingProgress" aria-hidden="true"><div class="loadingProgressBar"></div></div>
       <div class="loadingTextWrap">
         <div class="loadingTitle" id="loadingTitle">Memuat Perangkat</div>
         <div class="loadingSub" id="loadingSub">Mohon Tunggu</div>
@@ -1429,11 +1487,17 @@
     <div class="infoModal">
       <button class="infoClose" onclick="closeInfoModal()">✕</button>
       <div class="infoLogoWrap">
-        <img src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" class="infoLogo" alt="Jendela360" />
+        <img src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" class="infoLogo" alt="Jendela360" />
       </div>
       <div class="infoBody">
         <div class="infoIconRow">
-          <span class="infoIcon">ℹ</span>
+          <span class="infoIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 17v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 7.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
           <p class="infoText">Aplikasi ini berguna untuk memeriksa pencapaian anggota tim divisi maintenance jendela360. Semua data yang terdapat pada aplikasi ini adalah data pencapaian sejak 1 Desember 2025 (Skema Baru)</p>
         </div>
         <label class="infoCheckLabel">
@@ -1472,7 +1536,7 @@
           <div>
             <div class="labelSmall">Divisi</div>
             <select class="select" id="impersonateDivisi">
-              <option value="">(Otomatis)</option>
+              <option value="">- Pilih Divisi -</option>
               <option value="AC">AC</option>
               <option value="Fixing">Fixing</option>
               <option value="Cleaning">Cleaning</option>
@@ -1483,7 +1547,7 @@
           <div>
             <div class="labelSmall">Pilih Nama</div>
             <select class="select" id="impersonatePerson">
-              <option value="">— Pilih nama —</option>
+              <option value="">- Pilih nama -</option>
             </select>
           </div>
         </div>
@@ -1493,7 +1557,7 @@
         <div class="previewBox" id="impersonatePreview">
           <div class="previewLeft">
             <div class="previewLabel">Pratinjau</div>
-            <div class="previewName" id="previewName">—</div>
+            <div class="previewName" id="previewName">&mdash;</div>
             <div class="previewMeta" id="previewMeta">Mode: Masuk sebagai Staff</div>
           </div>
 
@@ -1527,6 +1591,7 @@
     let VIEW_USER = { email:"", nama:"", posisi:"", divisi:"", status_karyawan:"", role_akun:"" };
 
     let UI_STATE = { mode:"staff", divisi:"", personEmail:"", personName:"" };
+    let CANDIDATE_REQ_SEQ = 0;
     let LISTENERS_BOUND = false;
 
     function safeParse(m){
@@ -1688,7 +1753,14 @@
       if (_msgEl){ _msgEl.textContent = ""; _msgEl.style.display = "none"; }
 
       const divSel = document.getElementById("impersonateDivisi");
-      divSel.value = UI_STATE.divisi || (AUTH_USER.divisi || "");
+      const role = String(AUTH_USER.role_akun || "").trim().toLowerCase();
+      if (role === "leader"){
+        divSel.value = AUTH_USER.divisi || "";
+      } else if (role === "management"){
+        divSel.value = UI_STATE.divisi || "";
+      } else {
+        divSel.value = AUTH_USER.divisi || "";
+      }
 
       document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
 
@@ -1718,7 +1790,7 @@
       const divSel = document.getElementById("impersonateDivisi");
       const personSel = document.getElementById("impersonatePerson");
       if (divSel) divSel.value = "";
-      if (personSel) personSel.innerHTML = '<option value="">— Pilih nama —</option>';
+      if (personSel) personSel.innerHTML = '<option value="">- Pilih nama -</option>';
       UI_STATE.personEmail = "";
       UI_STATE.personName = "";
       syncPreview();
@@ -1785,7 +1857,7 @@
       document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || (AUTH_USER.divisi || "-")}`;
 
       document.getElementById("previewName").innerText =
-        personName && !personName.startsWith("—") ? personName : "— Pilih Nama —";
+        personName && !personName.startsWith("&mdash;") ? personName : "&mdash; Pilih Nama &mdash;";
     }
 
     function resetImpersonationUI(){
@@ -1820,7 +1892,7 @@
 
       UI_STATE.divisi = div;
       UI_STATE.personEmail = personEmail;
-      UI_STATE.personName = (personName && !personName.startsWith("—")) ? personName : "";
+      UI_STATE.personName = (personName && !personName.startsWith("&mdash;")) ? personName : "";
 
       sessionStorage.setItem(KEY_EFFECTIVE_MODE, UI_STATE.mode);
       sessionStorage.setItem(KEY_EFFECTIVE_EMAIL, UI_STATE.personEmail);
@@ -1849,10 +1921,12 @@
       const role = String(AUTH_USER.role_akun || "").trim().toLowerCase();
 
       rolePill.classList.add("pillDisabled");
+      rolePill.classList.remove("pillHasChevron");
       rolePill.onclick = null;
 
       if (role === "leader" || role === "management"){
         rolePill.classList.remove("pillDisabled");
+        rolePill.classList.add("pillHasChevron");
         rolePill.onclick = () => {
           if (role === "leader"){
             document.getElementById("segLeader").style.display = "none";
@@ -1874,50 +1948,94 @@
       const role = String(AUTH_USER.role_akun || "").toLowerCase();
       if (!(role === "leader" || role === "management")) return;
 
-      const mode = UI_STATE.mode;
-      const div = (document.getElementById("impersonateDivisi").value || "").trim();
+      const mode = (UI_STATE.mode === "leader") ? "leader" : "staff";
+      const divSel = document.getElementById("impersonateDivisi");
+      const div = (divSel && divSel.value ? divSel.value : "").trim();
+      const divKey = div.toLowerCase();
       const personSel = document.getElementById("impersonatePerson");
+      if (!personSel) return;
 
-      // reset options keep placeholder
-      const first = personSel.options[0];
+      const reqId = ++CANDIDATE_REQ_SEQ;
+
+      let first = personSel.options[0];
+      if (!first){
+        first = document.createElement("option");
+        first.value = "";
+        first.textContent = "- Pilih nama -";
+      }
       personSel.innerHTML = "";
       personSel.appendChild(first);
 
       const addFallback = (msg) => {
+        if (reqId !== CANDIDATE_REQ_SEQ) return;
         if (personSel.options.length <= 1){
           const opt = document.createElement("option");
           opt.value = "";
-          opt.textContent = msg || "— Tidak ada kandidat —";
+          opt.textContent = msg || "- Tidak ada kandidat -";
           personSel.appendChild(opt);
         }
+      };
+
+      if (role === "management" && mode === "leader" && !divKey){
+        addFallback("- Pilih divisi dulu -");
+        return;
+      }
+
+      const roleMatch = (roleText, wantMode) => {
+        const r = String(roleText || "").trim().toLowerCase();
+        if (wantMode === "leader") return r.includes("leader");
+        return r.includes("staff");
       };
 
       try{
         google.script.run
           .withSuccessHandler((json) => {
-            const res = safeParse(json);
+            if (reqId !== CANDIDATE_REQ_SEQ) return;
+
+            const nowMode = (UI_STATE.mode === "leader") ? "leader" : "staff";
+            const nowDiv = ((document.getElementById("impersonateDivisi")?.value || "").trim().toLowerCase());
+            if (nowMode !== mode || nowDiv !== divKey) return;
+
+            let res;
+            try { res = (typeof json === "string") ? JSON.parse(json) : json; } catch(e) {}
             if (!res || !res.ok || !Array.isArray(res.items)){
-              addFallback("— Kandidat belum tersedia —");
+              addFallback("- Kandidat belum tersedia -");
               return;
             }
-            if (res.items.length === 0){
-              addFallback("— Tidak ada kandidat —");
+
+            let items = res.items
+              .filter(it => it && String(it.email || "").trim())
+              .filter(it => roleMatch(it.role_akun, mode))
+              .filter(it => !divKey || String(it.divisi || "").trim().toLowerCase() === divKey);
+
+            const seen = new Set();
+            items = items.filter(it => {
+              const email = String(it.email || "").trim().toLowerCase();
+              if (!email || seen.has(email)) return false;
+              seen.add(email);
+              return true;
+            });
+
+            items.sort((a,b) => String(a.nama || a.email || "").localeCompare(String(b.nama || b.email || ""), "id-ID"));
+
+            if (!items.length){
+              addFallback(mode === "leader" ? "- Tidak ada leader di divisi ini -" : "- Tidak ada kandidat -");
               return;
             }
-            res.items.forEach(it => {
+
+            items.forEach(it => {
               const opt = document.createElement("option");
               opt.value = String(it.email || "").trim().toLowerCase();
               opt.textContent = String(it.nama || it.email || "-");
               personSel.appendChild(opt);
             });
           })
-          .withFailureHandler(() => addFallback("— Gagal load kandidat —"))
+          .withFailureHandler(() => addFallback("- Gagal load kandidat -"))
           .getImpersonationCandidates(AUTH_USER.email, mode, div);
       }catch(e){
-        addFallback("— Kandidat belum tersedia —");
+        addFallback("- Kandidat belum tersedia -");
       }
     }
-
     /* =========================
        SETTERS (VIEW)
        ========================= */
@@ -2167,7 +2285,14 @@
       LISTENERS_BOUND = true;
 
       document.getElementById("impersonateDivisi").addEventListener("change", () => {
-        UI_STATE.divisi = document.getElementById("impersonateDivisi").value || "";
+        const divSel = document.getElementById("impersonateDivisi");
+        const personSel = document.getElementById("impersonatePerson");
+        UI_STATE.divisi = divSel.value || "";
+        UI_STATE.personEmail = "";
+        UI_STATE.personName = "";
+        if (personSel){
+          personSel.innerHTML = '<option value="">- Pilih nama -</option>';
+        }
         refreshImpersonationCandidates();
         syncPreview();
       });
@@ -2256,3 +2381,7 @@
   </script>
 </body>
 </html>
+
+
+
+
