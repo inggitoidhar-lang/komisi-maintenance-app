@@ -4,6 +4,8 @@ const SHEET_NAME = "DB_Slip_Komisi_Cair";
 
 // Sheet untuk histori pengerjaan
 const SHEET_PENGERJAAN = "DB_List_Order";
+const SHEET_KOMPENSASI_JARAK = "DB_Kompensasi_Jarak";
+const SHEET_KOMPENSASI_JARAK_SPREADSHEET_ID = "11I-e8w4hIOguIuqbxTk0qZURYQnKPol1UJMuCWnZgs8";
 
 // ✅ Sheet untuk database akun (sumber kebenaran user)
 const SHEET_AKUN = "DB_Akun";
@@ -770,6 +772,13 @@ function getImpersonationCandidates(authEmailInput, modeInput, divisiInput) {
     if (authRole === "management") {
       const want = (mode === "leader") ? "leader" : "staff";
 
+      // mode leader wajib pilih divisi dulu
+      if (want === "leader" && !divFilter) {
+        out.ok = true;
+        out.items = [];
+        return JSON.stringify(out);
+      }
+
       let items = allActive
         .filter(u => normalizeRole_(u.role_akun) === want)
         .map(u => ({
@@ -815,7 +824,7 @@ function getKomisiDatasetByEmail(emailInput) {
 
   // ✅ Cache check (90 detik)
   const cache = CacheService.getScriptCache();
-  const cKey = "komisi_" + email;
+  const cKey = "komisi_v2_" + email;
   try {
     const hit = cache.get(cKey);
     if (hit) return hit;
@@ -859,6 +868,11 @@ function getKomisiDatasetByEmail(emailInput) {
     const iBiaya = idxOfHeader_(header, "Biaya Penagihan Jasa");
     const iPersenPel = idxOfHeader_(header, "Persentase Komisi Pelaksana");
     const iKomisiPel = idxOfHeader_(header, "Komisi Pelaksana");
+    const iNamaKolomL = 11; // kolom L (1-based)
+    if (header.length <= iNamaKolomL) {
+      result.message = "Kolom L (Nama) tidak ditemukan di DB_Slip_Komisi_Cair.";
+      return JSON.stringify(result);
+    }
 
     const iStatus = idxOfHeader_(header, "Status Pencairan");
     const iWaktuCair = idxOfHeader_(header, "Waktu Pencairan");
@@ -895,6 +909,7 @@ function getKomisiDatasetByEmail(emailInput) {
         periode,
         tglKerja: toIso_(r[iTglKerja]),
         spk: asText_(r[iSpk]).trim(),
+        nama: asText_(r[iNamaKolomL]).trim(),
         koordinator: asText_(r[iKoord]).trim(),
         posisi: asText_(r[iPosisi]).trim(),
         pekerjaan,
@@ -923,6 +938,168 @@ function getKomisiDatasetByEmail(emailInput) {
   } catch (e) {
     result.message = "Error server: " + (e && e.message ? e.message : e);
     return JSON.stringify(result);
+  }
+}
+
+/***** DATASET KOMPENSASI JARAK (pendapatanbersih.html) *****/
+function getKompensasiJarakDatasetByEmail(emailInput) {
+  const out = {
+    ok: false,
+    message: "",
+    email: "",
+    namaMitra: "",
+    roleAkun: "",
+    posisiMitra: "",
+    divisiMitra: "",
+    statusKaryawan: "",
+    rows: [],
+    filterOptions: { periode: [] },
+    debug: { matchName: "", matchedRows: 0, scannedRows: 0, sampleNames: [], firstRow: null }
+  };
+
+  const email = emailValid_(emailInput);
+  out.email = email || String(emailInput || "").trim().toLowerCase();
+  if (!email) {
+    out.message = "Email tidak valid.";
+    return JSON.stringify(out);
+  }
+
+  const cache = CacheService.getScriptCache();
+
+  try {
+    if (!isEmailAllowed_(email)) {
+      out.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
+      return JSON.stringify(out);
+    }
+
+    const user = getUserByEmail_(email);
+    if (user && user.nama) out.namaMitra = user.nama;
+    if (user) out.roleAkun = user.role_akun || "";
+    if (user) out.posisiMitra = user.posisi || "";
+    if (user) out.divisiMitra = user.divisi || "";
+    if (user) out.statusKaryawan = user.status_karyawan || "";
+
+    const ss = SpreadsheetApp.openById(SHEET_KOMPENSASI_JARAK_SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_KOMPENSASI_JARAK);
+    if (!sh) {
+      out.message = `Sheet "${SHEET_KOMPENSASI_JARAK}" tidak ditemukan.`;
+      return JSON.stringify(out);
+    }
+
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) {
+      out.ok = true;
+      out.rows = [];
+      return JSON.stringify(out);
+    }
+
+    const header = values[0];
+    const data = values.slice(1);
+
+    // Mapping wajib berdasarkan nama header (bukan index hardcoded).
+    const requiredHeaders = {
+      tanggalAktivitas: ["Tanggal Aktivitas"],
+      periode: ["Periode Cut Off", "Periode Cutoff", "Periode Pencairan"],
+      namaMitra: ["Nama Mitra", "Nama"],
+      titikKeberangkatan: ["Titik Keberangkatan"],
+      titikTujuan: ["Titik Tujuan"],
+      totalJarakKm: ["Total Jarak (km)", "Total Jarak"],
+      jarakDiatas20Km: ["Jarak Di Atas 20 km", "Jarak Diatas 20 km", "Jarak Di Atas 20 KM"],
+      nominalKompensasi: ["Total Kompensasi Jarak", "Nominal Kompensasi"]
+    };
+
+    const iTanggalAktivitas = idxOfAnyHeader_(header, requiredHeaders.tanggalAktivitas);
+    const iPeriode = idxOfAnyHeader_(header, requiredHeaders.periode);
+    const iNamaKolomC = idxOfAnyHeader_(header, requiredHeaders.namaMitra);
+    const iTitikKeberangkatan = idxOfAnyHeader_(header, requiredHeaders.titikKeberangkatan);
+    const iTitikTujuan = idxOfAnyHeader_(header, requiredHeaders.titikTujuan);
+    const iTotalJarakKm = idxOfAnyHeader_(header, requiredHeaders.totalJarakKm);
+    const iJarakDiatas20Km = idxOfAnyHeader_(header, requiredHeaders.jarakDiatas20Km);
+    const iNominalKompensasi = idxOfAnyHeader_(header, requiredHeaders.nominalKompensasi);
+
+    const missing = [];
+    if (iTanggalAktivitas === -1) missing.push("Tanggal Aktivitas");
+    if (iPeriode === -1) missing.push("Periode Cut Off");
+    if (iNamaKolomC === -1) missing.push("Nama Mitra");
+    if (iTitikKeberangkatan === -1) missing.push("Titik Keberangkatan");
+    if (iTitikTujuan === -1) missing.push("Titik Tujuan");
+    if (iTotalJarakKm === -1) missing.push("Total Jarak (km)");
+    if (iJarakDiatas20Km === -1) missing.push("Jarak Di Atas 20 km");
+    if (iNominalKompensasi === -1) missing.push("Total Kompensasi Jarak");
+    if (missing.length) {
+      out.message = "Header DB_Kompensasi_Jarak tidak lengkap: " + missing.join(", ");
+      return JSON.stringify(out);
+    }
+
+    // Sesuai request: ambil row berdasarkan nama di kolom C yang sama dengan nama user (DB_Akun).
+    const normName = (v) => String(v || "").trim().toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ");
+    const compact = (s) => String(s || "").replace(/\s+/g, "");
+    const myName = normName((user && user.nama) || "");
+    if (!myName) {
+      out.message = "Nama user tidak ditemukan di DB_Akun.";
+      return JSON.stringify(out);
+    }
+    out.debug.matchName = myName;
+
+    const setPeriode = new Set();
+    const rows = [];
+    const sampleNames = [];
+
+    for (const r of data) {
+      out.debug.scannedRows += 1;
+      const rowName = normName(r[iNamaKolomC]);
+      if (sampleNames.length < 8 && rowName) sampleNames.push(rowName);
+      const isNameMatch = !!rowName && (
+        rowName === myName ||
+        rowName.includes(myName) ||
+        myName.includes(rowName) ||
+        compact(rowName) === compact(myName) ||
+        compact(rowName).includes(compact(myName)) ||
+        compact(myName).includes(compact(rowName))
+      );
+      if (!isNameMatch) continue;
+
+      const periode = asText_(r[iPeriode]).trim();
+      if (periode) setPeriode.add(periode);
+
+      const titikAsal = asText_(r[iTitikKeberangkatan]).trim();
+      const titikTujuan = asText_(r[iTitikTujuan]).trim();
+      const totalJarak = asNumber_(r[iTotalJarakKm]);
+      const jarakDiatas20 = asNumber_(r[iJarakDiatas20Km]);
+      const nominal = asNumber_(r[iNominalKompensasi]);
+      const tglAkt = toIso_(r[iTanggalAktivitas]);
+
+      // buang row semu/summary yang tidak punya data aktivitas jarak
+      if (!tglAkt && !titikAsal && !titikTujuan && !totalJarak && !jarakDiatas20 && !nominal) continue;
+
+      rows.push({
+        periode: periode,
+        tanggalAktivitas: tglAkt,
+        nama: asText_(r[iNamaKolomC]).trim(),
+        titikKeberangkatan: titikAsal,
+        titikTujuan: titikTujuan,
+        totalJarakKm: totalJarak,
+        jarakDiatas20Km: jarakDiatas20,
+        nominalKompensasi: nominal,
+      });
+    }
+
+    rows.sort((a, b) => new Date(b.tanggalAktivitas) - new Date(a.tanggalAktivitas));
+
+    out.ok = true;
+    out.rows = rows;
+    out.filterOptions.periode = Array.from(setPeriode).sort();
+    out.debug.matchedRows = rows.length;
+    out.debug.sampleNames = sampleNames;
+    out.debug.firstRow = rows.length ? rows[0] : null;
+
+    const outStr = JSON.stringify(out);
+    try { cache.put("kompjarak_last_" + email, outStr, 30); } catch (e) {}
+    return outStr;
+
+  } catch (e) {
+    out.message = "Error server: " + (e && e.message ? e.message : e);
+    return JSON.stringify(out);
   }
 }
 
@@ -1021,6 +1198,7 @@ function getPengerjaanDatasetByEmail(emailInput) {
       rows.push({
         penjadwalanPertama: (iJadwal !== -1) ? toIso_(r[iJadwal]) : "",
         spk: (iSpk !== -1) ? asText_(r[iSpk]).trim() : "",
+        nama: pel,
         apartemen: (iApt !== -1) ? asText_(r[iApt]).trim() : "",
         unit: (iUnit !== -1) ? asText_(r[iUnit]).trim() : "",
         pekerjaan: pekerjaan,
