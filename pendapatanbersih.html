@@ -81,6 +81,7 @@
       .statusPill{ font-size:10px; }
       .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
       .btnIcon{ width:36px; height:38px; }
+      .logoutIconOnly{ height:60px; min-width:60px; }
     }
     .statusPill{
       display:inline-flex; align-items:center; gap:7px;
@@ -104,6 +105,18 @@
     .pillClickable:hover{ background: rgba(255,255,255,.18); }
     .pillClickable:active{ transform: translateY(1px); }
     .pillDisabled{ cursor: default !important; opacity: .9; border-color: rgba(255,255,255,.16) !important; background: rgba(255,255,255,.08) !important; }
+    .pillHasChevron{ display:inline-flex; align-items:center; gap:6px; }
+    .pillHasChevron::after{
+      content:"";
+      width:12px;
+      height:12px;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-size:12px 12px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      opacity:.9;
+      flex:0 0 auto;
+    }
     .btnSmall{
       height:42px; padding: 0 14px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,.18); background: linear-gradient(135deg, var(--bg1), var(--bg2));
@@ -119,6 +132,11 @@
       cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#fff;
     }
     .btnIcon:hover{ background: rgba(255,255,255,.18); }
+    .logoutIconOnly{ height:64px; min-width:64px; padding:0;
+      border:none; background:transparent; color:#fff;
+      cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    }
+    .logoutIconOnly:hover{ opacity:.9; }
 
     /* ===== CARDS ===== */
     .card{
@@ -230,9 +248,127 @@
     }
     th.sortActive{ color: #fff !important; background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important; box-shadow: inset 0 -2px 0 rgba(255,255,255,.30); }
     .sortArrow{ width: 10px; height: 10px; opacity:.95; display:inline-block; vertical-align: middle; margin-left: 6px; color: currentColor; }
+    .thLabelWrap{ display:inline-flex; align-items:center; gap:6px; }
+    .thInfo{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:16px; height:16px;
+      border-radius:999px;
+      border:1px solid rgba(0,160,198,.35);
+      background: rgba(0,160,198,.12);
+      color:#10a6ca;
+      font-size:11px;
+      font-weight:900;
+      line-height:1;
+      cursor:help;
+      user-select:none;
+    }
+    .thInfoWrap{
+      position: relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,160,198,.35);
+      background: rgba(0,160,198,.10);
+      cursor: help;
+      user-select:none;
+      flex: 0 0 auto;
+      color: rgba(0,160,198,.95);
+      vertical-align: middle;
+    }
+    .thInfoWrap svg{
+      width: 14px;
+      height: 14px;
+      display:block;
+      color: rgba(0,160,198,.95);
+    }
+    .thTooltip{
+      position:absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: min(320px, 78vw);
+      max-width: 320px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(15,23,42,.95);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      text-transform: none;
+      letter-spacing: 0;
+      box-shadow: 0 18px 40px rgba(0,0,0,.25);
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity .15s ease, transform .15s ease;
+      z-index: 80;
+    }
+    .thTooltip:before{
+      content:"";
+      position:absolute;
+      top:-7px;
+      right: 10px;
+      border-width: 0 8px 8px 8px;
+      border-style: solid;
+      border-color: transparent transparent rgba(15,23,42,.95) transparent;
+    }
+    .thInfoWrap:hover .thTooltip,
+    .thInfoWrap:focus-within .thTooltip{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body[data-view="jarak"] #filterTglFromWrap,
+    body[data-view="jarak"] #filterTglToWrap,
+    body[data-view="jarak"] #filterCetakFromWrap,
+    body[data-view="jarak"] #filterCetakToWrap,
+    body[data-view="jarak"] #filterPekerjaanWrap,
+    body[data-view="jarak"] #filterJadwalFromWrap,
+    body[data-view="jarak"] #filterJadwalToWrap,
+    body[data-view="jarak"] #filterQUnitWrap,
+    body[data-view="jarak"] #filterQSpkWrap{
+      display:none !important;
+    }
+    body[data-view="jarak"] #filterAktFromWrap,
+    body[data-view="jarak"] #filterAktToWrap,
+    body[data-view="jarak"] #filterJarak20Wrap{
+      display:block !important;
+    }
+    body:not([data-view="jarak"]) #filterAktFromWrap,
+    body:not([data-view="jarak"]) #filterAktToWrap,
+    body:not([data-view="jarak"]) #filterJarak20Wrap{
+      display:none !important;
+    }
+    body[data-view="komisi"] #filterTglFromWrap,
+    body[data-view="komisi"] #filterTglToWrap{
+      display:none !important;
+    }
+    body[data-view="komisi"] #filterCetakFromWrap,
+    body[data-view="komisi"] #filterCetakToWrap,
+    body[data-view="komisi"] #filterPekerjaanWrap,
+    body[data-view="komisi"] #filterJadwalFromWrap,
+    body[data-view="komisi"] #filterJadwalToWrap,
+    body[data-view="komisi"] #filterQUnitWrap,
+    body[data-view="komisi"] #filterQSpkWrap{
+      display:block !important;
+    }
     .cellBersih{ background: rgba(0,160,198,.08); font-weight: 900; color: var(--brand); }
     .cellMasuk{ background: rgba(11,128,67,.07); font-weight: 900; color: var(--done); }
     .cellPotong{ background: rgba(176,0,32,.07); font-weight: 900; color: var(--notdone); }
+    /* Komisi tab: pastikan kolom Komisi (paling ujung) hijau */
+    body[data-view="komisi"] .tableWrap tbody td:last-child{
+      background: rgba(11,128,67,.07);
+      color: var(--done);
+      font-weight: 900;
+    }
 
     /* ===== RINCIAN HEADER + TOGGLE BUTTONS ===== */
     .rincianHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
@@ -249,7 +385,7 @@
     .toggleBtn:hover{ background: var(--soft); }
     .toggleBtn.tv-bersih.active{ border-color: rgba(0,160,198,.55); background: rgba(0,160,198,.12); color: var(--brand); }
     .toggleBtn.tv-pajak.active{ border-color: rgba(176,0,32,.45); background: rgba(176,0,32,.10); color: var(--notdone); }
-    .toggleBtn.tv-komisi.active{ border-color: rgba(0,160,198,.55); background: rgba(0,160,198,.12); color: var(--brand); }
+    .toggleBtn.tv-komisi.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
     .toggleBtn.tv-jarak.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
     .toggleBtn.tv-bonus.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
     .toggleBtn.tv-penambah.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
@@ -267,8 +403,41 @@
       padding: 28px 24px 22px; display:flex; flex-direction:column; align-items:center; gap:22px;
     }
     .loadingLogo{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto; }
-    .spinner{ width: 50px; height: 50px; border-radius: 999px; border: 3px solid rgba(15,23,42,.07); border-top-color: #00aeef; animation: spin 0.75s linear infinite; flex: 0 0 auto; }
-    @keyframes spin{ to { transform: rotate(360deg); } }
+    .loadingProgress{
+      position: relative;
+      width: min(52vw, 220px);
+      min-width: 180px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(16,166,202,.18);
+      border: 1px solid #10a6ca;
+      overflow: hidden;
+      flex: 0 0 auto;
+      box-shadow: inset 0 0 0 1px rgba(16,166,202,.18);
+    }
+    .loadingProgressBar{
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      overflow: hidden;
+      background: rgba(16,166,202,.22);
+    }
+    .loadingProgressBar::before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(16,166,202,.35) 0%, #10a6ca 50%, rgba(16,166,202,.35) 100%);
+      animation: loadingSlide 1.1s linear infinite;
+      box-shadow: 0 0 10px rgba(16,166,202,.35);
+    }
+    @keyframes loadingSlide{
+      0%{ left: -100%; }
+      100%{ left: 100%; }
+    }
     .loadingTextWrap{ display:flex; flex-direction:column; gap:3px; align-items:center; text-align:center; }
     .loadingTitle{ font-weight: 900; font-size: 15px; color: rgba(11,18,32,.92); }
     .loadingSub{ font-weight: 800; font-size: 12px; color: rgba(11,18,32,.55); line-height:1.4; }
@@ -379,13 +548,12 @@
             </span>
           </div>
 
-          <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
+          <button class="logoutIconOnly" onclick="logout()" title="Keluar" aria-label="Keluar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M14 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Keluar
           </button>
         </div>
       </div>
@@ -472,13 +640,33 @@
     <div class="card" id="filterCard" style="display:none;">
       <div style="font-weight:800; font-size:16px;">Filter</div>
       <div class="filterGrid">
-        <div>
+        <div id="filterPeriodeWrap">
           <label>Periode Pencairan</label>
           <div id="periodeBox" class="checkList"></div>
         </div>
-        <div><label>Tanggal (Awal)</label><input type="date" id="tglFrom" /></div>
-        <div><label>Tanggal (Akhir)</label><input type="date" id="tglTo" /></div>
-        <div style="display:flex; align-items:end;">
+        <div id="filterPekerjaanWrap" style="display:none;">
+          <label>Pekerjaan</label>
+          <div id="pekerjaanBox" class="checkList"></div>
+        </div>
+        <div id="filterCetakFromWrap" style="display:none;"><label>Cetak Invoice (Awal)</label><input type="date" id="cetakFrom" /></div>
+        <div id="filterCetakToWrap" style="display:none;"><label>Cetak Invoice (Akhir)</label><input type="date" id="cetakTo" /></div>
+        <div id="filterJadwalFromWrap" style="display:none;"><label>Penjadwalan Pertama (Awal)</label><input type="date" id="jadwalFrom" /></div>
+        <div id="filterJadwalToWrap" style="display:none;"><label>Penjadwalan Pertama (Akhir)</label><input type="date" id="jadwalTo" /></div>
+        <div id="filterQUnitWrap" style="display:none;"><label>Cari Kode Unit</label><input type="text" id="qUnit" placeholder="contoh: SSRB024" /></div>
+        <div id="filterQSpkWrap" style="display:none;"><label>Cari No. SPK</label><input type="text" id="qSpk" placeholder="contoh: A26JAN2731" /></div>
+        <div id="filterTglFromWrap"><label>Waktu Pencairan (Awal)</label><input type="date" id="tglFrom" /></div>
+        <div id="filterTglToWrap"><label>Waktu Pencairan (Akhir)</label><input type="date" id="tglTo" /></div>
+        <div id="filterAktFromWrap"><label>Aktivitas (Awal)</label><input type="date" id="aktivitasFrom" /></div>
+        <div id="filterAktToWrap"><label>Aktivitas (Akhir)</label><input type="date" id="aktivitasTo" /></div>
+        <div id="filterJarak20Wrap" style="display:none;">
+          <label>Jarak di atas 20 km</label>
+          <select id="jarak20Filter" class="rmSelect" style="height:48px;">
+            <option value="all">Semua</option>
+            <option value="yes">Ya</option>
+            <option value="no">Tidak</option>
+          </select>
+        </div>
+        <div id="filterResetWrap" style="display:flex; align-items:end;">
           <button class="btnReset" onclick="clearFilters()" title="Reset Filter" aria-label="Reset Filter">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M21 12a9 9 0 1 1-3-6.7" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
@@ -497,11 +685,11 @@
           <div style="font-weight:800; font-size:16px;">Rincian</div>
           <div class="toggleRow">
             <button class="toggleBtn tv-bersih active" id="vBtn_bersih" onclick="setView('bersih')">Pendapatan Bersih</button>
-            <button class="toggleBtn tv-pajak" id="vBtn_pajak" onclick="setView('pajak')">Potongan Pajak</button>
             <button class="toggleBtn tv-komisi" id="vBtn_komisi" onclick="setView('komisi')">Komisi</button>
-            <button class="toggleBtn tv-jarak" id="vBtn_jarak" onclick="setView('jarak')">Kompensasi Jarak Jauh</button>
             <button class="toggleBtn tv-bonus" id="vBtn_bonus" onclick="setView('bonus')">Bonus</button>
+            <button class="toggleBtn tv-jarak" id="vBtn_jarak" onclick="setView('jarak')">Kompensasi Jarak Jauh</button>
             <button class="toggleBtn tv-penambah" id="vBtn_penambah" onclick="setView('penambah')">Penambah lain</button>
+            <button class="toggleBtn tv-pajak" id="vBtn_pajak" onclick="setView('pajak')">Potongan Pajak</button>
             <button class="toggleBtn tv-pengurang" id="vBtn_pengurang" onclick="setView('pengurang')">Pengurang lain</button>
           </div>
         </div>
@@ -544,8 +732,8 @@
         <div class="formGrid">
           <div>
             <div class="labelSmall">Divisi</div>
-            <select class="rmSelect" id="impersonateDivisi" onchange="syncPreview()">
-              <option value="">(Otomatis)</option>
+            <select class="rmSelect" id="impersonateDivisi" onchange="handleDivisiChange()">
+              <option value="">- Pilih Divisi -</option>
               <option value="AC">AC</option>
               <option value="Fixing">Fixing</option>
               <option value="Cleaning">Cleaning</option>
@@ -555,7 +743,7 @@
           <div>
             <div class="labelSmall">Pilih Nama</div>
             <select class="rmSelect" id="impersonatePerson" onchange="syncPreview()">
-              <option value="">— Pilih nama —</option>
+              <option value="">- Pilih nama -</option>
             </select>
           </div>
         </div>
@@ -563,7 +751,7 @@
         <div class="previewBox" id="impersonatePreview">
           <div class="previewLeft">
             <div class="previewLabel">Pratinjau</div>
-            <div class="previewName" id="previewName">—</div>
+            <div class="previewName" id="previewName">&mdash;</div>
             <div class="previewMeta" id="previewMeta">Mode: Masuk sebagai Staff</div>
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -584,7 +772,7 @@
   <div class="loadingBack" id="loadingBack" aria-hidden="true">
     <div class="loadingCard" role="status" aria-live="polite">
       <img class="loadingLogo" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" alt="" draggable="false" loading="eager" fetchpriority="high">
-      <div class="spinner" aria-hidden="true"></div>
+      <div class="loadingProgress" aria-hidden="true"><div class="loadingProgressBar"></div></div>
       <div class="loadingTextWrap">
         <div class="loadingTitle" id="loadingTitle">Memuat Data</div>
         <div class="loadingSub" id="loadingSub">Mohon Tunggu</div>
@@ -599,6 +787,9 @@
     let EMAIL = "";
     let ALL_ROWS = [];
     let FILTERED_ROWS = [];
+    let PERIODE_OPTIONS = { slip: [], jarak: [] };
+    let PEKERJAAN_OPTIONS = { slip: [] };
+    let JARAK_DEBUG = { matchName: "", matchedRows: 0, scannedRows: 0, sampleNames: [], firstRow: null };
     let isLoadedOnce = false;
     let SORT_KEY = "tanggal";
     let SORT_DIR = "desc";
@@ -621,18 +812,28 @@
         { key:"potonganPajak",    label:"Potongan Pajak",      cls:"cellPotong", fmt:"currency" },
       ],
       komisi: [
-        { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"periode",          label:"Periode Pencairan",   cls:"" },
+        { key:"nama",             label:"Nama",                cls:"" },
+        { key:"tglCetak",         label:"Cetak Invoice",       cls:"", fmt:"date" },
+        { key:"tglKerja",         label:"Penjadwalan Pertama", cls:"", fmt:"date" },
         { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"unit",             label:"Kode Unit",           cls:"" },
+        { key:"apartemen",        label:"Nama Apartemen",      cls:"" },
+        { key:"pekerjaan",        label:"Pekerjaan",           cls:"" },
+        { key:"posisi",           label:"Posisi",              cls:"" },
         { key:"biayaJasa",        label:"Biaya Jasa",          cls:"", fmt:"currency" },
         { key:"persenKomisi",     label:"% Komisi",            cls:"", fmt:"pct" },
-        { key:"komisi",           label:"Komisi",              cls:"cellBersih", fmt:"currency" },
+        { key:"komisi",           label:"Komisi",              cls:"cellMasuk", fmt:"currency" },
       ],
       jarak: [
-        { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"kompensasiJarakJauh", label:"Kompensasi Jarak Jauh", cls:"cellMasuk", fmt:"currency" },
+        { key:"periode",            label:"Periode Pencairan",      cls:"" },
+        { key:"tanggalAktivitas",   label:"Tanggal Aktivitas",      cls:"", fmt:"date" },
+        { key:"nama",               label:"Nama",                   cls:"" },
+        { key:"titikKeberangkatan", label:"Titik Keberangkatan",    cls:"" },
+        { key:"titikTujuan",        label:"Titik Tujuan",           cls:"" },
+        { key:"totalJarakKm",       label:"Total Jarak (km)",       cls:"", fmt:"km" },
+        { key:"jarakDiatas20Km",    label:"Jarak Diatas 20 KM",     cls:"", fmt:"km" },
+        { key:"nominalKompensasi",  label:"Nominal Kompensasi",     cls:"cellMasuk", fmt:"currency", info:"Kompensasi Jarak Jauh dihitung berdasarkan Jarak diatas 20 Km x Rp 1.000" },
       ],
       bonus: [
         { key:"periode",          label:"Periode",             cls:"" },
@@ -671,6 +872,12 @@
       const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
       return fromTpl || fromSession;
     }
+    function getEffectiveEmail(authEmail){
+      const mode = (sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "").trim().toLowerCase();
+      const eff = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim().toLowerCase();
+      if (eff && (mode === "staff" || mode === "leader")) return eff;
+      return (authEmail || "").trim().toLowerCase();
+    }
     function safeParseJson(v){
       if (typeof v === "object" && v !== null) return v;
       if (typeof v !== "string") return null;
@@ -679,7 +886,8 @@
     function escapeHtml(str){
       return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
-    function formatRp(n){ return "Rp " + new Intl.NumberFormat('id-ID').format(Number(n) || 0); }
+    function formatNumber(n){ return new Intl.NumberFormat('id-ID').format(Number(n) || 0); }
+    function formatRp(n){ return "Rp " + formatNumber(n); }
     function formatDateLong(d){
       if (!d) return "";
       const dt = new Date(d);
@@ -696,6 +904,12 @@
       if (n > 1 && n <= 100) return Math.round(n) + "%";
       return n + "%";
     }
+    function isStatusCair(v){
+      const s = String(v || "").trim().toLowerCase();
+      if (!s) return false;
+      if (s.includes("belum")) return false;
+      return s.includes("cair") || s.includes("paid");
+    }
     function setMessage(t){ document.getElementById('msg').innerText = t || ""; }
 
     /* ===== SORT ===== */
@@ -708,6 +922,7 @@
       const cols = VIEW_COLS[VIEW] || [];
       const col  = cols.find(c => c.key === key);
       if (col && col.fmt === "currency") return Number(row[key]) || 0;
+      if (col && col.fmt === "km") return Number(row[key]) || 0;
       if (col && col.fmt === "date"){ const d = new Date(row[key]); return isNaN(d) ? 0 : d.getTime(); }
       return String(row[key] || "").toLowerCase().trim();
     }
@@ -732,13 +947,82 @@
     /* ===== VIEW TOGGLE ===== */
     function setView(v){
       VIEW = v;
-      ["bersih","pajak","komisi","jarak","bonus","penambah","pengurang"].forEach(k => {
+      document.body.setAttribute("data-view", VIEW);
+      ["bersih","komisi","bonus","jarak","penambah","pajak","pengurang"].forEach(k => {
         const btn = document.getElementById("vBtn_" + k);
         if (btn) btn.classList.toggle("active", k === v);
       });
+      const isKomisi = v === "komisi";
+      const srcPeriode = (v === "jarak") ? PERIODE_OPTIONS.jarak : PERIODE_OPTIONS.slip;
+      renderCheckboxList("periodeBox", srcPeriode, "periode");
+      renderCheckboxList("pekerjaanBox", isKomisi ? PEKERJAAN_OPTIONS.slip : [], "pekerjaan");
+      syncFilterVisibilityByView();
       const cols = VIEW_COLS[v] || [];
       if (cols.length){ SORT_KEY = cols[0].key; SORT_DIR = "desc"; }
       renderTable(FILTERED_ROWS);
+      applyFilters();
+      if (v === "jarak") setMessage("");
+    }
+
+    function syncFilterVisibilityByView(){
+      const isJarak = VIEW === "jarak";
+      const isKomisi = VIEW === "komisi";
+      const setVisible = (id, visible) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.hidden = !visible;
+        if (id === "filterResetWrap") {
+          el.style.display = visible ? "flex" : "none";
+        } else if (id === "filterJarak20Wrap") {
+          el.style.display = visible ? "" : "none";
+        } else {
+          el.style.display = visible ? "" : "none";
+        }
+      };
+
+      setVisible("filterPeriodeWrap", true);
+      setVisible("filterResetWrap", true);
+      setVisible("filterTglFromWrap", !isJarak && !isKomisi);
+      setVisible("filterTglToWrap", !isJarak && !isKomisi);
+      setVisible("filterAktFromWrap", isJarak);
+      setVisible("filterAktToWrap", isJarak);
+      setVisible("filterJarak20Wrap", isJarak);
+      setVisible("filterPekerjaanWrap", isKomisi);
+      setVisible("filterCetakFromWrap", isKomisi);
+      setVisible("filterCetakToWrap", isKomisi);
+      setVisible("filterJadwalFromWrap", isKomisi);
+      setVisible("filterJadwalToWrap", isKomisi);
+      setVisible("filterQUnitWrap", isKomisi);
+      setVisible("filterQSpkWrap", isKomisi);
+
+      if (isJarak) {
+        document.getElementById("tglFrom").value = "";
+        document.getElementById("tglTo").value = "";
+        document.getElementById("cetakFrom").value = "";
+        document.getElementById("cetakTo").value = "";
+        document.getElementById("jadwalFrom").value = "";
+        document.getElementById("jadwalTo").value = "";
+        document.getElementById("qUnit").value = "";
+        document.getElementById("qSpk").value = "";
+        clearChecked("pekerjaanBox");
+      } else if (isKomisi) {
+        document.getElementById("tglFrom").value = "";
+        document.getElementById("tglTo").value = "";
+        document.getElementById("aktivitasFrom").value = "";
+        document.getElementById("aktivitasTo").value = "";
+        document.getElementById("jarak20Filter").value = "all";
+      } else {
+        document.getElementById("aktivitasFrom").value = "";
+        document.getElementById("aktivitasTo").value = "";
+        document.getElementById("jarak20Filter").value = "all";
+        document.getElementById("cetakFrom").value = "";
+        document.getElementById("cetakTo").value = "";
+        document.getElementById("jadwalFrom").value = "";
+        document.getElementById("jadwalTo").value = "";
+        document.getElementById("qUnit").value = "";
+        document.getElementById("qSpk").value = "";
+        clearChecked("pekerjaanBox");
+      }
     }
 
     /* ===== RENDER TABLE ===== */
@@ -747,15 +1031,24 @@
       const tbody = document.getElementById('tbody');
       const cols = VIEW_COLS[VIEW] || [];
 
-      thead.innerHTML = "<tr>" + cols.map(c =>
-        `<th data-key="${c.key}" onclick="sortBy('${c.key}')">${escapeHtml(c.label)} <span class="sortArrow">${SORT_KEY === c.key ? arrowSvg(SORT_DIR) : ""}</span></th>`
-      ).join("") + "</tr>";
+      thead.innerHTML = "<tr>" + cols.map(c => {
+        const info = c.info
+          ? ` <span class="thInfoWrap" tabindex="0" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" aria-label="Info"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 10v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 7.25h.01" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg><span class="thTooltip">${escapeHtml(c.info)}</span></span>`
+          : "";
+        return `<th data-key="${c.key}" onclick="sortBy('${c.key}')"><span class="thLabelWrap">${escapeHtml(c.label)}${info}</span><span class="sortArrow">${SORT_KEY === c.key ? arrowSvg(SORT_DIR) : ""}</span></th>`;
+      }).join("") + "</tr>";
       const activeTh = thead.querySelector(`th[data-key="${SORT_KEY}"]`);
       if (activeTh) activeTh.classList.add("sortActive");
 
       if (!rows || rows.length === 0){
         tbody.innerHTML = `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--muted);padding:24px;">Tidak ada data sesuai filter.</td></tr>`;
-        document.getElementById('countInfo').innerText = "0 Baris";
+        if (VIEW === "jarak"){
+          document.getElementById('countInfo').innerText = "0 Baris | Total Nominal: Rp 0";
+        } else if (VIEW === "komisi"){
+          document.getElementById('countInfo').innerText = "0 Baris | Total Nominal: Rp 0";
+        } else {
+          document.getElementById('countInfo').innerText = "0 Baris";
+        }
         return;
       }
 
@@ -763,6 +1056,7 @@
         const cells = cols.map(c => {
           let val = r[c.key], display = "";
           if (c.fmt === "currency") display = (val !== undefined && val !== null && val !== "") ? formatRp(val) : "-";
+          else if (c.fmt === "km") display = (val !== undefined && val !== null && val !== "") ? `${formatNumber(val)} km` : "-";
           else if (c.fmt === "date") display = formatDateLong(val);
           else if (c.fmt === "pct") display = formatPct(val);
           else display = escapeHtml(val !== undefined && val !== null ? val : "");
@@ -771,7 +1065,15 @@
         return `<tr>${cells}</tr>`;
       }).join("");
 
-      document.getElementById('countInfo').innerText = `${rows.length} Baris`;
+      if (VIEW === "jarak"){
+        const totalNominal = rows.reduce((sum, r) => sum + (Number(r && r.nominalKompensasi) || 0), 0);
+        document.getElementById('countInfo').innerText = `${rows.length} Baris | Total Nominal: ${formatRp(totalNominal)}`;
+      } else if (VIEW === "komisi"){
+        const totalNominal = rows.reduce((sum, r) => sum + (Number(r && r.komisi) || 0), 0);
+        document.getElementById('countInfo').innerText = `${rows.length} Baris | Total Nominal: ${formatRp(totalNominal)}`;
+      } else {
+        document.getElementById('countInfo').innerText = `${rows.length} Baris`;
+      }
     }
 
     /* ===== TOTALS ===== */
@@ -782,6 +1084,12 @@
         potong += Number(r.potongan)        || 0;
         bersih += Number(r.pendapatanBersih) || 0;
       });
+      if (VIEW === "komisi") {
+        const totalKompensasi = (ALL_ROWS || [])
+          .filter(r => r && r._source === "jarak")
+          .reduce((sum, r) => sum + (Number(r.nominalKompensasi) || 0), 0);
+        masuk += totalKompensasi;
+      }
       document.getElementById('totalBersih').innerText = formatRp(bersih);
       document.getElementById('totalMasuk').innerText  = formatRp(masuk);
       document.getElementById('totalPotong').innerText = formatRp(potong);
@@ -811,95 +1119,377 @@
       if (!ALL_ROWS || ALL_ROWS.length === 0){ renderTotals([]); renderTable([]); return; }
       const tglFrom = document.getElementById('tglFrom').value;
       const tglTo   = document.getElementById('tglTo').value;
+      const aktivitasFrom = document.getElementById('aktivitasFrom').value;
+      const aktivitasTo   = document.getElementById('aktivitasTo').value;
+      const cetakFrom = document.getElementById('cetakFrom').value;
+      const cetakTo   = document.getElementById('cetakTo').value;
+      const jadwalFrom = document.getElementById('jadwalFrom').value;
+      const jadwalTo   = document.getElementById('jadwalTo').value;
+      const qUnit = String(document.getElementById('qUnit').value || "").trim().toLowerCase();
+      const qSpk = String(document.getElementById('qSpk').value || "").trim().toLowerCase();
+      const jarak20Filter = (document.getElementById('jarak20Filter')?.value || "all").toLowerCase();
       const periodePicked = getCheckedValues("periodeBox");
+      const pekerjaanPicked = getCheckedValues("pekerjaanBox");
       const fromD = tglFrom ? new Date(tglFrom + "T00:00:00") : null;
       const toD   = tglTo   ? new Date(tglTo   + "T23:59:59") : null;
-      FILTERED_ROWS = ALL_ROWS.filter(r => {
+      const fromAktD = aktivitasFrom ? new Date(aktivitasFrom + "T00:00:00") : null;
+      const toAktD   = aktivitasTo   ? new Date(aktivitasTo   + "T23:59:59") : null;
+      const fromCetakD = cetakFrom ? new Date(cetakFrom + "T00:00:00") : null;
+      const toCetakD   = cetakTo   ? new Date(cetakTo   + "T23:59:59") : null;
+      const fromJadwalD = jadwalFrom ? new Date(jadwalFrom + "T00:00:00") : null;
+      const toJadwalD   = jadwalTo   ? new Date(jadwalTo   + "T23:59:59") : null;
+
+      const baseRows = ALL_ROWS.filter(r => {
+        if (VIEW === "jarak") return r._source === "jarak";
+        if (VIEW === "komisi") return r._source === "slip" && isStatusCair(r.statusPencairan);
+        return r._source !== "jarak";
+      });
+
+      FILTERED_ROWS = baseRows.filter(r => {
         if (periodePicked.length > 0 && !periodePicked.includes(r.periode || "")) return false;
-        if (fromD || toD){
-          const d = new Date(r.tanggal);
-          if (isNaN(d)) return false;
-          if (fromD && d < fromD) return false;
-          if (toD   && d > toD)   return false;
+        if (VIEW === "jarak") {
+          if (fromAktD || toAktD){
+            const dAkt = new Date(r.tanggalAktivitas);
+            if (isNaN(dAkt)) return false;
+            if (fromAktD && dAkt < fromAktD) return false;
+            if (toAktD   && dAkt > toAktD)   return false;
+          }
+          const jarak20 = Number(r.jarakDiatas20Km) || 0;
+          if (jarak20Filter === "yes" && jarak20 <= 0) return false;
+          if (jarak20Filter === "no" && jarak20 > 0) return false;
+        } else if (VIEW === "komisi") {
+          if (pekerjaanPicked.length > 0 && !pekerjaanPicked.includes(r.pekerjaan || "")) return false;
+          if (fromCetakD || toCetakD){
+            const dCetak = new Date(r.tglCetak);
+            if (isNaN(dCetak)) return false;
+            if (fromCetakD && dCetak < fromCetakD) return false;
+            if (toCetakD   && dCetak > toCetakD)   return false;
+          }
+          if (fromJadwalD || toJadwalD){
+            const dJadwal = new Date(r.tglKerja);
+            if (isNaN(dJadwal)) return false;
+            if (fromJadwalD && dJadwal < fromJadwalD) return false;
+            if (toJadwalD   && dJadwal > toJadwalD)   return false;
+          }
+          if (qUnit && !String(r.unit || "").toLowerCase().includes(qUnit)) return false;
+          if (qSpk && !String(r.spk || "").toLowerCase().includes(qSpk)) return false;
+        } else {
+          if (fromD || toD){
+            const d = new Date(r.tanggal);
+            if (isNaN(d)) return false;
+            if (fromD && d < fromD) return false;
+            if (toD   && d > toD)   return false;
+          }
         }
         return true;
       });
-      applySorting(); renderTotals(FILTERED_ROWS); renderTable(FILTERED_ROWS); setMessage("");
+      applySorting(); renderTotals(FILTERED_ROWS); renderTable(FILTERED_ROWS);
+      if (VIEW === "jarak") {
+        const totalJarakRows = ALL_ROWS.filter(r => r._source === "jarak").length;
+        if (totalJarakRows === 0) {
+          const n = JARAK_DEBUG.matchName || "-";
+          const scanned = Number(JARAK_DEBUG.scannedRows || 0);
+          const samples = Array.isArray(JARAK_DEBUG.sampleNames) ? JARAK_DEBUG.sampleNames.slice(0, 5).join(", ") : "";
+          setMessage(`Data Kompensasi Jarak tidak ditemukan untuk nama: ${n}. Row dibaca: ${scanned}. Contoh nama kolom C: ${samples || "-"}`);
+          return;
+        }
+        setMessage("");
+        return;
+      }
+      setMessage("");
     }
     function clearFilters(){
       document.getElementById('tglFrom').value = "";
       document.getElementById('tglTo').value   = "";
+      document.getElementById('aktivitasFrom').value = "";
+      document.getElementById('aktivitasTo').value   = "";
+      document.getElementById('cetakFrom').value = "";
+      document.getElementById('cetakTo').value = "";
+      document.getElementById('jadwalFrom').value = "";
+      document.getElementById('jadwalTo').value = "";
+      document.getElementById('qUnit').value = "";
+      document.getElementById('qSpk').value = "";
+      const jarak20El = document.getElementById('jarak20Filter');
+      if (jarak20El) jarak20El.value = "all";
       clearChecked("periodeBox");
+      clearChecked("pekerjaanBox");
       applyFilters();
     }
     function bindAutoApply(){
-      ["tglFrom","tglTo"].forEach(id => {
+      ["tglFrom","tglTo","aktivitasFrom","aktivitasTo","jarak20Filter","cetakFrom","cetakTo","jadwalFrom","jadwalTo"].forEach(id => {
         document.getElementById(id).addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+      });
+      ["qUnit","qSpk"].forEach(id => {
+        document.getElementById(id).addEventListener("input", () => { if (isLoadedOnce) applyFilters(); });
+      });
+    }
+    function normalizeIsoDate(v){
+      const s = String(v || "").trim();
+      if (!s) return "";
+      const m = s.match(/^\d{4}-\d{2}-\d{2}/);
+      if (m) return m[0];
+      const d = new Date(s);
+      return isNaN(d) ? "" : d.toISOString().slice(0, 10);
+    }
+    function getMinMaxPencairan(rows){
+      let min = "", max = "";
+      (rows || []).forEach(r => {
+        const d = normalizeIsoDate(r && r.waktuPencairan);
+        if (!d) return;
+        if (!min || d < min) min = d;
+        if (!max || d > max) max = d;
+      });
+      return { min, max };
+    }
+    function getMinMaxAktivitas(rows){
+      let min = "", max = "";
+      (rows || []).forEach(r => {
+        const d = normalizeIsoDate(r && r.tanggalAktivitas);
+        if (!d) return;
+        if (!min || d < min) min = d;
+        if (!max || d > max) max = d;
+      });
+      return { min, max };
+    }
+    function getMinMaxByKey(rows, key){
+      let min = "", max = "";
+      (rows || []).forEach(r => {
+        const d = normalizeIsoDate(r && r[key]);
+        if (!d) return;
+        if (!min || d < min) min = d;
+        if (!max || d > max) max = d;
+      });
+      return { min, max };
+    }
+    function mapSlipRowsToCurrentView(rows){
+      return (rows || []).map(r => {
+        const biaya = Number(r && r.biaya) || 0;
+        const komisi = Number(r && r.komisiPelaksana) || 0;
+        return {
+          _source: "slip",
+          periode: (r && r.periode) || "",
+          tanggal: normalizeIsoDate(r && r.waktuPencairan),
+          tglCetak: normalizeIsoDate(r && r.tglCetak),
+          tglKerja: normalizeIsoDate(r && r.tglKerja),
+          spk: (r && r.spk) || "",
+          nama: (r && r.nama) || "",
+          unit: (r && r.unit) || "",
+          apartemen: (r && r.apartemen) || "",
+          pekerjaan: (r && r.pekerjaan) || "",
+          posisi: (r && r.posisi) || "",
+          statusPencairan: (r && r.statusPencairan) || "",
+          pemasukan: komisi,
+          potongan: 0,
+          pendapatanBersih: komisi,
+          biayaJasa: biaya,
+          persenKomisi: (r && r.persenPelaksana) || "",
+          komisi: komisi,
+          potonganPajak: 0,
+          kompensasiJarakJauh: 0,
+          bonus: 0,
+          penambahLain: 0,
+          keteranganPenambah: "",
+          pengurangLain: 0,
+          keteranganPengurang: ""
+        };
+      });
+    }
+    function mapKompensasiRowsToCurrentView(rows){
+      return (rows || []).map(r => {
+        const totalJarakRaw = r
+          ? (r.totalJarakKm ?? r.totalJarak ?? r.total_jarak_km ?? r["Total Jarak (km)"] ?? 0)
+          : 0;
+        const jarakDiatas20Raw = r
+          ? (r.jarakDiatas20Km ?? r.jarakDiatas20 ?? r.jarak_20_km ?? r["Jarak Di Atas 20 km"] ?? 0)
+          : 0;
+        const nominalRaw = r
+          ? (r.nominalKompensasi ?? r.totalKompensasiJarak ?? r.kompensasiJarak ?? r["Total Kompensasi Jarak"] ?? 0)
+          : 0;
+
+        const totalJarak = Number(totalJarakRaw);
+        const jarakDiatas20 = Number(jarakDiatas20Raw);
+        const nominal = Number(nominalRaw);
+        return {
+          _source: "jarak",
+          periode: (r && r.periode) ?? "",
+          tanggalAktivitas: normalizeIsoDate(r && r.tanggalAktivitas),
+          nama: (r && (r.nama ?? r.namaMitra ?? r["Nama Mitra"])) ?? "",
+          titikKeberangkatan: (r && r.titikKeberangkatan) ?? "",
+          titikTujuan: (r && r.titikTujuan) ?? "",
+          totalJarakKm: Number.isFinite(totalJarak) ? totalJarak : 0,
+          jarakDiatas20Km: Number.isFinite(jarakDiatas20) ? jarakDiatas20 : 0,
+          nominalKompensasi: Number.isFinite(nominal) ? nominal : 0,
+
+          // keep compatibility with summary logic in page
+          pemasukan: Number.isFinite(nominal) ? nominal : 0,
+          potongan: 0,
+          pendapatanBersih: 0,
+        };
       });
     }
 
     /* ===== LOAD DATA ===== */
-    function startLoad(email){
+    function startLoad(email, authEmail){
+      const realAuthEmail = (authEmail || getEmail() || "").trim().toLowerCase();
       document.getElementById("gateCard").style.display   = "none";
       document.getElementById("mainCard").style.display   = "";
       document.getElementById("filterCard").style.display = "";
       document.getElementById("tableCard").style.display  = "";
-      document.getElementById("loginEmailPill").innerText = email || "-";
+      document.getElementById("loginEmailPill").innerText = realAuthEmail || email || "-";
       document.getElementById("loginRolePill").innerText  = "Pengguna";
       showLoading();
       const cols = VIEW_COLS[VIEW] || [];
-      document.getElementById('tbody').innerHTML = `<tr><td colspan="${cols.length || 4}">Loading...</td></tr>`;
+      document.getElementById("tbody").innerHTML = `<tr><td colspan="${cols.length || 4}">Loading...</td></tr>`;
 
-      /* ── MOCK DATA (sementara, backend belum ada) ── */
-      const MOCK_RES = {
-        ok: true,
-        namaMitra: "Ahmad Rizki",
-        email: email,
-        roleAkun: "staff",
-        posisiMitra: "Teknisi Senior",
-        divisiMitra: "AC",
-        statusKaryawan: "Aktif Tetap",
-        filterOptions: {
-          periode: ["Februari 2026", "Januari 2026", "Desember 2025", "November 2025"]
-        },
-        rows: [
-          { spk:"SPK-2026-0218", periode:"Februari 2026", tanggal:"2026-02-18", pemasukan:850000, potongan:127500, pendapatanBersih:722500, komisi:510000, persenKomisi:60, potonganPajak:51000, kompensasiJarakJauh:50000, bonus:100000, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan alat" },
-          { spk:"SPK-2026-0214", periode:"Februari 2026", tanggal:"2026-02-14", pemasukan:1200000, potongan:180000, pendapatanBersih:1020000, komisi:720000, persenKomisi:60, potonganPajak:72000, kompensasiJarakJauh:0, bonus:150000, penambahLain:30000, keteranganPenambah:"Tip pelanggan", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2026-0210", periode:"Februari 2026", tanggal:"2026-02-10", pemasukan:650000, potongan:97500, pendapatanBersih:552500, komisi:390000, persenKomisi:60, potonganPajak:39000, kompensasiJarakJauh:75000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2026-0205", periode:"Februari 2026", tanggal:"2026-02-05", pemasukan:900000, potongan:135000, pendapatanBersih:765000, komisi:540000, persenKomisi:60, potonganPajak:54000, kompensasiJarakJauh:0, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:50000, keteranganPengurang:"Bensin khusus" },
-          { spk:"SPK-2026-0131", periode:"Januari 2026", tanggal:"2026-01-31", pemasukan:1100000, potongan:165000, pendapatanBersih:935000, komisi:660000, persenKomisi:60, potonganPajak:66000, kompensasiJarakJauh:100000, bonus:200000, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2026-0122", periode:"Januari 2026", tanggal:"2026-01-22", pemasukan:750000, potongan:112500, pendapatanBersih:637500, komisi:450000, persenKomisi:60, potonganPajak:45000, kompensasiJarakJauh:50000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan material" },
-          { spk:"SPK-2026-0115", periode:"Januari 2026", tanggal:"2026-01-15", pemasukan:500000, potongan:75000, pendapatanBersih:425000, komisi:300000, persenKomisi:60, potonganPajak:30000, kompensasiJarakJauh:0, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2026-0108", periode:"Januari 2026", tanggal:"2026-01-08", pemasukan:1350000, potongan:202500, pendapatanBersih:1147500, komisi:810000, persenKomisi:60, potonganPajak:81000, kompensasiJarakJauh:75000, bonus:250000, penambahLain:50000, keteranganPenambah:"Lembur khusus", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2025-1228", periode:"Desember 2025", tanggal:"2025-12-28", pemasukan:980000, potongan:147000, pendapatanBersih:833000, komisi:588000, persenKomisi:60, potonganPajak:58800, kompensasiJarakJauh:0, bonus:100000, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2025-1215", periode:"Desember 2025", tanggal:"2025-12-15", pemasukan:600000, potongan:90000, pendapatanBersih:510000, komisi:360000, persenKomisi:60, potonganPajak:36000, kompensasiJarakJauh:50000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2025-1205", periode:"Desember 2025", tanggal:"2025-12-05", pemasukan:1500000, potongan:225000, pendapatanBersih:1275000, komisi:900000, persenKomisi:60, potonganPajak:90000, kompensasiJarakJauh:100000, bonus:300000, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan admin" },
-          { spk:"SPK-2025-1120", periode:"November 2025", tanggal:"2025-11-20", pemasukan:820000, potongan:123000, pendapatanBersih:697000, komisi:492000, persenKomisi:60, potonganPajak:49200, kompensasiJarakJauh:75000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
-          { spk:"SPK-2025-1110", periode:"November 2025", tanggal:"2025-11-10", pemasukan:700000, potongan:105000, pendapatanBersih:595000, komisi:420000, persenKomisi:60, potonganPajak:42000, kompensasiJarakJauh:0, bonus:0, penambahLain:20000, keteranganPenambah:"Tip pelanggan", pengurangLain:0, keteranganPengurang:"" }
-        ]
-      };
+      const fetchKomisi = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat komisi"), rows:[], filterOptions:{ periode:[] } }))
+            .getKomisiDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periode:[] } });
+        }
+      });
+      const fetchJarak = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat kompensasi jarak"), rows:[], filterOptions:{ periode:[] } }))
+            .getKompensasiJarakDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periode:[] } });
+        }
+      });
 
-      setTimeout(() => {
-        const res = MOCK_RES;
-        document.getElementById('namaMitra').innerText = res.namaMitra || "-";
-        if (!AUTH_USER.email){ AUTH_USER.email = email; AUTH_USER.role_akun = res.roleAkun || "Staff"; AUTH_USER.nama = res.namaMitra || ""; }
-        applyEffectiveRolePillLabel();
-        setupRoleClickable(AUTH_USER.role_akun || "");
-        hideLoading();
-        document.getElementById('posisiMitraPill').innerHTML =
-          `<span class="mutedLabel">Posisi</span><span class="valWhite">${escapeHtml(res.posisiMitra || "-")}</span>`;
-        document.getElementById('divisiMitraPill').innerHTML =
-          `<span class="mutedLabel">Divisi</span><span class="valWhite">${escapeHtml(res.divisiMitra || "-")}</span>`;
-        document.getElementById('statusKaryawanPill').innerHTML =
-          `<span class="mutedLabel">Status</span><span class="valWhite">${escapeHtml(res.statusKaryawan || "-")}</span>`;
-        ALL_ROWS = res.rows || [];
-        const fo = res.filterOptions || {};
-        renderCheckboxList("periodeBox", fo.periode || [], "periode");
-        SORT_KEY = "tanggal"; SORT_DIR = "desc";
-        sessionStorage.setItem("mitraEmail", res.email || email);
-        isLoadedOnce = true;
-        applyFilters();
-      }, 600);
+      Promise.all([fetchKomisi(), fetchJarak()])
+        .then(([resKomisiRaw, resJarakRaw]) => {
+          const res = resKomisiRaw || {};
+          const resJarak = resJarakRaw || {};
+          JARAK_DEBUG.matchName = (((resJarak || {}).debug || {}).matchName || "");
+          JARAK_DEBUG.matchedRows = Number((((resJarak || {}).debug || {}).matchedRows || 0));
+          JARAK_DEBUG.scannedRows = Number((((resJarak || {}).debug || {}).scannedRows || 0));
+          JARAK_DEBUG.sampleNames = ((((resJarak || {}).debug || {}).sampleNames || []));
+          JARAK_DEBUG.firstRow = ((((resJarak || {}).debug || {}).firstRow || null));
+
+          const namaShown = res.namaMitra || resJarak.namaMitra || "-";
+          const posisiShown = res.posisiMitra || resJarak.posisiMitra || "-";
+          const divisiShown = res.divisiMitra || resJarak.divisiMitra || "-";
+          const statusShown = res.statusKaryawan || resJarak.statusKaryawan || "-";
+
+          document.getElementById("namaMitra").innerText = namaShown;
+          if (!AUTH_USER.email){
+            AUTH_USER.email = realAuthEmail || email;
+            if ((realAuthEmail || email) === email){
+              AUTH_USER.role_akun = res.roleAkun || resJarak.roleAkun || "Staff";
+              AUTH_USER.divisi = res.divisiMitra || resJarak.divisiMitra || "";
+            }
+            AUTH_USER.nama = namaShown || "";
+          }
+          applyEffectiveRolePillLabel();
+          setupRoleClickable(AUTH_USER.role_akun || "");
+          document.getElementById("posisiMitraPill").innerHTML =
+            `<span class="mutedLabel">Posisi</span><span class="valWhite">${escapeHtml(posisiShown)}</span>`;
+          document.getElementById("divisiMitraPill").innerHTML =
+            `<span class="mutedLabel">Divisi</span><span class="valWhite">${escapeHtml(divisiShown)}</span>`;
+          document.getElementById("statusKaryawanPill").innerHTML =
+            `<span class="mutedLabel">Status</span><span class="valWhite">${escapeHtml(statusShown)}</span>`;
+
+          const p1 = (((res || {}).filterOptions || {}).periode || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const p2 = (((resJarak || {}).filterOptions || {}).periode || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const jobs = (((res || {}).filterOptions || {}).pekerjaan || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          PERIODE_OPTIONS.slip = p1;
+          PERIODE_OPTIONS.jarak = p2;
+          PEKERJAAN_OPTIONS.slip = jobs;
+          renderCheckboxList("periodeBox", (VIEW === "jarak") ? PERIODE_OPTIONS.jarak : PERIODE_OPTIONS.slip, "periode");
+          renderCheckboxList("pekerjaanBox", VIEW === "komisi" ? PEKERJAAN_OPTIONS.slip : [], "pekerjaan");
+
+          const mm = getMinMaxPencairan(res.rows || []);
+          const mmAkt = getMinMaxAktivitas(resJarak.rows || []);
+          const mmCetak = getMinMaxByKey(res.rows || [], "tglCetak");
+          const mmJadwal = getMinMaxByKey(res.rows || [], "tglKerja");
+          const tglFromEl = document.getElementById("tglFrom");
+          const tglToEl = document.getElementById("tglTo");
+          const aktFromEl = document.getElementById("aktivitasFrom");
+          const aktToEl = document.getElementById("aktivitasTo");
+          const cetakFromEl = document.getElementById("cetakFrom");
+          const cetakToEl = document.getElementById("cetakTo");
+          const jadwalFromEl = document.getElementById("jadwalFrom");
+          const jadwalToEl = document.getElementById("jadwalTo");
+
+          if (mm.min && mm.max){
+            tglFromEl.min = mm.min; tglFromEl.max = mm.max;
+            tglToEl.min = mm.min; tglToEl.max = mm.max;
+          } else {
+            tglFromEl.removeAttribute("min"); tglFromEl.removeAttribute("max");
+            tglToEl.removeAttribute("min"); tglToEl.removeAttribute("max");
+          }
+
+          if (mmAkt.min && mmAkt.max){
+            aktFromEl.min = mmAkt.min; aktFromEl.max = mmAkt.max;
+            aktToEl.min = mmAkt.min; aktToEl.max = mmAkt.max;
+          } else {
+            aktFromEl.removeAttribute("min"); aktFromEl.removeAttribute("max");
+            aktToEl.removeAttribute("min"); aktToEl.removeAttribute("max");
+          }
+
+          if (mmCetak.min && mmCetak.max){
+            cetakFromEl.min = mmCetak.min; cetakFromEl.max = mmCetak.max;
+            cetakToEl.min = mmCetak.min; cetakToEl.max = mmCetak.max;
+          } else {
+            cetakFromEl.removeAttribute("min"); cetakFromEl.removeAttribute("max");
+            cetakToEl.removeAttribute("min"); cetakToEl.removeAttribute("max");
+          }
+
+          if (mmJadwal.min && mmJadwal.max){
+            jadwalFromEl.min = mmJadwal.min; jadwalFromEl.max = mmJadwal.max;
+            jadwalToEl.min = mmJadwal.min; jadwalToEl.max = mmJadwal.max;
+          } else {
+            jadwalFromEl.removeAttribute("min"); jadwalFromEl.removeAttribute("max");
+            jadwalToEl.removeAttribute("min"); jadwalToEl.removeAttribute("max");
+          }
+
+          ALL_ROWS = [
+            ...mapSlipRowsToCurrentView(res.rows || []),
+            ...mapKompensasiRowsToCurrentView(resJarak.rows || [])
+          ];
+
+          const colsNow = VIEW_COLS[VIEW] || [];
+          SORT_KEY = colsNow.length ? colsNow[0].key : "tanggal";
+          SORT_DIR = "desc";
+          sessionStorage.setItem("mitraEmail", (realAuthEmail || res.email || resJarak.email || email || "").trim().toLowerCase());
+          isLoadedOnce = true;
+          hideLoading();
+          applyFilters();
+
+          if (!res.ok && !resJarak.ok) {
+            setMessage((res.message || "") + (res.message && resJarak.message ? " | " : "") + (resJarak.message || "Data belum tersedia."));
+          } else if (!resJarak.ok) {
+            setMessage("Kompensasi Jarak belum termuat: " + (resJarak.message || "Unknown error"));
+          } else if (!res.ok) {
+            setMessage(res.message || "Data komisi belum tersedia.");
+          } else {
+            setMessage("");
+          }
+        })
+        .catch((err) => {
+          hideLoading();
+          ALL_ROWS = [];
+          FILTERED_ROWS = [];
+          renderCheckboxList("periodeBox", [], "periode");
+          isLoadedOnce = true;
+          applyFilters();
+          setMessage("Gagal memuat data. " + ((err && err.message) ? err.message : ""));
+        });
     }
 
     function showGate(msg){
@@ -924,13 +1514,22 @@
     const KEY_EFFECTIVE_NAME  = "effectiveName";
     let AUTH_USER = { email:"", role_akun:"Staff", divisi:"", nama:"" };
     let UI_STATE  = { mode:"staff", divisi:"", personEmail:"", personName:"" };
+    let CANDIDATE_REQ_SEQ = 0;
 
     function openRoleModal(){
       const back = document.getElementById("roleModalBack");
       back.classList.add("show"); back.setAttribute("aria-hidden","false");
       const _msgEl = document.getElementById("roleModalMsg");
       if (_msgEl){ _msgEl.textContent = ""; _msgEl.style.display = "none"; }
-      document.getElementById("impersonateDivisi").value = UI_STATE.divisi || AUTH_USER.divisi || "";
+      const divSel = document.getElementById("impersonateDivisi");
+      const role = String(AUTH_USER.role_akun || "").trim().toLowerCase();
+      if (role === "leader"){
+        divSel.value = AUTH_USER.divisi || "";
+      } else if (role === "management"){
+        divSel.value = UI_STATE.divisi || "";
+      } else {
+        divSel.value = AUTH_USER.divisi || "";
+      }
       document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
       const btnReset = document.getElementById("btnResetRole");
       if (btnReset){
@@ -948,6 +1547,18 @@
       document.querySelectorAll(".segBtn").forEach(b => b.classList.toggle("active", b.getAttribute("data-mode") === mode));
       document.getElementById("impersonatePerson").value = ""; UI_STATE.personEmail = ""; UI_STATE.personName = "";
       refreshImpersonationCandidates(); syncHint(); syncPreview();
+    }
+    function handleDivisiChange(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      UI_STATE.divisi = divSel ? (divSel.value || "") : "";
+      UI_STATE.personEmail = "";
+      UI_STATE.personName = "";
+      if (personSel){
+        personSel.innerHTML = '<option value="">- Pilih nama -</option>';
+      }
+      refreshImpersonationCandidates();
+      syncPreview();
     }
     function syncHint(){
       const hint = document.getElementById("roleHint");
@@ -972,27 +1583,99 @@
       document.getElementById("previewMeta").innerText     = `Mode: ${UI_STATE.mode === "leader" ? "Masuk sebagai Leader" : "Masuk sebagai Staff"}`;
       document.getElementById("previewRolePill").innerText = `Akses: ${UI_STATE.mode === "leader" ? "Leader" : "Staff"}`;
       document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || AUTH_USER.divisi || "-"}`;
-      document.getElementById("previewName").innerText = (personName && !personName.startsWith("—")) ? personName : "— Pilih Nama —";
+      document.getElementById("previewName").innerText = (personName && !personName.startsWith("&mdash;")) ? personName : "&mdash; Pilih Nama &mdash;";
     }
     function refreshImpersonationCandidates(){
       const role = String(AUTH_USER.role_akun || "").toLowerCase();
       if (!(role === "leader" || role === "management")) return;
-      const mode = UI_STATE.mode;
-      const div  = (document.getElementById("impersonateDivisi").value || "").trim();
+
+      const mode = (UI_STATE.mode === "leader") ? "leader" : "staff";
+      const divSel = document.getElementById("impersonateDivisi");
+      const div = (divSel && divSel.value ? divSel.value : "").trim();
+      const divKey = div.toLowerCase();
       const personSel = document.getElementById("impersonatePerson");
-      const first = personSel.options[0]; personSel.innerHTML = ""; personSel.appendChild(first);
-      const addFallback = (msg) => { if (personSel.options.length <= 1){ const o = document.createElement("option"); o.value = ""; o.textContent = msg || "— Tidak ada kandidat —"; personSel.appendChild(o); } };
+      if (!personSel) return;
+
+      const reqId = ++CANDIDATE_REQ_SEQ;
+
+      let first = personSel.options[0];
+      if (!first){
+        first = document.createElement("option");
+        first.value = "";
+        first.textContent = "- Pilih nama -";
+      }
+      personSel.innerHTML = "";
+      personSel.appendChild(first);
+
+      const addFallback = (msg) => {
+        if (reqId !== CANDIDATE_REQ_SEQ) return;
+        if (personSel.options.length <= 1){
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = msg || "- Tidak ada kandidat -";
+          personSel.appendChild(opt);
+        }
+      };
+
+      if (role === "management" && mode === "leader" && !divKey){
+        addFallback("- Pilih divisi dulu -");
+        return;
+      }
+
+      const roleMatch = (roleText, wantMode) => {
+        const r = String(roleText || "").trim().toLowerCase();
+        if (wantMode === "leader") return r.includes("leader");
+        return r.includes("staff");
+      };
+
       try{
         google.script.run
           .withSuccessHandler((json) => {
-            let res; try{ res = typeof json === "string" ? JSON.parse(json) : json; }catch(e){}
-            if (!res || !res.ok || !Array.isArray(res.items)){ addFallback("— Kandidat belum tersedia —"); return; }
-            if (!res.items.length){ addFallback("— Tidak ada kandidat —"); return; }
-            res.items.forEach(it => { const o = document.createElement("option"); o.value = String(it.email || "").trim().toLowerCase(); o.textContent = String(it.nama || it.email || "-"); personSel.appendChild(o); });
+            if (reqId !== CANDIDATE_REQ_SEQ) return;
+
+            const nowMode = (UI_STATE.mode === "leader") ? "leader" : "staff";
+            const nowDiv = ((document.getElementById("impersonateDivisi")?.value || "").trim().toLowerCase());
+            if (nowMode !== mode || nowDiv !== divKey) return;
+
+            let res;
+            try { res = (typeof json === "string") ? JSON.parse(json) : json; } catch(e) {}
+            if (!res || !res.ok || !Array.isArray(res.items)){
+              addFallback("- Kandidat belum tersedia -");
+              return;
+            }
+
+            let items = res.items
+              .filter(it => it && String(it.email || "").trim())
+              .filter(it => roleMatch(it.role_akun, mode))
+              .filter(it => !divKey || String(it.divisi || "").trim().toLowerCase() === divKey);
+
+            const seen = new Set();
+            items = items.filter(it => {
+              const email = String(it.email || "").trim().toLowerCase();
+              if (!email || seen.has(email)) return false;
+              seen.add(email);
+              return true;
+            });
+
+            items.sort((a,b) => String(a.nama || a.email || "").localeCompare(String(b.nama || b.email || ""), "id-ID"));
+
+            if (!items.length){
+              addFallback(mode === "leader" ? "- Tidak ada leader di divisi ini -" : "- Tidak ada kandidat -");
+              return;
+            }
+
+            items.forEach(it => {
+              const opt = document.createElement("option");
+              opt.value = String(it.email || "").trim().toLowerCase();
+              opt.textContent = String(it.nama || it.email || "-");
+              personSel.appendChild(opt);
+            });
           })
-          .withFailureHandler(() => addFallback("— Gagal load kandidat —"))
+          .withFailureHandler(() => addFallback("- Gagal load kandidat -"))
           .getImpersonationCandidates(AUTH_USER.email, mode, div);
-      }catch(e){ addFallback("— Kandidat belum tersedia —"); }
+      }catch(e){
+        addFallback("- Kandidat belum tersedia -");
+      }
     }
     function applyEffectiveRolePillLabel(){
       const rolePill = document.getElementById("loginRolePill");
@@ -1007,25 +1690,28 @@
       const personName  = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
       if (!personEmail){ const _m = document.getElementById("roleModalMsg"); if (_m){ _m.textContent = "Pilih nama dulu sebelum menerapkan"; _m.style.display = ""; } return; }
       UI_STATE.divisi = divSel ? divSel.value : ""; UI_STATE.personEmail = personEmail;
-      UI_STATE.personName = (personName && !personName.startsWith("—")) ? personName : "";
+      UI_STATE.personName = (personName && !personName.startsWith("&mdash;")) ? personName : "";
       sessionStorage.setItem(KEY_EFFECTIVE_MODE,  UI_STATE.mode);
       sessionStorage.setItem(KEY_EFFECTIVE_EMAIL, UI_STATE.personEmail);
       sessionStorage.setItem(KEY_EFFECTIVE_NAME,  UI_STATE.personName || "");
-      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(personEmail);
+      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(personEmail, AUTH_USER.email || getEmail());
     }
     function resetImpersonationUI(){
       UI_STATE = { mode:"staff", divisi: AUTH_USER.divisi || "", personEmail:"", personName:"" };
       sessionStorage.removeItem(KEY_EFFECTIVE_MODE);
       sessionStorage.removeItem(KEY_EFFECTIVE_EMAIL);
       sessionStorage.removeItem(KEY_EFFECTIVE_NAME);
-      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(AUTH_USER.email);
+      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(AUTH_USER.email || getEmail(), AUTH_USER.email || getEmail());
     }
     function setupRoleClickable(roleAkun){
       const rolePill = document.getElementById("loginRolePill");
       const r = String(roleAkun || "").trim().toLowerCase();
-      rolePill.classList.add("pillDisabled"); rolePill.onclick = null;
+      rolePill.classList.add("pillDisabled");
+      rolePill.classList.remove("pillHasChevron");
+      rolePill.onclick = null;
       if (r === "management" || r === "leader"){
         rolePill.classList.remove("pillDisabled");
+        rolePill.classList.add("pillHasChevron");
         rolePill.onclick = () => {
           const segLeader = document.getElementById("segLeader");
           if (r === "leader"){ if(segLeader) segLeader.style.display = "none"; }
@@ -1035,12 +1721,35 @@
       }
     }
 
+    function syncAuthUserForRole(authEmail){
+      const ae = String(authEmail || "").trim().toLowerCase();
+      if (!ae) return;
+      try{
+        google.script.run
+          .withSuccessHandler((json) => {
+            const obj = safeParseJson(json);
+            if (!obj || !obj.ok || !obj.user) return;
+            AUTH_USER.email = ae;
+            AUTH_USER.role_akun = String(obj.user.role_akun || AUTH_USER.role_akun || "Staff");
+            AUTH_USER.divisi = String(obj.user.divisi || AUTH_USER.divisi || "");
+            AUTH_USER.nama = String(obj.user.nama || AUTH_USER.nama || "");
+            applyEffectiveRolePillLabel();
+            setupRoleClickable(AUTH_USER.role_akun || "");
+          })
+          .withFailureHandler(() => {})
+          .getUserByEmail(ae);
+      }catch(e){}
+    }
+
     bindAutoApply();
+    document.body.setAttribute("data-view", VIEW);
+    syncFilterVisibilityByView();
 
     (function init(){
       EMAIL = getEmail();
       if (!EMAIL){ showGate("Kamu belum masuk di Beranda. Balik ke Beranda dulu ya."); return; }
-      startLoad(EMAIL);
+      syncAuthUserForRole(EMAIL);
+      startLoad(getEffectiveEmail(EMAIL), EMAIL);
     })();
     /* ── Nav Bottom Sheet ── */
     function openNavDropdown(){
@@ -1075,3 +1784,7 @@
   </script>
 </body>
 </html>
+
+
+
+
