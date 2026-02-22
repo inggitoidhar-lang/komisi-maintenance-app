@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cek Komisi DMT Jendela360 | Pendapatan Bersih</title>
+  <link rel="icon" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771692199/Untitled_design_gyys0m.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" as="image" fetchpriority="high">
+
+  <style>
+    :root{
+      --brand:#00a0c6;
+      --text:#0b1220;
+      --muted:#64748b;
+      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+      --radius: 18px;
+      --bg1:#0b2a57;
+      --bg2:#0b3b8a;
+      --soft:#f7fafc;
+      --scrollTrack: rgba(11, 42, 87, .12);
+      --scrollThumbGrad: linear-gradient(135deg, var(--bg1), var(--bg2));
+      --cardBlueBg: rgba(0,160,198,.08);
+      --cardGreenBg: rgba(11,128,67,.08);
+      --cardRedBg: rgba(176,0,32,.07);
+      --done:#0b8043;
+      --notdone:#b00020;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:#ffffff;
+      min-height: 100vh;
+    }
+    body::-webkit-scrollbar{ width:10px; height:10px; }
+    body::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    body::-webkit-scrollbar-thumb{ background: var(--scrollThumbGrad); border-radius: 999px; border: 2px solid var(--scrollTrack); }
+    body::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 18px; }
+
+    /* ===== HEADER ===== */
+    .top{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.18);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topRow{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:nowrap; }
+    .leftTop{ display:flex; align-items:center; gap:24px; flex-wrap:nowrap; flex-shrink:0; }
+    .logoApp{ height: 44px; width:auto; display:block; flex-shrink:0; }
+    .title{
+      display:inline-flex; align-items:center; gap:6px;
+      height:42px; padding: 0 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      font-weight: 900; font-size: 13px;
+      white-space: nowrap; letter-spacing: .2px;
+      cursor: pointer; font-family: inherit; -webkit-appearance:none; appearance:none;
+      box-shadow: 0 10px 18px rgba(2,6,23,.20);
+      transition: filter .15s ease;
+    }
+    .title:hover{ filter: brightness(1.08); }
+    .topActions{ display:flex; align-items:center; gap:8px; flex:1 1 auto; justify-content:flex-end; min-width:0; overflow:hidden; }
+    .statusPill{ min-width:0; margin-right:8px; }
+    @media(max-width:600px){
+      .top{ padding:8px 10px; }
+      .logoApp{ height:36px; }
+      .title{ height:38px; font-size:12px; padding:0 10px; }
+      .statusText .label{ display:none; }
+      .topActions{ gap:5px; }
+      .statusPill{ font-size:10px; }
+      .btnSmall{ height:38px; padding:0 10px; font-size:12px; }
+      .btnIcon{ width:36px; height:38px; }
+    }
+    .statusPill{
+      display:inline-flex; align-items:center; gap:7px;
+      padding:0;
+      border:none;
+      background:transparent;
+      color: rgba(255,255,255,.92);
+      font-weight: 800; font-size: 11px; white-space: nowrap;
+      box-shadow:none;
+    }
+    .dot{ width:7px;height:7px;border-radius:999px; background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.20); }
+    .statusText{ display:flex; align-items:baseline; gap:8px; flex-wrap:nowrap; }
+    .statusText .label{ color: rgba(255,255,255,.75); font-weight: 900; }
+    .statusText .email{ color: #fff; font-weight: 900; }
+    #loginRolePill{ opacity:.95; }
+    .pillClickable{
+      cursor:pointer; padding: 2px 8px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.10);
+      transition: background .15s ease, transform .05s ease; user-select:none;
+    }
+    .pillClickable:hover{ background: rgba(255,255,255,.18); }
+    .pillClickable:active{ transform: translateY(1px); }
+    .pillDisabled{ cursor: default !important; opacity: .9; border-color: rgba(255,255,255,.16) !important; background: rgba(255,255,255,.08) !important; }
+    .btnSmall{
+      height:42px; padding: 0 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18); background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      cursor:pointer; font-weight: 900; font-size: 13px; color:#fff;
+      display:inline-flex; align-items:center; gap:10px;
+      box-shadow: 0 10px 18px rgba(2,6,23,.20);
+      transition: filter .15s ease;
+    }
+    .btnSmall:hover{ filter: brightness(1.08); }
+    .btnIcon{
+      width: 44px; height: 44px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.12);
+      cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#fff;
+    }
+    .btnIcon:hover{ background: rgba(255,255,255,.18); }
+
+    /* ===== CARDS ===== */
+    .card{
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(15,23,42,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px; margin-top: 12px;
+    }
+    .msg{ margin-top:10px; color:#b00020; font-size: 13px; font-weight: 800; min-height: 18px; }
+    .soft{ color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; font-weight: 600; }
+
+    /* ===== PROFILE ROW ===== */
+    .nameRow{ display:flex; align-items:center; justify-content:space-between; gap: 16px; flex-wrap:wrap; margin: 4px 0 8px; }
+    .nameTitle{ font-weight:800; font-size:16px; color: var(--text); margin-bottom: 6px; }
+    .nameLine{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .nameValue{ font-size: 18px; font-weight: 800; color: var(--brand); line-height: 1.2; }
+    .miniPillHeaderStyle{
+      display:inline-flex; align-items:center; gap:8px; height: 34px; padding: 0 12px;
+      border-radius: 999px; border: 1px solid rgba(15,23,42,.14); background: rgba(15,23,42,.06);
+      color: rgba(11,18,32,.78); font-weight: 900; font-size: 12px; white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(2, 6, 23, .06);
+    }
+    .miniPillHeaderStyle .mutedLabel{ font-size: 11px; font-weight: 800; color: rgba(11,18,32,.55); letter-spacing: .2px; }
+    .miniPillHeaderStyle .valWhite{ color: rgba(11,18,32,.78); font-weight: 900; }
+
+    /* ===== METRIC CARDS (3) ===== */
+    .totalsRow{
+      display:grid; grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 10px; align-items:stretch; margin-top: 12px;
+    }
+    @media (max-width: 900px){ .totalsRow{ grid-template-columns: repeat(2, minmax(220px, 1fr)); } }
+    @media (max-width: 520px){ .totalsRow{ grid-template-columns: 1fr; } }
+    .sumCard{ border:1px solid rgba(15,23,42,.10); border-radius: 16px; padding: 14px; background:#fff; position: relative; overflow: hidden; }
+    .sumTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom: 10px; }
+    .sumLabel{ font-size:12px; color: var(--muted); font-weight: 800; }
+    .sumRight{ display:flex; align-items:center; gap:10px; flex: 0 0 auto; }
+    .sumIcon{ width: 30px; height: 30px; border-radius: 999px; display:flex; align-items:center; justify-content:center; border: 1px solid rgba(15,23,42,.10); background: rgba(255,255,255,.70); flex: 0 0 auto; }
+    .sumVal{ font-size: 22px; font-weight: 800; letter-spacing:.1px; }
+
+    .sumCard.bersih{ background: var(--cardBlueBg); border-color: rgba(0,160,198,.22); border-bottom: 4px solid rgba(0,160,198,.85); }
+    .sumCard.bersih .sumVal{ color: var(--brand); }
+    .sumCard.bersih .sumIcon{ background: rgba(0,160,198,.12); border-color: rgba(0,160,198,.20); color: rgba(0,160,198,1); }
+    .sumCard.masuk{ background: var(--cardGreenBg); border-color: rgba(11,128,67,.22); border-bottom: 4px solid rgba(11,128,67,.85); }
+    .sumCard.masuk .sumVal{ color: var(--done); }
+    .sumCard.masuk .sumIcon{ background: rgba(11,128,67,.12); border-color: rgba(11,128,67,.20); color: rgba(11,128,67,1); }
+    .sumCard.potong{ background: var(--cardRedBg); border-color: rgba(176,0,32,.22); border-bottom: 4px solid rgba(176,0,32,.85); }
+    .sumCard.potong .sumVal{ color: var(--notdone); }
+    .sumCard.potong .sumIcon{ background: rgba(176,0,32,.12); border-color: rgba(176,0,32,.20); color: rgba(176,0,32,1); }
+
+    /* ===== FILTER ===== */
+    .filterGrid{
+      display:grid; grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 10px; margin-top: 12px;
+    }
+    @media (max-width: 980px){ .filterGrid{ grid-template-columns: repeat(2, minmax(180px, 1fr)); } }
+    @media (max-width: 520px){ .filterGrid{ grid-template-columns: 1fr; } }
+
+    label{ display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 800; letter-spacing: .2px; }
+    input{
+      width:100%; height:48px; padding: 12px 12px;
+      border: 1px solid rgba(15,23,42,.12); border-radius: 14px;
+      font-size: 15px; outline:none; background:#fff;
+      font-family: inherit; font-weight: 700;
+    }
+    .checkList{
+      border: 1px solid rgba(15,23,42,.12); border-radius: 14px;
+      padding: 8px; height: 48px; overflow:auto; background:#fff;
+    }
+    .checkList::-webkit-scrollbar{ width:10px; height:10px; }
+    .checkList::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .checkList::-webkit-scrollbar-thumb{ background: var(--scrollThumbGrad); border-radius: 999px; border: 2px solid var(--scrollTrack); }
+    .checkList::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+    .checkItem{ display:flex; align-items:center; gap:10px; padding: 6px 6px; border-radius: 12px; cursor:pointer; min-height: 34px; }
+    .checkItem:hover{ background: rgba(11,42,87,.06); }
+    .checkItem input{ width: 18px; height: 18px; margin: 0; accent-color: var(--brand); flex: 0 0 auto; }
+    .checkItem span{ font-size: 14px; line-height: 1.2; white-space: nowrap; font-weight: 700; color: #111827; }
+    .btnReset{
+      height:48px; padding: 0 14px; border-radius: 14px;
+      border: 1px solid rgba(15,23,42,.12); background:#fff; cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      font-weight: 800; font-size: 14px; color: #0b1220;
+      width:100%; justify-content:center;
+    }
+    .btnReset:hover{ background: var(--soft); }
+
+    /* ===== TABLE SECTION ===== */
+    .tableWrap{
+      overflow:auto; max-height: 60vh;
+      border: 1px solid rgba(15,23,42,.10); border-radius: 16px; background:#fff;
+    }
+    .tableWrap::-webkit-scrollbar{ width:10px; height:10px; }
+    .tableWrap::-webkit-scrollbar-track{ background: var(--scrollTrack); border-radius: 999px; }
+    .tableWrap::-webkit-scrollbar-thumb{ background: var(--scrollThumbGrad); border-radius: 999px; border: 2px solid var(--scrollTrack); }
+    .tableWrap::-webkit-scrollbar-thumb:hover{ filter: brightness(1.05); }
+    table{ width:100%; border-collapse: collapse; }
+    th, td{
+      padding: 10px 10px; border-bottom: 1px solid rgba(15,23,42,.10);
+      text-align:center; white-space: nowrap; font-size: 14px; background:#fff;
+    }
+    th{
+      position: sticky; top: 0; z-index: 50;
+      background: #fff !important; opacity: 1 !important;
+      font-size: 12px; letter-spacing: .22px; color: var(--muted);
+      text-transform: uppercase; font-weight: 800;
+      cursor: pointer; user-select:none;
+      box-shadow: 0 2px 0 rgba(15,23,42,.10);
+      padding: 8px 10px; line-height: 1.15;
+    }
+    th.sortActive{ color: #fff !important; background: linear-gradient(135deg, var(--bg1), var(--bg2)) !important; box-shadow: inset 0 -2px 0 rgba(255,255,255,.30); }
+    .sortArrow{ width: 10px; height: 10px; opacity:.95; display:inline-block; vertical-align: middle; margin-left: 6px; color: currentColor; }
+    .cellBersih{ background: rgba(0,160,198,.08); font-weight: 900; color: var(--brand); }
+    .cellMasuk{ background: rgba(11,128,67,.07); font-weight: 900; color: var(--done); }
+    .cellPotong{ background: rgba(176,0,32,.07); font-weight: 900; color: var(--notdone); }
+
+    /* ===== RINCIAN HEADER + TOGGLE BUTTONS ===== */
+    .rincianHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+    .rincianLeft{ display:flex; flex-direction:column; gap:8px; }
+    .rincianRight{ display:flex; align-items:center; gap:10px; justify-content:flex-end; flex-shrink:0; }
+    .toggleRow{ display:flex; gap:6px; flex-wrap:wrap; }
+    .toggleBtn{
+      height: 32px; padding: 0 12px; border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.12); background:#fff;
+      cursor:pointer; font-weight: 800; font-size: 12px;
+      font-family: inherit; color: rgba(11,18,32,.72); white-space: nowrap;
+      transition: background .12s, border-color .12s, color .12s;
+    }
+    .toggleBtn:hover{ background: var(--soft); }
+    .toggleBtn.tv-bersih.active{ border-color: rgba(0,160,198,.55); background: rgba(0,160,198,.12); color: var(--brand); }
+    .toggleBtn.tv-pajak.active{ border-color: rgba(176,0,32,.45); background: rgba(176,0,32,.10); color: var(--notdone); }
+    .toggleBtn.tv-komisi.active{ border-color: rgba(0,160,198,.55); background: rgba(0,160,198,.12); color: var(--brand); }
+    .toggleBtn.tv-jarak.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
+    .toggleBtn.tv-bonus.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
+    .toggleBtn.tv-penambah.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
+    .toggleBtn.tv-pengurang.active{ border-color: rgba(176,0,32,.45); background: rgba(176,0,32,.10); color: var(--notdone); }
+
+    /* ===== LOADING OVERLAY ===== */
+    .loadingBack{
+      position: fixed; inset: 0; background: rgba(2,6,23,.45);
+      display:none; align-items:center; justify-content:center; padding: 16px; z-index: 10000;
+    }
+    .loadingBack.show{ display:flex; }
+    .loadingCard{
+      width: min(480px, 92vw); background:#fff; border-radius: 24px;
+      border: 1px solid rgba(15,23,42,.10); box-shadow: 0 24px 64px rgba(2,6,23,.28);
+      padding: 28px 24px 22px; display:flex; flex-direction:column; align-items:center; gap:22px;
+    }
+    .loadingLogo{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto; }
+    .spinner{ width: 50px; height: 50px; border-radius: 999px; border: 3px solid rgba(15,23,42,.07); border-top-color: #00aeef; animation: spin 0.75s linear infinite; flex: 0 0 auto; }
+    @keyframes spin{ to { transform: rotate(360deg); } }
+    .loadingTextWrap{ display:flex; flex-direction:column; gap:3px; align-items:center; text-align:center; }
+    .loadingTitle{ font-weight: 900; font-size: 15px; color: rgba(11,18,32,.92); }
+    .loadingSub{ font-weight: 800; font-size: 12px; color: rgba(11,18,32,.55); line-height:1.4; }
+
+    /* ===== ROLE MODAL ===== */
+    .modalBack{ position: fixed; inset: 0; background: rgba(2,6,23,.55); display:none; align-items:center; justify-content:center; padding: 16px; z-index: 9999; }
+    .modalBack.show{ display:flex; }
+    .modalCard{ width: min(760px, 100%); background:#fff; border-radius: 20px; border: 1px solid rgba(15,23,42,.12); box-shadow: 0 30px 80px rgba(2,6,23,.35); overflow:hidden; }
+    .modalHeader{ padding: 14px; background: linear-gradient(135deg, var(--bg1), var(--bg2)); color:#fff; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .modalCard .modalTitle{ font-weight: 900; letter-spacing:.2px; font-size: 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .modalCard .modalSub{ font-size: 12px; font-weight: 800; color: rgba(255,255,255,.75); margin-top: 3px; }
+    .modalCard .modalClose{ height: 40px; width: 40px; border-radius: 999px; flex-shrink:0; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.12); cursor:pointer; color:#fff; display:inline-flex; align-items:center; justify-content:center; backdrop-filter: blur(10px); }
+    .modalCard .modalClose:hover{ background: rgba(255,255,255,.18); }
+    .modalCard .modalBody{ padding: 14px; }
+    .segRow{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px; }
+    .segBtn{ height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(15,23,42,.14); background:#fff; cursor:pointer; font-weight: 900; font-family: inherit; color: rgba(11,18,32,.85); transition: background .15s ease, transform .05s ease; display:inline-flex; align-items:center; gap:10px; user-select:none; }
+    .segBtn:hover{ background: rgba(15,23,42,.05); }
+    .segBtn:active{ transform: translateY(1px); }
+    .segBtn.active{ border-color: rgba(0,160,198,.30); background: rgba(0,160,198,.10); color: rgba(0,160,198,1); box-shadow: 0 10px 22px rgba(2,6,23,.06); }
+    .formGrid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items:end; }
+    @media (max-width: 720px){ .formGrid{ grid-template-columns: 1fr; } }
+    .rmSelect{ width:100%; height:48px; padding: 12px; border: 1px solid rgba(15,23,42,.12); border-radius: 14px; font-size: 14px; outline:none; background:#fff; font-family: inherit; font-weight: 800; color: rgba(11,18,32,.92); }
+    .hintBox{ margin-top: 10px; border: 1px solid rgba(15,23,42,.10); border-radius: 16px; background: rgba(15,23,42,.03); padding: 10px 12px; color: rgba(11,18,32,.72); font-size: 12px; font-weight: 800; line-height: 1.35; }
+    .previewBox{ margin-top: 12px; border: 1px solid rgba(15,23,42,.10); border-radius: 16px; padding: 12px; background:#fff; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .previewLeft{ display:flex; flex-direction:column; gap:3px; min-width: 220px; }
+    .previewLabel{ font-size: 11px; font-weight: 900; color: rgba(11,18,32,.55); text-transform: uppercase; letter-spacing:.2px; }
+    .previewName{ font-size: 14px; font-weight: 900; color: rgba(11,18,32,.90); }
+    .previewMeta{ font-size: 12px; font-weight: 800; color: rgba(11,18,32,.62); }
+    .rmActions{ margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btn{ height: 40px; padding: 0 14px; border-radius: 999px; font-weight: 900; font-family: inherit; cursor:pointer; display:inline-flex; align-items:center; gap:10px; user-select:none; border: 1px solid transparent; font-size: 14px; }
+    .btn.ghost{ background:#fff; border-color: rgba(15,23,42,.14); color: rgba(11,18,32,.85); }
+    .btn.ghost:hover{ background: rgba(15,23,42,.05); }
+    .btn.primary{ background: linear-gradient(135deg, var(--bg1), var(--bg2)); color:#fff; }
+    .btn.primary:hover{ filter: brightness(1.08); }
+    .labelSmall{ font-size: 12px; font-weight: 800; color: rgba(11,18,32,.62); margin-bottom: 6px; display:block; }
+    .rmPill{ display:inline-flex; align-items:center; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(15,23,42,.14); background: rgba(15,23,42,.06); font-size: 12px; font-weight: 800; color: rgba(11,18,32,.72); }
+
+    .copyright{ text-align:center; margin:16px 0; font-size: 11px; font-weight: 700; color: rgba(15,23,42,.55); letter-spacing:.2px; }
+    /* ── Nav Bottom Sheet ── */
+    .navDropWrap{ position:relative; display:inline-flex; align-items:center; }
+    .navMenu{
+      position:absolute; top: calc(100% + 8px); left: 0;
+      min-width: 210px; max-width: 220px;
+      background:linear-gradient(135deg, var(--bg1), var(--bg2));
+      border:1px solid rgba(255,255,255,.20);
+      border-radius:12px; padding:6px;
+      box-shadow:0 14px 30px rgba(2,6,23,.35);
+      display:none; z-index:300;
+    }
+    .navMenu.show{ display:block; }
+    .navItem{display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border-radius:10px;border:none;background:none;color:rgba(255,255,255,.92);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;text-align:left;}
+    .navItem:hover,.navItem:active{background:rgba(255,255,255,.12);}
+    .navItem.navCurrent{background:rgba(0,160,198,.24);color:#fff;}
+    .navItemIcon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.10);flex-shrink:0;}
+    .navItem.navCurrent .navItemIcon{background:rgba(0,160,198,.28);}
+    .titleChevron{opacity:.55;flex-shrink:0;margin-left:2px;}
+    .logoApp{cursor:pointer;}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <div class="top">
+      <div class="topRow">
+        <div class="leftTop">
+          <img class="logoApp" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707803/2_swublq.png" alt="Cek Komisi" loading="eager" fetchpriority="high" onclick="goHome()" title="Ke Beranda" />
+          <div class="navDropWrap" id="navDropWrap">
+            <button class="title" id="navMenuBtn" onclick="toggleNavDropdown(event)" aria-haspopup="true" aria-expanded="false" aria-label="Navigasi halaman">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M4 5v14a2 2 0 0 0 2 2h14v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>
+              <span>Pendapatan</span>
+              <svg class="titleChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="navMenu" id="navMenu">
+              <button class="navItem" onclick="goPage('dashboard')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M10 21v-6h4v6"/></svg></span>
+                <span>Beranda</span>
+              </button>
+              <button class="navItem" onclick="goPage('ranking')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></span>
+                <span>Peringkat</span>
+              </button>
+              <button class="navItem" onclick="goPage('histori')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+                <span>Pengerjaan</span>
+              </button>
+              <button class="navItem" onclick="goPage('komisi')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+                <span>Komisi</span>
+              </button>
+              <button class="navItem navCurrent" onclick="goPage('bersih')">
+                <span class="navItemIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M4 5v14a2 2 0 0 0 2 2h14v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg></span>
+                <span>Pendapatan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="topActions">
+          <div class="statusPill">
+            <span class="dot"></span>
+            <span class="statusText">
+              <span class="label">Sedang Masuk</span>
+              <span class="email" id="loginEmailPill">-</span>
+              <span class="label" style="opacity:.85;">• Masuk sebagai</span>
+              <span class="email pillClickable pillDisabled" id="loginRolePill">Pengguna</span>
+            </span>
+          </div>
+
+          <button class="btnSmall" onclick="logout()" title="Keluar" aria-label="Keluar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 9l-3 3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GATE CARD -->
+    <div class="card" id="gateCard">
+      <div style="font-weight:800;font-size:16px;">Akses Ditolak</div>
+      <div class="soft">Kamu perlu masuk dulu dari Beranda.</div>
+      <div id="gateMsg" class="msg"></div>
+      <div style="margin-top:12px;">
+        <button class="btnSmall" style="background:#fff;color:#0b1220;border-color:rgba(15,23,42,.12)" onclick="goHome()">Kembali Ke Beranda</button>
+      </div>
+    </div>
+
+    <!-- MAIN CARD: profile + metric cards -->
+    <div class="card" id="mainCard" style="display:none;">
+      <div class="nameRow">
+        <div>
+          <div class="nameTitle">Nama</div>
+          <div class="nameLine">
+            <div class="nameValue" id="namaMitra">-</div>
+            <span id="posisiMitraPill" class="miniPillHeaderStyle">-</span>
+            <span id="divisiMitraPill" class="miniPillHeaderStyle">-</span>
+            <span id="statusKaryawanPill" class="miniPillHeaderStyle">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Metric Cards -->
+      <div class="totalsRow">
+        <div class="sumCard bersih">
+          <div class="sumTop">
+            <div class="sumLabel">Total Pendapatan Bersih</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 4h7v7H4V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 4h7v7h-7V4Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M4 13h7v7H4v-7Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 13h7v7h-7v-7Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalBersih">Rp 0</div>
+        </div>
+
+        <div class="sumCard masuk">
+          <div class="sumTop">
+            <div class="sumLabel">Total Pemasukan</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalMasuk">Rp 0</div>
+        </div>
+
+        <div class="sumCard potong">
+          <div class="sumTop">
+            <div class="sumLabel">Total Potongan</div>
+            <div class="sumRight">
+              <div class="sumIcon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M10.3 4.3 2.7 19.7a2 2 0 0 0 1.8 2.3h15a2 2 0 0 0 1.8-2.3L13.7 4.3a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sumVal" id="totalPotong">Rp 0</div>
+        </div>
+      </div>
+
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <!-- FILTER CARD -->
+    <div class="card" id="filterCard" style="display:none;">
+      <div style="font-weight:800; font-size:16px;">Filter</div>
+      <div class="filterGrid">
+        <div>
+          <label>Periode Pencairan</label>
+          <div id="periodeBox" class="checkList"></div>
+        </div>
+        <div><label>Tanggal (Awal)</label><input type="date" id="tglFrom" /></div>
+        <div><label>Tanggal (Akhir)</label><input type="date" id="tglTo" /></div>
+        <div style="display:flex; align-items:end;">
+          <button class="btnReset" onclick="clearFilters()" title="Reset Filter" aria-label="Reset Filter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-3-6.7" stroke="#0b1220" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 3v7h-7" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="card" id="tableCard" style="display:none;">
+      <div class="rincianHeader">
+        <div class="rincianLeft">
+          <div style="font-weight:800; font-size:16px;">Rincian</div>
+          <div class="toggleRow">
+            <button class="toggleBtn tv-bersih active" id="vBtn_bersih" onclick="setView('bersih')">Pendapatan Bersih</button>
+            <button class="toggleBtn tv-pajak" id="vBtn_pajak" onclick="setView('pajak')">Potongan Pajak</button>
+            <button class="toggleBtn tv-komisi" id="vBtn_komisi" onclick="setView('komisi')">Komisi</button>
+            <button class="toggleBtn tv-jarak" id="vBtn_jarak" onclick="setView('jarak')">Kompensasi Jarak Jauh</button>
+            <button class="toggleBtn tv-bonus" id="vBtn_bonus" onclick="setView('bonus')">Bonus</button>
+            <button class="toggleBtn tv-penambah" id="vBtn_penambah" onclick="setView('penambah')">Penambah lain</button>
+            <button class="toggleBtn tv-pengurang" id="vBtn_pengurang" onclick="setView('pengurang')">Pengurang lain</button>
+          </div>
+        </div>
+        <div class="rincianRight">
+          <div id="countInfo" class="soft" style="margin:0;color:var(--muted);">-</div>
+        </div>
+      </div>
+
+      <div class="tableWrap" style="margin-top:10px;">
+        <table>
+          <thead id="thead"><tr><th>Loading...</th></tr></thead>
+          <tbody id="tbody"><tr><td>Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="copyright">© Internal Tools by HCGA Jendela360 (IIA)</div>
+  </div>
+
+  <!-- ROLE MODAL -->
+  <div class="modalBack" id="roleModalBack" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="roleModalTitle">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="roleModalTitle">Pilih Mode Akses</div>
+          <div class="modalSub" id="roleModalSubtitle">Khusus Akses Leader / Akses Management</div>
+        </div>
+        <button class="modalClose" onclick="closeRoleModal()" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modalBody">
+        <div class="segRow" id="modeSegRow">
+          <button class="segBtn active" data-mode="staff" onclick="selectMode('staff')" id="segStaff">Masuk Sebagai Staff</button>
+          <button class="segBtn" data-mode="leader" onclick="selectMode('leader')" id="segLeader">Masuk Sebagai Leader</button>
+        </div>
+        <div class="formGrid">
+          <div>
+            <div class="labelSmall">Divisi</div>
+            <select class="rmSelect" id="impersonateDivisi" onchange="syncPreview()">
+              <option value="">(Otomatis)</option>
+              <option value="AC">AC</option>
+              <option value="Fixing">Fixing</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="General" style="display:none">General</option>
+            </select>
+          </div>
+          <div>
+            <div class="labelSmall">Pilih Nama</div>
+            <select class="rmSelect" id="impersonatePerson" onchange="syncPreview()">
+              <option value="">— Pilih nama —</option>
+            </select>
+          </div>
+        </div>
+        <div class="hintBox" id="roleHint"></div>
+        <div class="previewBox" id="impersonatePreview">
+          <div class="previewLeft">
+            <div class="previewLabel">Pratinjau</div>
+            <div class="previewName" id="previewName">—</div>
+            <div class="previewMeta" id="previewMeta">Mode: Masuk sebagai Staff</div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="rmPill" id="previewRolePill">Akses: Staff</span>
+            <span class="rmPill" id="previewDivisiPill">Divisi: -</span>
+          </div>
+        </div>
+        <div id="roleModalMsg" style="display:none; margin-top:10px; color:#b00020; font-size:13px; font-weight:800;"></div>
+        <div class="rmActions">
+          <button class="btn ghost" id="btnResetRole" onclick="resetImpersonationUI()" title="Kembali ke akun asli" style="display:none">Masuk Sebagai Akun Asli</button>
+          <button class="btn primary" onclick="applyImpersonationUI()">Terapkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loadingBack" id="loadingBack" aria-hidden="true">
+    <div class="loadingCard" role="status" aria-live="polite">
+      <img class="loadingLogo" src="https://res.cloudinary.com/dkps3vy8m/image/upload/v1771707805/1_1_silluq.png" alt="" draggable="false" loading="eager" fetchpriority="high">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loadingTextWrap">
+        <div class="loadingTitle" id="loadingTitle">Memuat Data</div>
+        <div class="loadingSub" id="loadingSub">Mohon Tunggu</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const APP_URL = "<?= appUrl ?>";
+    const PREFILL_EMAIL = "<?= prefillEmail ?>";
+
+    let EMAIL = "";
+    let ALL_ROWS = [];
+    let FILTERED_ROWS = [];
+    let isLoadedOnce = false;
+    let SORT_KEY = "tanggal";
+    let SORT_DIR = "desc";
+    let VIEW = "bersih";
+
+    /* ===== VIEW COLUMN DEFINITIONS ===== */
+    const VIEW_COLS = {
+      bersih: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"pemasukan",        label:"Pemasukan",           cls:"cellMasuk", fmt:"currency" },
+        { key:"potongan",         label:"Potongan",            cls:"cellPotong", fmt:"currency" },
+        { key:"pendapatanBersih", label:"Pendapatan Bersih",   cls:"cellBersih", fmt:"currency" },
+      ],
+      pajak: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"potonganPajak",    label:"Potongan Pajak",      cls:"cellPotong", fmt:"currency" },
+      ],
+      komisi: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"biayaJasa",        label:"Biaya Jasa",          cls:"", fmt:"currency" },
+        { key:"persenKomisi",     label:"% Komisi",            cls:"", fmt:"pct" },
+        { key:"komisi",           label:"Komisi",              cls:"cellBersih", fmt:"currency" },
+      ],
+      jarak: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"kompensasiJarakJauh", label:"Kompensasi Jarak Jauh", cls:"cellMasuk", fmt:"currency" },
+      ],
+      bonus: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"bonus",            label:"Bonus",               cls:"cellMasuk", fmt:"currency" },
+      ],
+      penambah: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"keteranganPenambah", label:"Keterangan",        cls:"" },
+        { key:"penambahLain",     label:"Penambah Lain",       cls:"cellMasuk", fmt:"currency" },
+      ],
+      pengurang: [
+        { key:"periode",          label:"Periode",             cls:"" },
+        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
+        { key:"spk",              label:"No. SPK",             cls:"" },
+        { key:"keteranganPengurang", label:"Keterangan",       cls:"" },
+        { key:"pengurangLain",    label:"Pengurang Lain",      cls:"cellPotong", fmt:"currency" },
+      ],
+    };
+
+    /* ===== UTILS ===== */
+    function goHome(){
+      const email = (sessionStorage.getItem("mitraEmail") || PREFILL_EMAIL || "").trim().toLowerCase();
+      if (email) window.top.location.href = APP_URL + "?page=dashboard&email=" + encodeURIComponent(email);
+      else window.top.location.href = APP_URL;
+    }
+    function logout(){
+      try{ sessionStorage.removeItem("mitraEmail"); localStorage.removeItem("rememberToken"); }catch(e){}
+      window.top.location.href = APP_URL;
+    }
+    function getEmail(){
+      const fromTpl     = (PREFILL_EMAIL || "").trim().toLowerCase();
+      const fromSession = (sessionStorage.getItem("mitraEmail") || "").trim().toLowerCase();
+      return fromTpl || fromSession;
+    }
+    function safeParseJson(v){
+      if (typeof v === "object" && v !== null) return v;
+      if (typeof v !== "string") return null;
+      try{ return JSON.parse(v); }catch(e){ return null; }
+    }
+    function escapeHtml(str){
+      return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function formatRp(n){ return "Rp " + new Intl.NumberFormat('id-ID').format(Number(n) || 0); }
+    function formatDateLong(d){
+      if (!d) return "";
+      const dt = new Date(d);
+      if (isNaN(dt)) return "";
+      return dt.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+    }
+    function formatPct(v){
+      if (v === null || v === undefined || v === "") return "-";
+      const s = String(v).trim();
+      if (s.includes("%")) return s;
+      const n = Number(String(v).replace(",","."));
+      if (!isFinite(n)) return s;
+      if (n > 0 && n <= 1) return Math.round(n * 100) + "%";
+      if (n > 1 && n <= 100) return Math.round(n) + "%";
+      return n + "%";
+    }
+    function setMessage(t){ document.getElementById('msg').innerText = t || ""; }
+
+    /* ===== SORT ===== */
+    function arrowSvg(dir){
+      const up   = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 12.5 10 7.5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      const down = `<svg viewBox="0 0 20 20" fill="none"><path d="M5 7.5 10 12.5l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      return dir === "asc" ? up : down;
+    }
+    function getSortValue(row, key){
+      const cols = VIEW_COLS[VIEW] || [];
+      const col  = cols.find(c => c.key === key);
+      if (col && col.fmt === "currency") return Number(row[key]) || 0;
+      if (col && col.fmt === "date"){ const d = new Date(row[key]); return isNaN(d) ? 0 : d.getTime(); }
+      return String(row[key] || "").toLowerCase().trim();
+    }
+    function applySorting(){
+      const mul = SORT_DIR === "asc" ? 1 : -1;
+      FILTERED_ROWS.sort((a,b) => {
+        const va = getSortValue(a, SORT_KEY), vb = getSortValue(b, SORT_KEY);
+        if (typeof va === "number" && typeof vb === "number") return (va - vb) * mul;
+        if (va < vb) return -mul; if (va > vb) return mul; return 0;
+      });
+      document.querySelectorAll("th").forEach(th => th.classList.remove("sortActive"));
+      const th = document.querySelector(`th[data-key="${SORT_KEY}"]`);
+      if (th){ th.classList.add("sortActive"); const sp = th.querySelector(".sortArrow"); if(sp) sp.innerHTML = arrowSvg(SORT_DIR); }
+    }
+    function sortBy(key){
+      if (!key) return;
+      if (SORT_KEY === key) SORT_DIR = SORT_DIR === "asc" ? "desc" : "asc";
+      else { SORT_KEY = key; SORT_DIR = "asc"; }
+      applySorting(); renderTable(FILTERED_ROWS);
+    }
+
+    /* ===== VIEW TOGGLE ===== */
+    function setView(v){
+      VIEW = v;
+      ["bersih","pajak","komisi","jarak","bonus","penambah","pengurang"].forEach(k => {
+        const btn = document.getElementById("vBtn_" + k);
+        if (btn) btn.classList.toggle("active", k === v);
+      });
+      const cols = VIEW_COLS[v] || [];
+      if (cols.length){ SORT_KEY = cols[0].key; SORT_DIR = "desc"; }
+      renderTable(FILTERED_ROWS);
+    }
+
+    /* ===== RENDER TABLE ===== */
+    function renderTable(rows){
+      const thead = document.getElementById('thead');
+      const tbody = document.getElementById('tbody');
+      const cols = VIEW_COLS[VIEW] || [];
+
+      thead.innerHTML = "<tr>" + cols.map(c =>
+        `<th data-key="${c.key}" onclick="sortBy('${c.key}')">${escapeHtml(c.label)} <span class="sortArrow">${SORT_KEY === c.key ? arrowSvg(SORT_DIR) : ""}</span></th>`
+      ).join("") + "</tr>";
+      const activeTh = thead.querySelector(`th[data-key="${SORT_KEY}"]`);
+      if (activeTh) activeTh.classList.add("sortActive");
+
+      if (!rows || rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--muted);padding:24px;">Tidak ada data sesuai filter.</td></tr>`;
+        document.getElementById('countInfo').innerText = "0 Baris";
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => {
+        const cells = cols.map(c => {
+          let val = r[c.key], display = "";
+          if (c.fmt === "currency") display = (val !== undefined && val !== null && val !== "") ? formatRp(val) : "-";
+          else if (c.fmt === "date") display = formatDateLong(val);
+          else if (c.fmt === "pct") display = formatPct(val);
+          else display = escapeHtml(val !== undefined && val !== null ? val : "");
+          return `<td class="${c.cls || ""}">${display}</td>`;
+        }).join("");
+        return `<tr>${cells}</tr>`;
+      }).join("");
+
+      document.getElementById('countInfo').innerText = `${rows.length} Baris`;
+    }
+
+    /* ===== TOTALS ===== */
+    function renderTotals(rows){
+      let bersih = 0, masuk = 0, potong = 0;
+      (rows || []).forEach(r => {
+        masuk  += Number(r.pemasukan)       || 0;
+        potong += Number(r.potongan)        || 0;
+        bersih += Number(r.pendapatanBersih) || 0;
+      });
+      document.getElementById('totalBersih').innerText = formatRp(bersih);
+      document.getElementById('totalMasuk').innerText  = formatRp(masuk);
+      document.getElementById('totalPotong').innerText = formatRp(potong);
+    }
+
+    /* ===== FILTERS ===== */
+    function renderCheckboxList(containerId, items, groupName){
+      const box = document.getElementById(containerId);
+      box.innerHTML = "";
+      (items || []).forEach((it, idx) => {
+        const id = `${groupName}_${idx}`;
+        const lbl = document.createElement("label");
+        lbl.className = "checkItem"; lbl.setAttribute("for", id);
+        lbl.innerHTML = `<input id="${id}" type="checkbox" value="${escapeHtml(it)}" /><span>${escapeHtml(it)}</span>`;
+        lbl.addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+        box.appendChild(lbl);
+      });
+    }
+    function getCheckedValues(cid){
+      return Array.from(document.getElementById(cid).querySelectorAll("input[type='checkbox']")).filter(i => i.checked).map(i => i.value);
+    }
+    function clearChecked(cid){
+      document.getElementById(cid).querySelectorAll("input[type='checkbox']").forEach(i => i.checked = false);
+    }
+
+    function applyFilters(){
+      if (!ALL_ROWS || ALL_ROWS.length === 0){ renderTotals([]); renderTable([]); return; }
+      const tglFrom = document.getElementById('tglFrom').value;
+      const tglTo   = document.getElementById('tglTo').value;
+      const periodePicked = getCheckedValues("periodeBox");
+      const fromD = tglFrom ? new Date(tglFrom + "T00:00:00") : null;
+      const toD   = tglTo   ? new Date(tglTo   + "T23:59:59") : null;
+      FILTERED_ROWS = ALL_ROWS.filter(r => {
+        if (periodePicked.length > 0 && !periodePicked.includes(r.periode || "")) return false;
+        if (fromD || toD){
+          const d = new Date(r.tanggal);
+          if (isNaN(d)) return false;
+          if (fromD && d < fromD) return false;
+          if (toD   && d > toD)   return false;
+        }
+        return true;
+      });
+      applySorting(); renderTotals(FILTERED_ROWS); renderTable(FILTERED_ROWS); setMessage("");
+    }
+    function clearFilters(){
+      document.getElementById('tglFrom').value = "";
+      document.getElementById('tglTo').value   = "";
+      clearChecked("periodeBox");
+      applyFilters();
+    }
+    function bindAutoApply(){
+      ["tglFrom","tglTo"].forEach(id => {
+        document.getElementById(id).addEventListener("change", () => { if (isLoadedOnce) applyFilters(); });
+      });
+    }
+
+    /* ===== LOAD DATA ===== */
+    function startLoad(email){
+      document.getElementById("gateCard").style.display   = "none";
+      document.getElementById("mainCard").style.display   = "";
+      document.getElementById("filterCard").style.display = "";
+      document.getElementById("tableCard").style.display  = "";
+      document.getElementById("loginEmailPill").innerText = email || "-";
+      document.getElementById("loginRolePill").innerText  = "Pengguna";
+      showLoading();
+      const cols = VIEW_COLS[VIEW] || [];
+      document.getElementById('tbody').innerHTML = `<tr><td colspan="${cols.length || 4}">Loading...</td></tr>`;
+
+      /* ── MOCK DATA (sementara, backend belum ada) ── */
+      const MOCK_RES = {
+        ok: true,
+        namaMitra: "Ahmad Rizki",
+        email: email,
+        roleAkun: "staff",
+        posisiMitra: "Teknisi Senior",
+        divisiMitra: "AC",
+        statusKaryawan: "Aktif Tetap",
+        filterOptions: {
+          periode: ["Februari 2026", "Januari 2026", "Desember 2025", "November 2025"]
+        },
+        rows: [
+          { spk:"SPK-2026-0218", periode:"Februari 2026", tanggal:"2026-02-18", pemasukan:850000, potongan:127500, pendapatanBersih:722500, komisi:510000, persenKomisi:60, potonganPajak:51000, kompensasiJarakJauh:50000, bonus:100000, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan alat" },
+          { spk:"SPK-2026-0214", periode:"Februari 2026", tanggal:"2026-02-14", pemasukan:1200000, potongan:180000, pendapatanBersih:1020000, komisi:720000, persenKomisi:60, potonganPajak:72000, kompensasiJarakJauh:0, bonus:150000, penambahLain:30000, keteranganPenambah:"Tip pelanggan", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2026-0210", periode:"Februari 2026", tanggal:"2026-02-10", pemasukan:650000, potongan:97500, pendapatanBersih:552500, komisi:390000, persenKomisi:60, potonganPajak:39000, kompensasiJarakJauh:75000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2026-0205", periode:"Februari 2026", tanggal:"2026-02-05", pemasukan:900000, potongan:135000, pendapatanBersih:765000, komisi:540000, persenKomisi:60, potonganPajak:54000, kompensasiJarakJauh:0, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:50000, keteranganPengurang:"Bensin khusus" },
+          { spk:"SPK-2026-0131", periode:"Januari 2026", tanggal:"2026-01-31", pemasukan:1100000, potongan:165000, pendapatanBersih:935000, komisi:660000, persenKomisi:60, potonganPajak:66000, kompensasiJarakJauh:100000, bonus:200000, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2026-0122", periode:"Januari 2026", tanggal:"2026-01-22", pemasukan:750000, potongan:112500, pendapatanBersih:637500, komisi:450000, persenKomisi:60, potonganPajak:45000, kompensasiJarakJauh:50000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan material" },
+          { spk:"SPK-2026-0115", periode:"Januari 2026", tanggal:"2026-01-15", pemasukan:500000, potongan:75000, pendapatanBersih:425000, komisi:300000, persenKomisi:60, potonganPajak:30000, kompensasiJarakJauh:0, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2026-0108", periode:"Januari 2026", tanggal:"2026-01-08", pemasukan:1350000, potongan:202500, pendapatanBersih:1147500, komisi:810000, persenKomisi:60, potonganPajak:81000, kompensasiJarakJauh:75000, bonus:250000, penambahLain:50000, keteranganPenambah:"Lembur khusus", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2025-1228", periode:"Desember 2025", tanggal:"2025-12-28", pemasukan:980000, potongan:147000, pendapatanBersih:833000, komisi:588000, persenKomisi:60, potonganPajak:58800, kompensasiJarakJauh:0, bonus:100000, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2025-1215", periode:"Desember 2025", tanggal:"2025-12-15", pemasukan:600000, potongan:90000, pendapatanBersih:510000, komisi:360000, persenKomisi:60, potonganPajak:36000, kompensasiJarakJauh:50000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2025-1205", periode:"Desember 2025", tanggal:"2025-12-05", pemasukan:1500000, potongan:225000, pendapatanBersih:1275000, komisi:900000, persenKomisi:60, potonganPajak:90000, kompensasiJarakJauh:100000, bonus:300000, penambahLain:0, keteranganPenambah:"", pengurangLain:25000, keteranganPengurang:"Potongan admin" },
+          { spk:"SPK-2025-1120", periode:"November 2025", tanggal:"2025-11-20", pemasukan:820000, potongan:123000, pendapatanBersih:697000, komisi:492000, persenKomisi:60, potonganPajak:49200, kompensasiJarakJauh:75000, bonus:0, penambahLain:0, keteranganPenambah:"", pengurangLain:0, keteranganPengurang:"" },
+          { spk:"SPK-2025-1110", periode:"November 2025", tanggal:"2025-11-10", pemasukan:700000, potongan:105000, pendapatanBersih:595000, komisi:420000, persenKomisi:60, potonganPajak:42000, kompensasiJarakJauh:0, bonus:0, penambahLain:20000, keteranganPenambah:"Tip pelanggan", pengurangLain:0, keteranganPengurang:"" }
+        ]
+      };
+
+      setTimeout(() => {
+        const res = MOCK_RES;
+        document.getElementById('namaMitra').innerText = res.namaMitra || "-";
+        if (!AUTH_USER.email){ AUTH_USER.email = email; AUTH_USER.role_akun = res.roleAkun || "Staff"; AUTH_USER.nama = res.namaMitra || ""; }
+        applyEffectiveRolePillLabel();
+        setupRoleClickable(AUTH_USER.role_akun || "");
+        hideLoading();
+        document.getElementById('posisiMitraPill').innerHTML =
+          `<span class="mutedLabel">Posisi</span><span class="valWhite">${escapeHtml(res.posisiMitra || "-")}</span>`;
+        document.getElementById('divisiMitraPill').innerHTML =
+          `<span class="mutedLabel">Divisi</span><span class="valWhite">${escapeHtml(res.divisiMitra || "-")}</span>`;
+        document.getElementById('statusKaryawanPill').innerHTML =
+          `<span class="mutedLabel">Status</span><span class="valWhite">${escapeHtml(res.statusKaryawan || "-")}</span>`;
+        ALL_ROWS = res.rows || [];
+        const fo = res.filterOptions || {};
+        renderCheckboxList("periodeBox", fo.periode || [], "periode");
+        SORT_KEY = "tanggal"; SORT_DIR = "desc";
+        sessionStorage.setItem("mitraEmail", res.email || email);
+        isLoadedOnce = true;
+        applyFilters();
+      }, 600);
+    }
+
+    function showGate(msg){
+      document.getElementById("gateCard").style.display   = "";
+      document.getElementById("mainCard").style.display   = "none";
+      document.getElementById("filterCard").style.display = "none";
+      document.getElementById("tableCard").style.display  = "none";
+      document.getElementById("gateMsg").innerText = msg || "Silakan masuk lewat Beranda dulu.";
+    }
+
+    /* ===== LOADING ===== */
+    function showLoading(){
+      const b = document.getElementById("loadingBack"); b.classList.add("show"); b.setAttribute("aria-hidden","false");
+    }
+    function hideLoading(){
+      const b = document.getElementById("loadingBack"); b.classList.remove("show"); b.setAttribute("aria-hidden","true");
+    }
+
+    /* ===== ROLE MODAL ===== */
+    const KEY_EFFECTIVE_MODE  = "effectiveMode";
+    const KEY_EFFECTIVE_EMAIL = "effectiveEmail";
+    const KEY_EFFECTIVE_NAME  = "effectiveName";
+    let AUTH_USER = { email:"", role_akun:"Staff", divisi:"", nama:"" };
+    let UI_STATE  = { mode:"staff", divisi:"", personEmail:"", personName:"" };
+
+    function openRoleModal(){
+      const back = document.getElementById("roleModalBack");
+      back.classList.add("show"); back.setAttribute("aria-hidden","false");
+      const _msgEl = document.getElementById("roleModalMsg");
+      if (_msgEl){ _msgEl.textContent = ""; _msgEl.style.display = "none"; }
+      document.getElementById("impersonateDivisi").value = UI_STATE.divisi || AUTH_USER.divisi || "";
+      document.getElementById("impersonatePerson").value = UI_STATE.personEmail || "";
+      const btnReset = document.getElementById("btnResetRole");
+      if (btnReset){
+        const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+        const isImp = !!effEmail; btnReset.style.display = isImp ? "" : "none";
+        if (isImp){ const r = String(AUTH_USER.role_akun || "").trim(); btnReset.textContent = `Masuk sebagai ${r ? r.charAt(0).toUpperCase()+r.slice(1).toLowerCase() : "Akun Asli"}`; }
+      }
+      refreshImpersonationCandidates(); syncHint(); syncPreview();
+    }
+    function closeRoleModal(){
+      const back = document.getElementById("roleModalBack"); back.classList.remove("show"); back.setAttribute("aria-hidden","true");
+    }
+    function selectMode(mode){
+      UI_STATE.mode = mode;
+      document.querySelectorAll(".segBtn").forEach(b => b.classList.toggle("active", b.getAttribute("data-mode") === mode));
+      document.getElementById("impersonatePerson").value = ""; UI_STATE.personEmail = ""; UI_STATE.personName = "";
+      refreshImpersonationCandidates(); syncHint(); syncPreview();
+    }
+    function syncHint(){
+      const hint = document.getElementById("roleHint");
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+      const divSel = document.getElementById("impersonateDivisi");
+      if (role === "leader"){
+        hint.innerHTML = "<b>Kamu masuk sebagai Leader.</b><br/>Kamu hanya bisa memilih <b>Masuk sebagai Staff</b> dalam divisi kamu.";
+        divSel.value = AUTH_USER.divisi || ""; divSel.disabled = true;
+      } else if (role === "management"){
+        hint.innerHTML = "<b>Kamu masuk sebagai Management.</b><br/>Kamu bisa memilih <b>Masuk sebagai Staff</b> atau <b>Masuk sebagai Leader</b>.";
+        divSel.disabled = false;
+      } else {
+        hint.innerHTML = "<b>Kamu masuk sebagai Staff.</b><br/>Mode akses tidak bisa diganti.";
+        divSel.disabled = true;
+      }
+    }
+    function syncPreview(){
+      const divSel = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      const div = divSel ? divSel.value || "" : "";
+      const personName = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+      document.getElementById("previewMeta").innerText     = `Mode: ${UI_STATE.mode === "leader" ? "Masuk sebagai Leader" : "Masuk sebagai Staff"}`;
+      document.getElementById("previewRolePill").innerText = `Akses: ${UI_STATE.mode === "leader" ? "Leader" : "Staff"}`;
+      document.getElementById("previewDivisiPill").innerText = `Divisi: ${div || AUTH_USER.divisi || "-"}`;
+      document.getElementById("previewName").innerText = (personName && !personName.startsWith("—")) ? personName : "— Pilih Nama —";
+    }
+    function refreshImpersonationCandidates(){
+      const role = String(AUTH_USER.role_akun || "").toLowerCase();
+      if (!(role === "leader" || role === "management")) return;
+      const mode = UI_STATE.mode;
+      const div  = (document.getElementById("impersonateDivisi").value || "").trim();
+      const personSel = document.getElementById("impersonatePerson");
+      const first = personSel.options[0]; personSel.innerHTML = ""; personSel.appendChild(first);
+      const addFallback = (msg) => { if (personSel.options.length <= 1){ const o = document.createElement("option"); o.value = ""; o.textContent = msg || "— Tidak ada kandidat —"; personSel.appendChild(o); } };
+      try{
+        google.script.run
+          .withSuccessHandler((json) => {
+            let res; try{ res = typeof json === "string" ? JSON.parse(json) : json; }catch(e){}
+            if (!res || !res.ok || !Array.isArray(res.items)){ addFallback("— Kandidat belum tersedia —"); return; }
+            if (!res.items.length){ addFallback("— Tidak ada kandidat —"); return; }
+            res.items.forEach(it => { const o = document.createElement("option"); o.value = String(it.email || "").trim().toLowerCase(); o.textContent = String(it.nama || it.email || "-"); personSel.appendChild(o); });
+          })
+          .withFailureHandler(() => addFallback("— Gagal load kandidat —"))
+          .getImpersonationCandidates(AUTH_USER.email, mode, div);
+      }catch(e){ addFallback("— Kandidat belum tersedia —"); }
+    }
+    function applyEffectiveRolePillLabel(){
+      const rolePill = document.getElementById("loginRolePill");
+      const mode = sessionStorage.getItem(KEY_EFFECTIVE_MODE) || "";
+      const effEmail = (sessionStorage.getItem(KEY_EFFECTIVE_EMAIL) || "").trim();
+      rolePill.textContent = (mode && effEmail) ? (mode === "leader" ? "Leader" : "Staff") : (AUTH_USER.role_akun || "Pengguna");
+    }
+    function applyImpersonationUI(){
+      const divSel    = document.getElementById("impersonateDivisi");
+      const personSel = document.getElementById("impersonatePerson");
+      const personEmail = personSel ? personSel.value || "" : "";
+      const personName  = personSel ? (personSel.options[personSel.selectedIndex]?.text || "") : "";
+      if (!personEmail){ const _m = document.getElementById("roleModalMsg"); if (_m){ _m.textContent = "Pilih nama dulu sebelum menerapkan"; _m.style.display = ""; } return; }
+      UI_STATE.divisi = divSel ? divSel.value : ""; UI_STATE.personEmail = personEmail;
+      UI_STATE.personName = (personName && !personName.startsWith("—")) ? personName : "";
+      sessionStorage.setItem(KEY_EFFECTIVE_MODE,  UI_STATE.mode);
+      sessionStorage.setItem(KEY_EFFECTIVE_EMAIL, UI_STATE.personEmail);
+      sessionStorage.setItem(KEY_EFFECTIVE_NAME,  UI_STATE.personName || "");
+      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(personEmail);
+    }
+    function resetImpersonationUI(){
+      UI_STATE = { mode:"staff", divisi: AUTH_USER.divisi || "", personEmail:"", personName:"" };
+      sessionStorage.removeItem(KEY_EFFECTIVE_MODE);
+      sessionStorage.removeItem(KEY_EFFECTIVE_EMAIL);
+      sessionStorage.removeItem(KEY_EFFECTIVE_NAME);
+      applyEffectiveRolePillLabel(); closeRoleModal(); startLoad(AUTH_USER.email);
+    }
+    function setupRoleClickable(roleAkun){
+      const rolePill = document.getElementById("loginRolePill");
+      const r = String(roleAkun || "").trim().toLowerCase();
+      rolePill.classList.add("pillDisabled"); rolePill.onclick = null;
+      if (r === "management" || r === "leader"){
+        rolePill.classList.remove("pillDisabled");
+        rolePill.onclick = () => {
+          const segLeader = document.getElementById("segLeader");
+          if (r === "leader"){ if(segLeader) segLeader.style.display = "none"; }
+          else { if(segLeader) segLeader.style.display = "inline-flex"; }
+          selectMode("staff"); syncHint(); openRoleModal();
+        };
+      }
+    }
+
+    bindAutoApply();
+
+    (function init(){
+      EMAIL = getEmail();
+      if (!EMAIL){ showGate("Kamu belum masuk di Beranda. Balik ke Beranda dulu ya."); return; }
+      startLoad(EMAIL);
+    })();
+    /* ── Nav Bottom Sheet ── */
+    function openNavDropdown(){
+      const menu = document.getElementById('navMenu');
+      const btn = document.getElementById('navMenuBtn');
+      if (!menu || !btn) return;
+      menu.classList.add('show');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+    function closeNavDropdown(){
+      const menu = document.getElementById('navMenu');
+      const btn = document.getElementById('navMenuBtn');
+      if (!menu || !btn) return;
+      menu.classList.remove('show');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+    function toggleNavDropdown(e){
+      if (e){ e.preventDefault(); e.stopPropagation(); }
+      const menu = document.getElementById('navMenu');
+      if (!menu) return;
+      if (menu.classList.contains('show')) closeNavDropdown();
+      else openNavDropdown();
+    }
+    function goPage(page){ closeNavDropdown(); var email=(sessionStorage.getItem('mitraEmail')||PREFILL_EMAIL||'').trim().toLowerCase(); window.top.location.href=APP_URL+'?page='+page+(email?'&email='+encodeURIComponent(email):''); }
+    document.addEventListener('click', function(e){
+      const wrap = document.getElementById('navDropWrap');
+      const menu = document.getElementById('navMenu');
+      if (!wrap || !menu || !menu.classList.contains('show')) return;
+      if (!wrap.contains(e.target)) closeNavDropdown();
+    });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeNavDropdown(); });
+  </script>
+</body>
+</html>
