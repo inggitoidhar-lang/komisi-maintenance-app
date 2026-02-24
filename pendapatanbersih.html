@@ -117,6 +117,29 @@
       opacity:.9;
       flex:0 0 auto;
     }
+    .miniPill{
+      font-size: 11px;
+      font-weight: 900;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,.08);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      line-height: 1;
+      white-space: nowrap;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .miniPill:hover{ filter: brightness(1.05); }
+    .miniPill:active{ transform: translateY(1px); }
+    .miniPill[disabled]{ cursor: default; opacity: .6; filter: none; }
+    .pillMasuk{ background: rgba(11,128,67,.12); color: var(--done); border-color: rgba(11,128,67,.25); }
+    .pillPotong{ background: rgba(176,0,32,.12); color: var(--notdone); border-color: rgba(176,0,32,.25); }
+    .pillBersih{ background: rgba(0,160,198,.12); color: var(--brand); border-color: rgba(0,160,198,.25); }
+    .pillIcon{ width: 14px; height: 14px; display:inline-flex; align-items:center; justify-content:center; }
+    .pillIcon svg{ width: 14px; height: 14px; }
     .btnSmall{
       height:42px; padding: 0 14px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,.18); background: linear-gradient(135deg, var(--bg1), var(--bg2));
@@ -361,8 +384,15 @@
       display:block !important;
     }
     .cellBersih{ background: rgba(0,160,198,.08); font-weight: 900; color: var(--brand); }
-    .cellMasuk{ background: rgba(11,128,67,.07); font-weight: 900; color: var(--done); }
-    .cellPotong{ background: rgba(176,0,32,.07); font-weight: 900; color: var(--notdone); }
+    .cellMasuk{ background: rgba(11,128,67,.07); font-weight: 600; color: var(--done); }
+    .cellPotong{ background: rgba(176,0,32,.07); font-weight: 600; color: var(--notdone); }
+    .cellInline{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space: nowrap;
+    }
+    td{ white-space: nowrap; }
     /* Komisi tab: pastikan kolom Komisi (paling ujung) hijau */
     body[data-view="komisi"] .tableWrap tbody td:last-child{
       background: rgba(11,128,67,.07);
@@ -384,7 +414,6 @@
     }
     .toggleBtn:hover{ background: var(--soft); }
     .toggleBtn.tv-bersih.active{ border-color: rgba(0,160,198,.55); background: rgba(0,160,198,.12); color: var(--brand); }
-    .toggleBtn.tv-pajak.active{ border-color: rgba(176,0,32,.45); background: rgba(176,0,32,.10); color: var(--notdone); }
     .toggleBtn.tv-komisi.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
     .toggleBtn.tv-jarak.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
     .toggleBtn.tv-bonus.active{ border-color: rgba(11,128,67,.45); background: rgba(11,128,67,.10); color: var(--done); }
@@ -452,6 +481,22 @@
     .modalCard .modalClose{ height: 40px; width: 40px; border-radius: 999px; flex-shrink:0; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.12); cursor:pointer; color:#fff; display:inline-flex; align-items:center; justify-content:center; backdrop-filter: blur(10px); }
     .modalCard .modalClose:hover{ background: rgba(255,255,255,.18); }
     .modalCard .modalBody{ padding: 14px; }
+    .modalTableWrap{
+      max-height: 60vh;
+      overflow:auto;
+      border: 1px solid rgba(15,23,42,.08);
+      border-radius: 14px;
+    }
+    .modalTableWrap table{ width:100%; border-collapse:collapse; }
+    .modalTableWrap th,
+    .modalTableWrap td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+      font-size: 12px;
+      text-align:left;
+      white-space: nowrap;
+    }
+    .modalTableWrap th{ background: var(--soft); font-weight: 900; position: sticky; top:0; z-index:1; }
     .segRow{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px; }
     .segBtn{ height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(15,23,42,.14); background:#fff; cursor:pointer; font-weight: 900; font-family: inherit; color: rgba(11,18,32,.85); transition: background .15s ease, transform .05s ease; display:inline-flex; align-items:center; gap:10px; user-select:none; }
     .segBtn:hover{ background: rgba(15,23,42,.05); }
@@ -644,6 +689,14 @@
           <label>Periode Pencairan</label>
           <div id="periodeBox" class="checkList"></div>
         </div>
+        <div id="filterPeriodeTargetWrap" style="display:none;">
+          <label>Periode Target</label>
+          <div id="periodeTargetBox" class="checkList"></div>
+        </div>
+        <div id="filterStatusPencapaianWrap" style="display:none;">
+          <label>Status Pencapaian</label>
+          <div id="statusPencapaianBox" class="checkList"></div>
+        </div>
         <div id="filterPekerjaanWrap" style="display:none;">
           <label>Pekerjaan</label>
           <div id="pekerjaanBox" class="checkList"></div>
@@ -689,7 +742,6 @@
             <button class="toggleBtn tv-bonus" id="vBtn_bonus" onclick="setView('bonus')">Bonus</button>
             <button class="toggleBtn tv-jarak" id="vBtn_jarak" onclick="setView('jarak')">Kompensasi Jarak Jauh</button>
             <button class="toggleBtn tv-penambah" id="vBtn_penambah" onclick="setView('penambah')">Penambah lain</button>
-            <button class="toggleBtn tv-pajak" id="vBtn_pajak" onclick="setView('pajak')">Potongan Pajak</button>
             <button class="toggleBtn tv-pengurang" id="vBtn_pengurang" onclick="setView('pengurang')">Pengurang lain</button>
           </div>
         </div>
@@ -768,6 +820,32 @@
     </div>
   </div>
 
+  <!-- DETAIL MODAL -->
+  <div class="modalBack" id="detailModalBack" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="detailModalTitle">Detail</div>
+          <div class="modalSub" id="detailModalSubtitle">-</div>
+        </div>
+        <button class="modalClose" onclick="closeDetailModal()" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modalBody">
+        <div class="modalTableWrap">
+          <table>
+            <thead id="detailThead"><tr><th>Loading...</th></tr></thead>
+            <tbody id="detailTbody"><tr><td>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- LOADING OVERLAY -->
   <div class="loadingBack" id="loadingBack" aria-hidden="true">
     <div class="loadingCard" role="status" aria-live="polite">
@@ -787,7 +865,9 @@
     let EMAIL = "";
     let ALL_ROWS = [];
     let FILTERED_ROWS = [];
-    let PERIODE_OPTIONS = { slip: [], jarak: [] };
+    let PERIODE_OPTIONS = { slip: [], jarak: [], bonus: [], penambah: [], pengurang: [], bersih: [] };
+    let PERIODE_TARGET_OPTIONS = { bonus: [] };
+    let STATUS_PENCAPAIAN_OPTIONS = [];
     let PEKERJAAN_OPTIONS = { slip: [] };
     let JARAK_DEBUG = { matchName: "", matchedRows: 0, scannedRows: 0, sampleNames: [], firstRow: null };
     let isLoadedOnce = false;
@@ -798,18 +878,16 @@
     /* ===== VIEW COLUMN DEFINITIONS ===== */
     const VIEW_COLS = {
       bersih: [
-        { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"pemasukan",        label:"Pemasukan",           cls:"cellMasuk", fmt:"currency" },
-        { key:"potongan",         label:"Potongan",            cls:"cellPotong", fmt:"currency" },
-        { key:"pendapatanBersih", label:"Pendapatan Bersih",   cls:"cellBersih", fmt:"currency" },
-      ],
-      pajak: [
-        { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"potonganPajak",    label:"Potongan Pajak",      cls:"cellPotong", fmt:"currency" },
+        { key:"periode",          label:"Periode Pencairan",    cls:"" },
+        { key:"nama",             label:"Nama",                 cls:"" },
+        { key:"posisi",           label:"Posisi",               cls:"" },
+        { key:"komisi",           label:"Komisi",               cls:"cellMasuk", fmt:"currency", pill:{ type:"detail", label:"Cek", target:"komisi", cls:"pillMasuk" } },
+        { key:"bonus",            label:"Bonus",                cls:"cellMasuk", fmt:"currency", pill:{ type:"detail", label:"Cek", target:"bonus", cls:"pillMasuk" } },
+        { key:"kompensasiJarakJauh", label:"Kompensasi Jarak Jauh", cls:"cellMasuk", fmt:"currency", pill:{ type:"detail", label:"Cek", target:"jarak", cls:"pillMasuk" } },
+        { key:"penambahLain",     label:"Penambah Lainnya",      cls:"cellMasuk", fmt:"currency", pill:{ type:"detail", label:"Cek", target:"penambah", cls:"pillMasuk" } },
+        { key:"pengurangLain",    label:"Potongan Lainnya",      cls:"cellPotong", fmt:"currency", pill:{ type:"detail", label:"Cek", target:"pengurang", cls:"pillPotong" } },
+        { key:"pajak",            label:"Pajak",                cls:"cellPotong", fmt:"currency" },
+        { key:"pendapatanBersih", label:"Pendapatan Bersih",    cls:"cellBersih", fmt:"currency", pill:{ type:"download", label:"Unduh Slip", target:"slip", cls:"pillBersih", icon:"download" } },
       ],
       komisi: [
         { key:"periode",          label:"Periode Pencairan",   cls:"" },
@@ -836,23 +914,29 @@
         { key:"nominalKompensasi",  label:"Nominal Kompensasi",     cls:"cellMasuk", fmt:"currency", info:"Kompensasi Jarak Jauh dihitung berdasarkan Jarak diatas 20 Km x Rp 1.000" },
       ],
       bonus: [
-        { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"bonus",            label:"Bonus",               cls:"cellMasuk", fmt:"currency" },
+        { key:"periode",            label:"Periode Pencairan",   cls:"" },
+        { key:"periodeTarget",      label:"Periode Target",      cls:"" },
+        { key:"nama",               label:"Nama",                cls:"" },
+        { key:"posisi",             label:"Posisi",              cls:"" },
+        { key:"targetInvoice",      label:"Target Invoice",      cls:"", fmt:"number" },
+        { key:"pencapaianInvoice",  label:"Pencapaian Invoice",  cls:"", fmt:"number" },
+        { key:"statusPencapaian",   label:"Status Pencapaian",   cls:"" },
+        { key:"nominalBonus",       label:"Nominal Bonus",       cls:"cellMasuk", fmt:"currency" },
       ],
       penambah: [
         { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"keteranganPenambah", label:"Keterangan",        cls:"" },
+        { key:"nama",             label:"Nama",                cls:"" },
+        { key:"posisi",           label:"Posisi",              cls:"" },
+        { key:"divisi",           label:"Divisi",              cls:"" },
+        { key:"keteranganPenambah", label:"Keterangan Penambah Lain", cls:"" },
         { key:"penambahLain",     label:"Penambah Lain",       cls:"cellMasuk", fmt:"currency" },
       ],
       pengurang: [
         { key:"periode",          label:"Periode",             cls:"" },
-        { key:"tanggal",          label:"Tanggal",             cls:"", fmt:"date" },
-        { key:"spk",              label:"No. SPK",             cls:"" },
-        { key:"keteranganPengurang", label:"Keterangan",       cls:"" },
+        { key:"nama",             label:"Nama",                cls:"" },
+        { key:"posisi",           label:"Posisi",              cls:"" },
+        { key:"divisi",           label:"Divisi",              cls:"" },
+        { key:"keteranganPengurang", label:"Keterangan Penambah Lain", cls:"" },
         { key:"pengurangLain",    label:"Pengurang Lain",      cls:"cellPotong", fmt:"currency" },
       ],
     };
@@ -904,6 +988,14 @@
       if (n > 1 && n <= 100) return Math.round(n) + "%";
       return n + "%";
     }
+    function normalizeStatusPencapaian(v){
+      const s = String(v || "").trim().toLowerCase();
+      if (!s) return "";
+      if (s.includes("tidak") && s.includes("bonus")) return "Tidak dapat bonus";
+      if (s.includes("dalam") && s.includes("perhitungan")) return "Dalam masa perhitungan";
+      if (s.includes("dapat") && s.includes("bonus")) return "Dapat bonus";
+      return String(v || "").trim();
+    }
     function isStatusCair(v){
       const s = String(v || "").trim().toLowerCase();
       if (!s) return false;
@@ -922,6 +1014,7 @@
       const cols = VIEW_COLS[VIEW] || [];
       const col  = cols.find(c => c.key === key);
       if (col && col.fmt === "currency") return Number(row[key]) || 0;
+      if (col && col.fmt === "number") return Number(row[key]) || 0;
       if (col && col.fmt === "km") return Number(row[key]) || 0;
       if (col && col.fmt === "date"){ const d = new Date(row[key]); return isNaN(d) ? 0 : d.getTime(); }
       return String(row[key] || "").toLowerCase().trim();
@@ -948,14 +1041,25 @@
     function setView(v){
       VIEW = v;
       document.body.setAttribute("data-view", VIEW);
-      ["bersih","komisi","bonus","jarak","penambah","pajak","pengurang"].forEach(k => {
+      ["bersih","komisi","bonus","jarak","penambah","pengurang"].forEach(k => {
         const btn = document.getElementById("vBtn_" + k);
         if (btn) btn.classList.toggle("active", k === v);
       });
       const isKomisi = v === "komisi";
-      const srcPeriode = (v === "jarak") ? PERIODE_OPTIONS.jarak : PERIODE_OPTIONS.slip;
+      const isBonus = v === "bonus";
+      const isPenambah = v === "penambah";
+      const isPengurang = v === "pengurang";
+      const isBersih = v === "bersih";
+      const srcPeriode = (v === "jarak")
+        ? PERIODE_OPTIONS.jarak
+        : (v === "bonus" ? PERIODE_OPTIONS.bonus
+          : (v === "penambah" ? PERIODE_OPTIONS.penambah
+            : (v === "pengurang" ? PERIODE_OPTIONS.pengurang
+              : (v === "bersih" ? PERIODE_OPTIONS.bersih : PERIODE_OPTIONS.slip))));
       renderCheckboxList("periodeBox", srcPeriode, "periode");
       renderCheckboxList("pekerjaanBox", isKomisi ? PEKERJAAN_OPTIONS.slip : [], "pekerjaan");
+      renderCheckboxList("periodeTargetBox", isBonus ? PERIODE_TARGET_OPTIONS.bonus : [], "periodeTarget");
+      renderCheckboxList("statusPencapaianBox", isBonus ? STATUS_PENCAPAIAN_OPTIONS : [], "statusPencapaian");
       syncFilterVisibilityByView();
       const cols = VIEW_COLS[v] || [];
       if (cols.length){ SORT_KEY = cols[0].key; SORT_DIR = "desc"; }
@@ -967,6 +1071,10 @@
     function syncFilterVisibilityByView(){
       const isJarak = VIEW === "jarak";
       const isKomisi = VIEW === "komisi";
+      const isBonus = VIEW === "bonus";
+      const isPenambah = VIEW === "penambah";
+      const isPengurang = VIEW === "pengurang";
+      const isBersih = VIEW === "bersih";
       const setVisible = (id, visible) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -982,8 +1090,8 @@
 
       setVisible("filterPeriodeWrap", true);
       setVisible("filterResetWrap", true);
-      setVisible("filterTglFromWrap", !isJarak && !isKomisi);
-      setVisible("filterTglToWrap", !isJarak && !isKomisi);
+      setVisible("filterTglFromWrap", !isJarak && !isKomisi && !isBonus && !isPenambah && !isPengurang && !isBersih);
+      setVisible("filterTglToWrap", !isJarak && !isKomisi && !isBonus && !isPenambah && !isPengurang && !isBersih);
       setVisible("filterAktFromWrap", isJarak);
       setVisible("filterAktToWrap", isJarak);
       setVisible("filterJarak20Wrap", isJarak);
@@ -994,6 +1102,8 @@
       setVisible("filterJadwalToWrap", isKomisi);
       setVisible("filterQUnitWrap", isKomisi);
       setVisible("filterQSpkWrap", isKomisi);
+      setVisible("filterPeriodeTargetWrap", isBonus);
+      setVisible("filterStatusPencapaianWrap", isBonus);
 
       if (isJarak) {
         document.getElementById("tglFrom").value = "";
@@ -1005,12 +1115,44 @@
         document.getElementById("qUnit").value = "";
         document.getElementById("qSpk").value = "";
         clearChecked("pekerjaanBox");
+        clearChecked("periodeTargetBox");
+        clearChecked("statusPencapaianBox");
       } else if (isKomisi) {
         document.getElementById("tglFrom").value = "";
         document.getElementById("tglTo").value = "";
         document.getElementById("aktivitasFrom").value = "";
         document.getElementById("aktivitasTo").value = "";
         document.getElementById("jarak20Filter").value = "all";
+        clearChecked("periodeTargetBox");
+        clearChecked("statusPencapaianBox");
+      } else if (isBonus) {
+        document.getElementById("tglFrom").value = "";
+        document.getElementById("tglTo").value = "";
+        document.getElementById("aktivitasFrom").value = "";
+        document.getElementById("aktivitasTo").value = "";
+        document.getElementById("jarak20Filter").value = "all";
+        document.getElementById("cetakFrom").value = "";
+        document.getElementById("cetakTo").value = "";
+        document.getElementById("jadwalFrom").value = "";
+        document.getElementById("jadwalTo").value = "";
+        document.getElementById("qUnit").value = "";
+        document.getElementById("qSpk").value = "";
+        clearChecked("pekerjaanBox");
+      } else if (isPenambah || isPengurang || isBersih) {
+        document.getElementById("tglFrom").value = "";
+        document.getElementById("tglTo").value = "";
+        document.getElementById("aktivitasFrom").value = "";
+        document.getElementById("aktivitasTo").value = "";
+        document.getElementById("jarak20Filter").value = "all";
+        document.getElementById("cetakFrom").value = "";
+        document.getElementById("cetakTo").value = "";
+        document.getElementById("jadwalFrom").value = "";
+        document.getElementById("jadwalTo").value = "";
+        document.getElementById("qUnit").value = "";
+        document.getElementById("qSpk").value = "";
+        clearChecked("pekerjaanBox");
+        clearChecked("periodeTargetBox");
+        clearChecked("statusPencapaianBox");
       } else {
         document.getElementById("aktivitasFrom").value = "";
         document.getElementById("aktivitasTo").value = "";
@@ -1022,6 +1164,8 @@
         document.getElementById("qUnit").value = "";
         document.getElementById("qSpk").value = "";
         clearChecked("pekerjaanBox");
+        clearChecked("periodeTargetBox");
+        clearChecked("statusPencapaianBox");
       }
     }
 
@@ -1052,18 +1196,43 @@
         return;
       }
 
-      tbody.innerHTML = rows.map(r => {
+      tbody.innerHTML = rows.map((r, idx) => {
         const cells = cols.map(c => {
           let val = r[c.key], display = "";
           if (c.fmt === "currency") display = (val !== undefined && val !== null && val !== "") ? formatRp(val) : "-";
+          else if (c.fmt === "number") display = (val !== undefined && val !== null && val !== "") ? formatNumber(val) : "-";
           else if (c.fmt === "km") display = (val !== undefined && val !== null && val !== "") ? `${formatNumber(val)} km` : "-";
           else if (c.fmt === "date") display = formatDateLong(val);
           else if (c.fmt === "pct") display = formatPct(val);
           else display = escapeHtml(val !== undefined && val !== null ? val : "");
-          return `<td class="${c.cls || ""}">${display}</td>`;
+
+          let pillHtml = "";
+          if (c.pill) {
+            const isDownload = c.pill.type === "download";
+            const hasValue = isDownload ? true : (Number(val) || 0) > 0;
+            const disabledAttr = hasValue ? "" : " disabled";
+            const iconHtml = (c.pill.icon === "download")
+              ? `<span class="pillIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>`
+              : "";
+            pillHtml = ` <button class="miniPill ${c.pill.cls || ""}" data-pill="${c.pill.type}" data-target="${c.pill.target || ""}"${disabledAttr}>${iconHtml}${escapeHtml(c.pill.label || "")}</button>`;
+          }
+
+          return `<td class="${c.cls || ""}"><span class="cellInline">${display}${pillHtml}</span></td>`;
         }).join("");
-        return `<tr>${cells}</tr>`;
+        return `<tr data-row-index="${idx}">${cells}</tr>`;
       }).join("");
+
+      tbody.querySelectorAll(".miniPill[data-pill]").forEach(btn => {
+        btn.addEventListener("click", (ev) => {
+          if (btn.hasAttribute("disabled")) return;
+          const tr = ev.currentTarget.closest("tr");
+          const rowIndex = tr ? Number(tr.getAttribute("data-row-index")) : -1;
+          const row = (rowIndex >= 0 && rowIndex < rows.length) ? rows[rowIndex] : null;
+          const pillType = String(btn.getAttribute("data-pill") || "");
+          const target = String(btn.getAttribute("data-target") || "");
+          handlePillAction(pillType, target, row);
+        });
+      });
 
       if (VIEW === "jarak"){
         const totalNominal = rows.reduce((sum, r) => sum + (Number(r && r.nominalKompensasi) || 0), 0);
@@ -1074,6 +1243,114 @@
       } else {
         document.getElementById('countInfo').innerText = `${rows.length} Baris`;
       }
+    }
+
+    function formatCellValue(c, val){
+      if (c.fmt === "currency") return (val !== undefined && val !== null && val !== "") ? formatRp(val) : "-";
+      if (c.fmt === "number") return (val !== undefined && val !== null && val !== "") ? formatNumber(val) : "-";
+      if (c.fmt === "km") return (val !== undefined && val !== null && val !== "") ? `${formatNumber(val)} km` : "-";
+      if (c.fmt === "date") return formatDateLong(val);
+      if (c.fmt === "pct") return formatPct(val);
+      return String(val !== undefined && val !== null ? val : "");
+    }
+
+    function handlePillAction(type, target, row){
+      if (!row) return;
+      if (type === "detail") {
+        openDetailByPeriod(target, row.periode || "");
+        return;
+      }
+      if (type === "download") {
+        downloadSlip(row);
+      }
+    }
+
+    function openDetailByPeriod(target, periode){
+      const titleMap = {
+        komisi: "Rincian Komisi",
+        bonus: "Rincian Bonus",
+        jarak: "Rincian Kompensasi Jarak Jauh",
+        penambah: "Rincian Penambah Lain",
+        pengurang: "Rincian Pengurang Lain"
+      };
+      const cols = VIEW_COLS[target] || [];
+      let rows = [];
+      if (target === "komisi") {
+        rows = ALL_ROWS.filter(r => r._source === "slip" && isStatusCair(r.statusPencairan) && String(r.periode || "") === String(periode || ""));
+      } else if (target === "bonus") {
+        rows = ALL_ROWS.filter(r => r._source === "bonus" && String(r.periode || "") === String(periode || ""));
+      } else if (target === "jarak") {
+        rows = ALL_ROWS.filter(r => r._source === "jarak" && String(r.periode || "") === String(periode || ""));
+      } else if (target === "penambah") {
+        rows = ALL_ROWS.filter(r => r._source === "penambah" && String(r.periode || "") === String(periode || ""));
+      } else if (target === "pengurang") {
+        rows = ALL_ROWS.filter(r => r._source === "pengurang" && String(r.periode || "") === String(periode || ""));
+      }
+      openDetailModal(titleMap[target] || "Detail", `Periode Pencairan: ${periode || "-"}`, cols, rows);
+    }
+
+    function openDetailModal(title, subtitle, cols, rows){
+      document.getElementById("detailModalTitle").innerText = title || "Detail";
+      document.getElementById("detailModalSubtitle").innerText = subtitle || "-";
+      renderDetailTable(cols || [], rows || []);
+      const back = document.getElementById("detailModalBack");
+      back.classList.add("show");
+      back.setAttribute("aria-hidden","false");
+    }
+    function closeDetailModal(){
+      const back = document.getElementById("detailModalBack");
+      back.classList.remove("show");
+      back.setAttribute("aria-hidden","true");
+    }
+    function renderDetailTable(cols, rows){
+      const thead = document.getElementById("detailThead");
+      const tbody = document.getElementById("detailTbody");
+      if (!cols.length){
+        thead.innerHTML = "<tr><th>-</th></tr>";
+        tbody.innerHTML = "<tr><td>Tidak ada data.</td></tr>";
+        return;
+      }
+      thead.innerHTML = "<tr>" + cols.map(c => `<th>${escapeHtml(c.label || "")}</th>`).join("") + "</tr>";
+      if (!rows.length){
+        tbody.innerHTML = `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--muted);padding:18px;">Tidak ada data.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map(r => {
+        const tds = cols.map(c => {
+          const val = formatCellValue(c, r[c.key]);
+          return `<td>${escapeHtml(String(val))}</td>`;
+        }).join("");
+        return `<tr>${tds}</tr>`;
+      }).join("");
+    }
+
+    function downloadSlip(row){
+      const cols = VIEW_COLS.bersih || [];
+      if (!cols.length) return;
+      const header = cols.map(c => c.label || c.key);
+      const values = cols.map(c => formatCellValue(c, row[c.key]));
+      const csv = [header, values].map(line => line.map(csvEscape).join(",")).join("\n");
+      const periode = String(row.periode || "periode").replace(/[^\w-]+/g, "_");
+      const filename = `slip_pendapatan_bersih_${periode}.csv`;
+      downloadTextFile(csv, filename);
+    }
+    function csvEscape(v){
+      const s = String(v ?? "");
+      if (s.includes(",") || s.includes("\"") || s.includes("\n")) {
+        return `"${s.replace(/\"/g, "\"\"")}"`;
+      }
+      return s;
+    }
+    function downloadTextFile(text, filename){
+      const blob = new Blob([text], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     /* ===== TOTALS ===== */
@@ -1129,6 +1406,8 @@
       const qSpk = String(document.getElementById('qSpk').value || "").trim().toLowerCase();
       const jarak20Filter = (document.getElementById('jarak20Filter')?.value || "all").toLowerCase();
       const periodePicked = getCheckedValues("periodeBox");
+      const periodeTargetPicked = getCheckedValues("periodeTargetBox");
+      const statusPencapaianPicked = getCheckedValues("statusPencapaianBox");
       const pekerjaanPicked = getCheckedValues("pekerjaanBox");
       const fromD = tglFrom ? new Date(tglFrom + "T00:00:00") : null;
       const toD   = tglTo   ? new Date(tglTo   + "T23:59:59") : null;
@@ -1142,7 +1421,11 @@
       const baseRows = ALL_ROWS.filter(r => {
         if (VIEW === "jarak") return r._source === "jarak";
         if (VIEW === "komisi") return r._source === "slip" && isStatusCair(r.statusPencairan);
-        return r._source !== "jarak";
+        if (VIEW === "bonus") return r._source === "bonus";
+        if (VIEW === "penambah") return r._source === "penambah";
+        if (VIEW === "pengurang") return r._source === "pengurang";
+        if (VIEW === "bersih") return r._source === "bersih";
+        return r._source === "slip";
       });
 
       FILTERED_ROWS = baseRows.filter(r => {
@@ -1173,6 +1456,9 @@
           }
           if (qUnit && !String(r.unit || "").toLowerCase().includes(qUnit)) return false;
           if (qSpk && !String(r.spk || "").toLowerCase().includes(qSpk)) return false;
+        } else if (VIEW === "bonus") {
+          if (periodeTargetPicked.length > 0 && !periodeTargetPicked.includes(r.periodeTarget || "")) return false;
+          if (statusPencapaianPicked.length > 0 && !statusPencapaianPicked.includes(normalizeStatusPencapaian(r.statusPencapaian))) return false;
         } else {
           if (fromD || toD){
             const d = new Date(r.tanggal);
@@ -1212,6 +1498,8 @@
       const jarak20El = document.getElementById('jarak20Filter');
       if (jarak20El) jarak20El.value = "all";
       clearChecked("periodeBox");
+      clearChecked("periodeTargetBox");
+      clearChecked("statusPencapaianBox");
       clearChecked("pekerjaanBox");
       applyFilters();
     }
@@ -1327,6 +1615,92 @@
         };
       });
     }
+    function mapBonusRowsToCurrentView(rows){
+      return (rows || []).map(r => {
+        const nominal = Number(r && r.nominalBonus) || 0;
+        return {
+          _source: "bonus",
+          periode: (r && r.periodePencairan) || "",
+          periodeTarget: (r && r.periodeTarget) || "",
+          nama: (r && r.nama) || "",
+          posisi: (r && r.posisi) || "",
+          targetInvoice: Number(r && r.targetInvoice) || 0,
+          pencapaianInvoice: Number(r && r.pencapaianInvoice) || 0,
+          statusPencapaian: normalizeStatusPencapaian(r && r.statusPencapaian),
+          nominalBonus: nominal,
+          pemasukan: nominal,
+          potongan: 0,
+          pendapatanBersih: nominal,
+        };
+      });
+    }
+    function mapPendapatanBersihRowsToCurrentView(rows){
+      const bersihRows = [];
+      (rows || []).forEach(r => {
+        const periode = (r && r.periodePencairan) || "";
+        const nama = (r && r.nama) || "";
+        const posisi = (r && r.posisi) || "";
+        const komisi = Number(r && r.komisi) || 0;
+        const kompensasiJarakJauh = Number(r && r.kompensasiJarakJauh) || 0;
+        const bonus = Number(r && r.bonus) || 0;
+        const penambah = Number(r && r.penambahLain) || 0;
+        const pengurang = Number(r && r.pengurangLain) || 0;
+        const pajak = Number(r && r.pajak) || 0;
+        const pendapatanBersih = Number(r && r.pendapatanBersih) || 0;
+
+        bersihRows.push({
+          _source: "bersih",
+          periode,
+          nama,
+          posisi,
+          komisi,
+          bonus,
+          kompensasiJarakJauh,
+          penambahLain: penambah,
+          pengurangLain: pengurang,
+          pajak,
+          pendapatanBersih,
+          pemasukan: komisi + bonus + kompensasiJarakJauh + penambah,
+          potongan: pengurang + pajak,
+        });
+
+      });
+      return { bersihRows };
+    }
+    function mapPenambahLainRowsToCurrentView(rows){
+      return (rows || []).map(r => {
+        const nominal = Number(r && r.penambahLain) || 0;
+        return {
+          _source: "penambah",
+          periode: (r && r.periode) || "",
+          nama: (r && r.nama) || "",
+          posisi: (r && r.posisi) || "",
+          divisi: (r && r.divisi) || "",
+          keteranganPenambah: (r && r.keteranganPenambah) || "",
+          penambahLain: nominal,
+          pemasukan: nominal,
+          potongan: 0,
+          pendapatanBersih: nominal,
+        };
+      });
+    }
+    function mapPengurangLainRowsToCurrentView(rows){
+      return (rows || []).map(r => {
+        const nominal = Number(r && r.pengurangLain) || 0;
+        return {
+          _source: "pengurang",
+          periode: (r && r.periode) || "",
+          nama: (r && r.nama) || "",
+          posisi: (r && r.posisi) || "",
+          divisi: (r && r.divisi) || "",
+          keteranganPengurang: (r && r.keteranganPengurang) || "",
+          pengurangLain: nominal,
+          pemasukan: 0,
+          potongan: nominal,
+          pendapatanBersih: 0,
+        };
+      });
+    }
 
     /* ===== LOAD DATA ===== */
     function startLoad(email, authEmail){
@@ -1362,20 +1736,67 @@
         }
       });
 
-      Promise.all([fetchKomisi(), fetchJarak()])
-        .then(([resKomisiRaw, resJarakRaw]) => {
+      const fetchBonus = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat bonus"), rows:[], filterOptions:{ periodePencairan:[], periodeTarget:[], statusPencapaian:[] } }))
+            .getBonusDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periodePencairan:[], periodeTarget:[], statusPencapaian:[] } });
+        }
+      });
+
+      const fetchPendapatan = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat penambah/pengurang"), rows:[], filterOptions:{ periodePencairan:[] } }))
+            .getPendapatanBersihDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periodePencairan:[] } });
+        }
+      });
+
+      const fetchPenambah = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat penambah lain"), rows:[], filterOptions:{ periode:[] } }))
+            .getPenambahLainDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periode:[] } });
+        }
+      });
+      const fetchPengurang = () => new Promise((resolve) => {
+        try{
+          google.script.run
+            .withSuccessHandler((json) => resolve(safeParseJson(json) || json || {}))
+            .withFailureHandler((err) => resolve({ ok:false, message:String((err && err.message) ? err.message : err || "Gagal memuat pengurang lain"), rows:[], filterOptions:{ periode:[] } }))
+            .getPengurangLainDatasetByEmail(email);
+        }catch(e){
+          resolve({ ok:false, message:String(e && e.message ? e.message : e), rows:[], filterOptions:{ periode:[] } });
+        }
+      });
+
+      Promise.all([fetchKomisi(), fetchJarak(), fetchBonus(), fetchPendapatan(), fetchPenambah(), fetchPengurang()])
+        .then(([resKomisiRaw, resJarakRaw, resBonusRaw, resPendapatanRaw, resPenambahRaw, resPengurangRaw]) => {
           const res = resKomisiRaw || {};
           const resJarak = resJarakRaw || {};
+          const resBonus = resBonusRaw || {};
+          const resPendapatan = resPendapatanRaw || {};
+          const resPenambah = resPenambahRaw || {};
+          const resPengurang = resPengurangRaw || {};
           JARAK_DEBUG.matchName = (((resJarak || {}).debug || {}).matchName || "");
           JARAK_DEBUG.matchedRows = Number((((resJarak || {}).debug || {}).matchedRows || 0));
           JARAK_DEBUG.scannedRows = Number((((resJarak || {}).debug || {}).scannedRows || 0));
           JARAK_DEBUG.sampleNames = ((((resJarak || {}).debug || {}).sampleNames || []));
           JARAK_DEBUG.firstRow = ((((resJarak || {}).debug || {}).firstRow || null));
 
-          const namaShown = res.namaMitra || resJarak.namaMitra || "-";
-          const posisiShown = res.posisiMitra || resJarak.posisiMitra || "-";
-          const divisiShown = res.divisiMitra || resJarak.divisiMitra || "-";
-          const statusShown = res.statusKaryawan || resJarak.statusKaryawan || "-";
+          const namaShown = res.namaMitra || resJarak.namaMitra || resBonus.namaMitra || resPendapatan.namaMitra || resPenambah.namaMitra || resPengurang.namaMitra || "-";
+          const posisiShown = res.posisiMitra || resJarak.posisiMitra || resBonus.posisiMitra || resPendapatan.posisiMitra || resPenambah.posisiMitra || resPengurang.posisiMitra || "-";
+          const divisiShown = res.divisiMitra || resJarak.divisiMitra || resBonus.divisiMitra || resPendapatan.divisiMitra || resPenambah.divisiMitra || resPengurang.divisiMitra || "-";
+          const statusShown = res.statusKaryawan || resJarak.statusKaryawan || resBonus.statusKaryawan || resPendapatan.statusKaryawan || resPenambah.statusKaryawan || resPengurang.statusKaryawan || "-";
 
           document.getElementById("namaMitra").innerText = namaShown;
           if (!AUTH_USER.email){
@@ -1403,15 +1824,55 @@
             .map(x => String(x || "").trim())
             .filter(Boolean)
             .sort();
+          const p3 = (((resBonus || {}).filterOptions || {}).periodePencairan || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const p4 = (((resPendapatan || {}).filterOptions || {}).periodePencairan || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const p5 = (((resPenambah || {}).filterOptions || {}).periode || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const p6 = (((resPengurang || {}).filterOptions || {}).periode || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const pt = (((resBonus || {}).filterOptions || {}).periodeTarget || [])
+            .map(x => String(x || "").trim())
+            .filter(Boolean)
+            .sort();
+          const st = (((resBonus || {}).filterOptions || {}).statusPencapaian || [])
+            .map(x => normalizeStatusPencapaian(String(x || "").trim()))
+            .filter(Boolean)
+            .filter((v, i, arr) => arr.indexOf(v) === i)
+            .sort();
           const jobs = (((res || {}).filterOptions || {}).pekerjaan || [])
             .map(x => String(x || "").trim())
             .filter(Boolean)
             .sort();
           PERIODE_OPTIONS.slip = p1;
           PERIODE_OPTIONS.jarak = p2;
+          PERIODE_OPTIONS.bonus = p3;
+          PERIODE_OPTIONS.penambah = p5;
+          PERIODE_OPTIONS.pengurang = p6;
+          PERIODE_OPTIONS.bersih = p4;
+          PERIODE_TARGET_OPTIONS.bonus = pt;
+          STATUS_PENCAPAIAN_OPTIONS = st;
           PEKERJAAN_OPTIONS.slip = jobs;
-          renderCheckboxList("periodeBox", (VIEW === "jarak") ? PERIODE_OPTIONS.jarak : PERIODE_OPTIONS.slip, "periode");
+          renderCheckboxList("periodeBox",
+            (VIEW === "jarak") ? PERIODE_OPTIONS.jarak
+              : (VIEW === "bonus") ? PERIODE_OPTIONS.bonus
+                : (VIEW === "penambah") ? PERIODE_OPTIONS.penambah
+                  : (VIEW === "pengurang") ? PERIODE_OPTIONS.pengurang
+                    : (VIEW === "bersih") ? PERIODE_OPTIONS.bersih
+                      : PERIODE_OPTIONS.slip,
+            "periode");
           renderCheckboxList("pekerjaanBox", VIEW === "komisi" ? PEKERJAAN_OPTIONS.slip : [], "pekerjaan");
+          renderCheckboxList("periodeTargetBox", VIEW === "bonus" ? PERIODE_TARGET_OPTIONS.bonus : [], "periodeTarget");
+          renderCheckboxList("statusPencapaianBox", VIEW === "bonus" ? STATUS_PENCAPAIAN_OPTIONS : [], "statusPencapaian");
 
           const mm = getMinMaxPencairan(res.rows || []);
           const mmAkt = getMinMaxAktivitas(resJarak.rows || []);
@@ -1458,15 +1919,22 @@
             jadwalToEl.removeAttribute("min"); jadwalToEl.removeAttribute("max");
           }
 
+          const pendapatanMapped = mapPendapatanBersihRowsToCurrentView(resPendapatan.rows || []);
+          const penambahRows = mapPenambahLainRowsToCurrentView(resPenambah.rows || []);
+          const pengurangRows = mapPengurangLainRowsToCurrentView(resPengurang.rows || []);
           ALL_ROWS = [
             ...mapSlipRowsToCurrentView(res.rows || []),
-            ...mapKompensasiRowsToCurrentView(resJarak.rows || [])
+            ...mapKompensasiRowsToCurrentView(resJarak.rows || []),
+            ...mapBonusRowsToCurrentView(resBonus.rows || []),
+            ...pendapatanMapped.bersihRows,
+            ...penambahRows,
+            ...pengurangRows
           ];
 
           const colsNow = VIEW_COLS[VIEW] || [];
           SORT_KEY = colsNow.length ? colsNow[0].key : "tanggal";
           SORT_DIR = "desc";
-          sessionStorage.setItem("mitraEmail", (realAuthEmail || res.email || resJarak.email || email || "").trim().toLowerCase());
+          sessionStorage.setItem("mitraEmail", (realAuthEmail || res.email || resJarak.email || resBonus.email || resPendapatan.email || resPenambah.email || resPengurang.email || email || "").trim().toLowerCase());
           isLoadedOnce = true;
           hideLoading();
           applyFilters();
@@ -1486,6 +1954,8 @@
           ALL_ROWS = [];
           FILTERED_ROWS = [];
           renderCheckboxList("periodeBox", [], "periode");
+          renderCheckboxList("periodeTargetBox", [], "periodeTarget");
+          renderCheckboxList("statusPencapaianBox", [], "statusPencapaian");
           isLoadedOnce = true;
           applyFilters();
           setMessage("Gagal memuat data. " + ((err && err.message) ? err.message : ""));
