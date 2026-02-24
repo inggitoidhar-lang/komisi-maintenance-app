@@ -1,48 +1,15 @@
 <!doctype html>
-<html lang="id">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cek Komisi</title>
   <style>
-    html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; }
-    .wrap { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; }
-    .card { width: 100%; max-width: 520px; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; }
-    .row { display: flex; gap: 10px; margin-top: 12px; }
-    input { flex: 1; padding: 12px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; }
-    button { padding: 12px 14px; border: 0; border-radius: 10px; cursor: pointer; font-weight: 600; }
-    .primary { background: #10a6ca; color: white; }
-    pre { background: #0b1220; color: #e5e7eb; padding: 12px; border-radius: 12px; overflow: auto; margin-top: 14px; }
-    .muted { color: #6b7280; font-size: 13px; margin-top: 8px; }
+    html, body { height: 100%; margin: 0; }
+    iframe { width: 100%; height: 100%; border: 0; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h2 style="margin:0;">Cek Komisi (GitHub Pages)</h2>
-      <div class="muted">
-        Banner Google hilang karena halaman ini bukan iframe Apps Script lagi.
-        Langkah berikutnya: kita sambungkan ke API Apps Script.
-      </div>
-
-      <div class="row">
-        <input id="email" placeholder="Isi email (contoh: nama@company.com)" />
-        <button class="primary" id="btnTest">Test Page</button>
-      </div>
-
-      <pre id="out">Status: page loaded ✅
-Silakan klik "Test Page".</pre>
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('btnTest').addEventListener('click', () => {
-      const email = document.getElementById('email').value.trim();
-      document.getElementById('out').textContent =
-        "Status: button clicked ✅\n" +
-        "Email input: " + (email || "(kosong)") + "\n\n" +
-        "NEXT: kita akan panggil Apps Script API dari sini.";
-    });
-  </script>
+  <iframe src=https://script.google.com/macros/s/AKfycbwjVND-ryfzk3wWf2nsekA6ryfviZu0VOoKEF9wKxJYmrXDrUFo2AgpLN3uI4K-ifOGRA/exec></iframe>
 </body>
 </html>
