@@ -6,6 +6,12 @@ const SHEET_NAME = "DB_Slip_Komisi_Cair";
 const SHEET_PENGERJAAN = "DB_List_Order";
 const SHEET_KOMPENSASI_JARAK = "DB_Kompensasi_Jarak";
 const SHEET_KOMPENSASI_JARAK_SPREADSHEET_ID = "11I-e8w4hIOguIuqbxTk0qZURYQnKPol1UJMuCWnZgs8";
+const SHEET_EXTRA_BONUS = "DB_Extra_Bonus";
+const SHEET_EXTRA_BONUS_SPREADSHEET_ID = "11I-e8w4hIOguIuqbxTk0qZURYQnKPol1UJMuCWnZgs8";
+const SHEET_PENDAPATAN_BERSIH = "DB_Pendapatan_Bersih";
+const SHEET_PENDAPATAN_BERSIH_SPREADSHEET_ID = "11I-e8w4hIOguIuqbxTk0qZURYQnKPol1UJMuCWnZgs8";
+const SHEET_PENAMBAH_LAIN = "DB_Penambah_Lain";
+const SHEET_POTONGAN_LAIN = "DB_Potongan_Lain";
 
 // ✅ Sheet untuk database akun (sumber kebenaran user)
 const SHEET_AKUN = "DB_Akun";
@@ -1096,6 +1102,502 @@ function getKompensasiJarakDatasetByEmail(emailInput) {
     const outStr = JSON.stringify(out);
     try { cache.put("kompjarak_last_" + email, outStr, 30); } catch (e) {}
     return outStr;
+
+  } catch (e) {
+    out.message = "Error server: " + (e && e.message ? e.message : e);
+    return JSON.stringify(out);
+  }
+}
+
+/***** DATASET EXTRA BONUS (pendapatanbersih.html) *****/
+function getBonusDatasetByEmail(emailInput) {
+  const out = {
+    ok: false,
+    message: "",
+    email: "",
+    namaMitra: "",
+    roleAkun: "",
+    posisiMitra: "",
+    divisiMitra: "",
+    statusKaryawan: "",
+    rows: [],
+    filterOptions: { periodePencairan: [], periodeTarget: [], statusPencapaian: [] }
+  };
+
+  const email = emailValid_(emailInput);
+  out.email = email || String(emailInput || "").trim().toLowerCase();
+  if (!email) {
+    out.message = "Email tidak valid.";
+    return JSON.stringify(out);
+  }
+
+  try {
+    if (!isEmailAllowed_(email)) {
+      out.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
+      return JSON.stringify(out);
+    }
+
+    const user = getUserByEmail_(email);
+    if (user && user.nama) out.namaMitra = user.nama;
+    if (user) out.roleAkun = user.role_akun || "";
+    if (user) out.posisiMitra = user.posisi || "";
+    if (user) out.divisiMitra = user.divisi || "";
+    if (user) out.statusKaryawan = user.status_karyawan || "";
+
+    const ss = SpreadsheetApp.openById(SHEET_EXTRA_BONUS_SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_EXTRA_BONUS);
+    if (!sh) {
+      out.message = `Sheet "${SHEET_EXTRA_BONUS}" tidak ditemukan.`;
+      return JSON.stringify(out);
+    }
+
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) {
+      out.ok = true;
+      out.rows = [];
+      return JSON.stringify(out);
+    }
+
+    const data = values.slice(1);
+
+    // Kolom berdasarkan request:
+    // A=Periode Target, D=Nama, E=Posisi, F=Target Invoice, G=Pencapaian Invoice,
+    // H=Status Pencapaian, I=Nominal Bonus, L=Periode Pencairan
+    const iPeriodeTarget = 0;
+    const iNama = 3;
+    const iPosisi = 4;
+    const iTargetInvoice = 5;
+    const iPencapaianInvoice = 6;
+    const iStatusPencapaian = 7;
+    const iNominalBonus = 8;
+    const iPeriodePencairan = 11;
+
+    const normName = (v) => String(v || "").trim().toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ");
+    const compact = (s) => String(s || "").replace(/\s+/g, "");
+    const myName = normName((user && user.nama) || "");
+    if (!myName) {
+      out.message = "Nama user tidak ditemukan di DB_Akun.";
+      return JSON.stringify(out);
+    }
+
+    const setPeriodePencairan = new Set();
+    const setPeriodeTarget = new Set();
+    const setStatus = new Set();
+    const rows = [];
+
+    for (const r of data) {
+      const rowName = normName(r[iNama]);
+      const isNameMatch = !!rowName && (
+        rowName === myName ||
+        rowName.includes(myName) ||
+        myName.includes(rowName) ||
+        compact(rowName) === compact(myName) ||
+        compact(rowName).includes(compact(myName)) ||
+        compact(myName).includes(compact(rowName))
+      );
+      if (!isNameMatch) continue;
+
+      const periodePencairan = asText_(r[iPeriodePencairan]).trim();
+      const periodeTarget = asText_(r[iPeriodeTarget]).trim();
+      const status = asText_(r[iStatusPencapaian]).trim();
+      if (periodePencairan) setPeriodePencairan.add(periodePencairan);
+      if (periodeTarget) setPeriodeTarget.add(periodeTarget);
+      if (status) setStatus.add(status);
+
+      const nama = asText_(r[iNama]).trim();
+      const posisi = asText_(r[iPosisi]).trim();
+      const targetInvoice = asNumber_(r[iTargetInvoice]);
+      const pencapaianInvoice = asNumber_(r[iPencapaianInvoice]);
+      const nominalBonus = asNumber_(r[iNominalBonus]);
+
+      if (!nama && !periodePencairan && !periodeTarget && !nominalBonus && !status) continue;
+
+      rows.push({
+        periodePencairan,
+        periodeTarget,
+        nama,
+        posisi,
+        targetInvoice,
+        pencapaianInvoice,
+        statusPencapaian: status,
+        nominalBonus
+      });
+    }
+
+    rows.sort((a, b) => String(b.periodePencairan || "").localeCompare(String(a.periodePencairan || "")));
+
+    out.ok = true;
+    out.rows = rows;
+    out.filterOptions.periodePencairan = Array.from(setPeriodePencairan).sort();
+    out.filterOptions.periodeTarget = Array.from(setPeriodeTarget).sort();
+    out.filterOptions.statusPencapaian = Array.from(setStatus).sort();
+
+    return JSON.stringify(out);
+
+  } catch (e) {
+    out.message = "Error server: " + (e && e.message ? e.message : e);
+    return JSON.stringify(out);
+  }
+}
+
+/***** DATASET PENDAPATAN BERSIH (pendapatanbersih.html) *****/
+function getPendapatanBersihDatasetByEmail(emailInput) {
+  const out = {
+    ok: false,
+    message: "",
+    email: "",
+    namaMitra: "",
+    roleAkun: "",
+    posisiMitra: "",
+    divisiMitra: "",
+    statusKaryawan: "",
+    rows: [],
+    filterOptions: { periodePencairan: [] }
+  };
+
+  const email = emailValid_(emailInput);
+  out.email = email || String(emailInput || "").trim().toLowerCase();
+  if (!email) {
+    out.message = "Email tidak valid.";
+    return JSON.stringify(out);
+  }
+
+  try {
+    if (!isEmailAllowed_(email)) {
+      out.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
+      return JSON.stringify(out);
+    }
+
+    const user = getUserByEmail_(email);
+    if (user && user.nama) out.namaMitra = user.nama;
+    if (user) out.roleAkun = user.role_akun || "";
+    if (user) out.posisiMitra = user.posisi || "";
+    if (user) out.divisiMitra = user.divisi || "";
+    if (user) out.statusKaryawan = user.status_karyawan || "";
+
+    const ss = SpreadsheetApp.openById(SHEET_PENDAPATAN_BERSIH_SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_PENDAPATAN_BERSIH);
+    if (!sh) {
+      out.message = `Sheet "${SHEET_PENDAPATAN_BERSIH}" tidak ditemukan.`;
+      return JSON.stringify(out);
+    }
+
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) {
+      out.ok = true;
+      out.rows = [];
+      return JSON.stringify(out);
+    }
+
+    const data = values.slice(1);
+
+    // Kolom berdasarkan request:
+    // A=Nama, B=Periode Pencairan, C=Komisi, D=Kompensasi Jarak Jauh, E=Bonus,
+    // G=Penambah Lain, H=Pengurang Lain, I=Pajak, J=Pendapatan Bersih, K=Posisi
+    const iNama = 0;
+    const iPeriodePencairan = 1;
+    const iKomisi = 2;
+    const iKompensasi = 3;
+    const iBonus = 4;
+    const iPenambah = 6;
+    const iPengurang = 7;
+    const iPajak = 8;
+    const iPendapatanBersih = 9;
+    const iPosisi = 10;
+
+    const normName = (v) => String(v || "").trim().toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ");
+    const compact = (s) => String(s || "").replace(/\s+/g, "");
+    const myName = normName((user && user.nama) || "");
+    if (!myName) {
+      out.message = "Nama user tidak ditemukan di DB_Akun.";
+      return JSON.stringify(out);
+    }
+
+    const setPeriodePencairan = new Set();
+    const rows = [];
+
+    for (const r of data) {
+      const rowName = normName(r[iNama]);
+      const isNameMatch = !!rowName && (
+        rowName === myName ||
+        rowName.includes(myName) ||
+        myName.includes(rowName) ||
+        compact(rowName) === compact(myName) ||
+        compact(rowName).includes(compact(myName)) ||
+        compact(myName).includes(compact(rowName))
+      );
+      if (!isNameMatch) continue;
+
+      const periodePencairan = asText_(r[iPeriodePencairan]).trim();
+      if (periodePencairan) setPeriodePencairan.add(periodePencairan);
+
+      const nama = asText_(r[iNama]).trim();
+      const posisi = asText_(r[iPosisi]).trim();
+      const komisi = asNumber_(r[iKomisi]);
+      const kompensasiJarakJauh = asNumber_(r[iKompensasi]);
+      const bonus = asNumber_(r[iBonus]);
+      const penambah = asNumber_(r[iPenambah]);
+      const pengurang = asNumber_(r[iPengurang]);
+      const pajak = asNumber_(r[iPajak]);
+      const pendapatanBersih = asNumber_(r[iPendapatanBersih]);
+
+      if (!nama && !periodePencairan && !komisi && !kompensasiJarakJauh && !bonus && !penambah && !pengurang && !pajak && !pendapatanBersih) continue;
+
+      rows.push({
+        periodePencairan,
+        nama,
+        posisi,
+        komisi,
+        kompensasiJarakJauh,
+        bonus,
+        penambahLain: penambah,
+        pengurangLain: pengurang,
+        pajak,
+        pendapatanBersih
+      });
+    }
+
+    rows.sort((a, b) => String(b.periodePencairan || "").localeCompare(String(a.periodePencairan || "")));
+
+    out.ok = true;
+    out.rows = rows;
+    out.filterOptions.periodePencairan = Array.from(setPeriodePencairan).sort();
+
+    return JSON.stringify(out);
+
+  } catch (e) {
+    out.message = "Error server: " + (e && e.message ? e.message : e);
+    return JSON.stringify(out);
+  }
+}
+
+/***** DATASET PENAMBAH LAIN (pendapatanbersih.html) *****/
+function getPenambahLainDatasetByEmail(emailInput) {
+  const out = {
+    ok: false,
+    message: "",
+    email: "",
+    namaMitra: "",
+    roleAkun: "",
+    posisiMitra: "",
+    divisiMitra: "",
+    statusKaryawan: "",
+    rows: [],
+    filterOptions: { periode: [] }
+  };
+
+  const email = emailValid_(emailInput);
+  out.email = email || String(emailInput || "").trim().toLowerCase();
+  if (!email) {
+    out.message = "Email tidak valid.";
+    return JSON.stringify(out);
+  }
+
+  try {
+    if (!isEmailAllowed_(email)) {
+      out.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
+      return JSON.stringify(out);
+    }
+
+    const user = getUserByEmail_(email);
+    if (user && user.nama) out.namaMitra = user.nama;
+    if (user) out.roleAkun = user.role_akun || "";
+    if (user) out.posisiMitra = user.posisi || "";
+    if (user) out.divisiMitra = user.divisi || "";
+    if (user) out.statusKaryawan = user.status_karyawan || "";
+
+    const ss = SpreadsheetApp.openById(SHEET_PENDAPATAN_BERSIH_SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_PENAMBAH_LAIN);
+    if (!sh) {
+      out.message = `Sheet "${SHEET_PENAMBAH_LAIN}" tidak ditemukan.`;
+      return JSON.stringify(out);
+    }
+
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) {
+      out.ok = true;
+      out.rows = [];
+      return JSON.stringify(out);
+    }
+
+    const data = values.slice(1);
+
+    // Kolom: A=Periode, B=Nama, C=Posisi, D=Divisi, E=Keterangan, F=Penambah Lain
+    const iPeriode = 0;
+    const iNama = 1;
+    const iPosisi = 2;
+    const iDivisi = 3;
+    const iKet = 4;
+    const iNominal = 5;
+
+    const normName = (v) => String(v || "").trim().toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ");
+    const compact = (s) => String(s || "").replace(/\s+/g, "");
+    const myName = normName((user && user.nama) || "");
+    if (!myName) {
+      out.message = "Nama user tidak ditemukan di DB_Akun.";
+      return JSON.stringify(out);
+    }
+
+    const setPeriode = new Set();
+    const rows = [];
+
+    for (const r of data) {
+      const rowName = normName(r[iNama]);
+      const isNameMatch = !!rowName && (
+        rowName === myName ||
+        rowName.includes(myName) ||
+        myName.includes(rowName) ||
+        compact(rowName) === compact(myName) ||
+        compact(rowName).includes(compact(myName)) ||
+        compact(myName).includes(compact(rowName))
+      );
+      if (!isNameMatch) continue;
+
+      const periode = asText_(r[iPeriode]).trim();
+      if (periode) setPeriode.add(periode);
+
+      const nama = asText_(r[iNama]).trim();
+      const posisi = asText_(r[iPosisi]).trim();
+      const divisi = asText_(r[iDivisi]).trim();
+      const keterangan = asText_(r[iKet]).trim();
+      const nominal = asNumber_(r[iNominal]);
+
+      if (!nama && !periode && !nominal && !keterangan) continue;
+
+      rows.push({
+        periode,
+        nama,
+        posisi,
+        divisi,
+        keteranganPenambah: keterangan,
+        penambahLain: nominal
+      });
+    }
+
+    rows.sort((a, b) => String(b.periode || "").localeCompare(String(a.periode || "")));
+
+    out.ok = true;
+    out.rows = rows;
+    out.filterOptions.periode = Array.from(setPeriode).sort();
+
+    return JSON.stringify(out);
+
+  } catch (e) {
+    out.message = "Error server: " + (e && e.message ? e.message : e);
+    return JSON.stringify(out);
+  }
+}
+
+/***** DATASET POTONGAN LAIN (pendapatanbersih.html) *****/
+function getPengurangLainDatasetByEmail(emailInput) {
+  const out = {
+    ok: false,
+    message: "",
+    email: "",
+    namaMitra: "",
+    roleAkun: "",
+    posisiMitra: "",
+    divisiMitra: "",
+    statusKaryawan: "",
+    rows: [],
+    filterOptions: { periode: [] }
+  };
+
+  const email = emailValid_(emailInput);
+  out.email = email || String(emailInput || "").trim().toLowerCase();
+  if (!email) {
+    out.message = "Email tidak valid.";
+    return JSON.stringify(out);
+  }
+
+  try {
+    if (!isEmailAllowed_(email)) {
+      out.message = "Akses ditolak: email ini tidak terdaftar / akun non-aktif.";
+      return JSON.stringify(out);
+    }
+
+    const user = getUserByEmail_(email);
+    if (user && user.nama) out.namaMitra = user.nama;
+    if (user) out.roleAkun = user.role_akun || "";
+    if (user) out.posisiMitra = user.posisi || "";
+    if (user) out.divisiMitra = user.divisi || "";
+    if (user) out.statusKaryawan = user.status_karyawan || "";
+
+    const ss = SpreadsheetApp.openById(SHEET_PENDAPATAN_BERSIH_SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_POTONGAN_LAIN);
+    if (!sh) {
+      out.message = `Sheet "${SHEET_POTONGAN_LAIN}" tidak ditemukan.`;
+      return JSON.stringify(out);
+    }
+
+    const values = sh.getDataRange().getValues();
+    if (values.length < 2) {
+      out.ok = true;
+      out.rows = [];
+      return JSON.stringify(out);
+    }
+
+    const data = values.slice(1);
+
+    // Kolom: A=Periode, B=Nama, C=Posisi, D=Divisi, E=Keterangan, F=Pengurang Lain
+    const iPeriode = 0;
+    const iNama = 1;
+    const iPosisi = 2;
+    const iDivisi = 3;
+    const iKet = 4;
+    const iNominal = 5;
+
+    const normName = (v) => String(v || "").trim().toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ");
+    const compact = (s) => String(s || "").replace(/\s+/g, "");
+    const myName = normName((user && user.nama) || "");
+    if (!myName) {
+      out.message = "Nama user tidak ditemukan di DB_Akun.";
+      return JSON.stringify(out);
+    }
+
+    const setPeriode = new Set();
+    const rows = [];
+
+    for (const r of data) {
+      const rowName = normName(r[iNama]);
+      const isNameMatch = !!rowName && (
+        rowName === myName ||
+        rowName.includes(myName) ||
+        myName.includes(rowName) ||
+        compact(rowName) === compact(myName) ||
+        compact(rowName).includes(compact(myName)) ||
+        compact(myName).includes(compact(rowName))
+      );
+      if (!isNameMatch) continue;
+
+      const periode = asText_(r[iPeriode]).trim();
+      if (periode) setPeriode.add(periode);
+
+      const nama = asText_(r[iNama]).trim();
+      const posisi = asText_(r[iPosisi]).trim();
+      const divisi = asText_(r[iDivisi]).trim();
+      const keterangan = asText_(r[iKet]).trim();
+      const nominal = asNumber_(r[iNominal]);
+
+      if (!nama && !periode && !nominal && !keterangan) continue;
+
+      rows.push({
+        periode,
+        nama,
+        posisi,
+        divisi,
+        keteranganPengurang: keterangan,
+        pengurangLain: nominal
+      });
+    }
+
+    rows.sort((a, b) => String(b.periode || "").localeCompare(String(a.periode || "")));
+
+    out.ok = true;
+    out.rows = rows;
+    out.filterOptions.periode = Array.from(setPeriode).sort();
+
+    return JSON.stringify(out);
 
   } catch (e) {
     out.message = "Error server: " + (e && e.message ? e.message : e);
