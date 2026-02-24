@@ -4,12 +4,41 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cek Komisi</title>
+
   <style>
-    html, body { height: 100%; margin: 0; }
-    iframe { width: 100%; height: 100%; border: 0; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #0f2e5a;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
   </style>
 </head>
 <body>
-  <iframe src=https://script.google.com/macros/s/AKfycbwjVND-ryfzk3wWf2nsekA6ryfviZu0VOoKEF9wKxJYmrXDrUFo2AgpLN3uI4K-ifOGRA/exec></iframe>
+
+  <iframe id="appFrame"></iframe>
+
+  <script>
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwjVND-ryfzk3wWf2nsekA6ryfviZu0VOoKEF9wKxJYmrXDrUFo2AgpLN3uI4K-ifOGRA/exec";
+
+    function loadPage() {
+      const params = new URLSearchParams(window.location.search);
+      const page = params.get("page") || "login";
+
+      document.getElementById("appFrame").src = WEBAPP_URL + "?page=" + page;
+    }
+
+    // Load pertama kali
+    loadPage();
+
+    // Kalau user klik back/forward browser
+    window.onpopstate = loadPage;
+  </script>
+
 </body>
 </html>
